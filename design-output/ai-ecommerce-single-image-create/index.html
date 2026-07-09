@@ -1,0 +1,148 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI电商智能体 - 单图创作</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="global-header">
+    <div class="brand"><img class="brand-logo" src="assets/carter-ai-logo.png" alt="卡特加特 AI"></div>
+    <div class="header-actions">
+      <button class="notice" type="button" aria-label="通知"></button>
+      <div class="header-pill">管理中心<span class="header-chevron"></span></div>
+      <div class="credit-pill"><span class="credit-dot"></span>融豆 1280</div>
+      <img class="avatar" src="assets/user-avatar.png" alt="">
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="平台导航">
+      <nav class="nav" id="nav">
+        <button class="nav-group expanded" type="button" data-nav-group>
+          <span class="nav-icon"></span>AI电商智能体<span class="nav-arrow"></span>
+        </button>
+        <button class="nav-leaf" type="button"><span class="nav-icon"></span>商品库</button>
+        <button class="nav-group expanded" type="button" data-nav-group>
+          <span class="nav-icon"></span>创作工作台<span class="nav-arrow"></span>
+        </button>
+        <button class="nav-leaf nav-subitem active" type="button"><span class="nav-icon"></span>单图创作</button>
+        <button class="nav-leaf nav-subitem" type="button"><span class="nav-icon"></span>模板批量生图</button>
+        <button class="nav-leaf nav-subitem" type="button"><span class="nav-icon"></span>扩图编辑</button>
+        <button class="nav-leaf nav-subitem" type="button"><span class="nav-icon"></span>文字 / 水印编辑</button>
+        <div class="nav-divider"></div>
+        <button class="nav-leaf plain" type="button"><span class="nav-icon"></span>资产中心</button>
+        <button class="nav-leaf plain" type="button"><span class="nav-icon"></span>任务记录</button>
+        <button class="nav-leaf plain" type="button"><span class="nav-icon"></span>AI广场</button>
+        <button class="nav-leaf plain" type="button"><span class="nav-icon"></span>算力与账单</button>
+        <button class="nav-leaf plain" type="button"><span class="nav-icon"></span>操作说明</button>
+      </nav>
+    </aside>
+
+    <main class="main">
+      <section class="single-create-layout">
+        <section class="create-panel" aria-label="单图创作表单">
+          <div class="project-prompt-card">
+            <div class="project-prompt-shell">
+              <div class="category-area">
+                <div class="section-label">商品分类</div>
+                <div class="category-tags" data-category-tags>
+                  <button class="category-tag" type="button" data-category="文胸">文胸</button>
+                  <button class="category-tag" type="button" data-category="内裤">内裤</button>
+                  <button class="category-tag" type="button" data-category="童装">童装</button>
+                  <button class="category-tag" type="button" data-category="鞋子">鞋子</button>
+                  <button class="category-tag" type="button" data-category="箱包">箱包</button>
+                  <button class="category-tag" type="button" data-category="帽子">帽子</button>
+                </div>
+                <div class="category-tip" data-category-tip>已按该品类优化材质、工艺、细节和展示场景</div>
+              </div>
+
+              <div class="prompt-area">
+                <textarea class="project-prompt-box" data-prompt-input placeholder="描述你想生成的商品图，例如：生成一张浅色卧室场景的文胸模特图"></textarea>
+              </div>
+
+              <div class="mode-row">
+                <span>当前创作方式：</span>
+                <strong data-current-mode>自由生图</strong>
+              </div>
+
+              <div class="project-composer-bottom">
+                <div class="composer-toolbar project-attach-row">
+                  <button class="pill-btn project-attach-btn" type="button" data-upload="product">
+                    <span class="project-attach-icon product"></span>上传商品图
+                  </button>
+                  <button class="pill-btn project-attach-btn" type="button" data-upload="reference">
+                    <span class="project-attach-icon reference"></span>上传参考图
+                  </button>
+                </div>
+
+                <div class="project-param-popover-wrap" data-param-wrap>
+                  <button class="project-param-summary" type="button" aria-label="参数设置" data-param-trigger>
+                    <span data-ratio-summary>3:4</span><i></i><span data-resolution-summary>2K</span>
+                  </button>
+                  <div class="project-param-popover" data-param-popover>
+                    <div class="project-param-popover-title">参数设置</div>
+                    <div class="project-param-field">
+                      <div class="project-param-label">图片比例</div>
+                      <div class="project-param-choice-grid ratio">
+                        <button type="button" data-param-option="ratio" data-value="1:1">1:1</button>
+                        <button class="active" type="button" data-param-option="ratio" data-value="3:4">3:4</button>
+                        <button type="button" data-param-option="ratio" data-value="4:3">4:3</button>
+                        <button type="button" data-param-option="ratio" data-value="9:16">9:16</button>
+                        <button type="button" data-param-option="ratio" data-value="16:9">16:9</button>
+                      </div>
+                    </div>
+                    <div class="project-param-field">
+                      <div class="project-param-label">分辨率</div>
+                      <div class="project-param-choice-grid resolution">
+                        <button class="active" type="button" data-param-option="resolution" data-value="2K">2K</button>
+                        <button type="button" data-param-option="resolution" data-value="1K">1K</button>
+                      </div>
+                    </div>
+                    <div class="project-param-actions">
+                      <button class="btn" type="button" data-param-cancel>取消</button>
+                      <button class="btn primary" type="button" data-param-confirm>确认</button>
+                    </div>
+                  </div>
+                </div>
+
+                <button class="btn primary project-generate-btn" type="button" data-generate>
+                  <span class="project-generate-icon"></span><span data-generate-label>生成图片</span><em>10</em>
+                </button>
+              </div>
+
+              <div class="upload-state-row">
+                <span data-product-state>未上传商品图</span>
+                <span data-reference-state>未上传参考图</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <aside class="session-panel" aria-label="当前创作会话结果区">
+          <div class="session-head">
+            <h2>当前创作会话结果区</h2>
+          </div>
+          <div class="session-empty is-visible" data-session-empty>
+            <div class="empty-mark"></div>
+            <p>上传素材并点击生成后，生成记录会展示在这里</p>
+          </div>
+          <div class="task-list" data-task-list></div>
+        </aside>
+      </section>
+    </main>
+  </div>
+
+  <div class="toast" data-toast></div>
+  <div class="preview-modal" data-preview-modal>
+    <div class="preview-backdrop" data-close-preview></div>
+    <div class="preview-card">
+      <button class="preview-close" type="button" data-close-preview aria-label="关闭预览"></button>
+      <img src="assets/product-cover-03.png" alt="生成结果预览" data-preview-image>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>

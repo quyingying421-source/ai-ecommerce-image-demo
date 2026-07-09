@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>AI电商智能体 - 商品库原型</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <header class="global-header">
+    <div class="brand"><img class="brand-logo" src="assets/carter-ai-logo.png" alt="卡特加特 AI"></div>
+    <div class="header-actions">
+      <button class="notice" type="button" aria-label="通知"></button>
+      <div class="header-pill">管理中心<span class="header-chevron"></span></div>
+      <div class="credit-pill"><span class="credit-dot"></span>融豆 1280</div>
+      <img class="avatar" src="assets/user-avatar.png" alt="">
+    </div>
+  </header>
+
+  <div class="app-shell">
+    <aside class="sidebar" aria-label="平台导航">
+      <nav class="nav" id="nav">
+        <button class="nav-group expanded" type="button" data-nav-group="ecommerce"><span class="nav-icon"></span>AI电商智能体<span class="nav-arrow"></span></button>
+        <button class="nav-leaf plain" type="button" data-single-menu="单图创作"><span class="nav-icon"></span>单图创作</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="模板中心"><span class="nav-icon"></span>模板中心</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="模特库"><span class="nav-icon"></span>模特库</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="品牌元素"><span class="nav-icon"></span>品牌元素</button>
+
+        <button class="nav-group expanded" type="button" data-nav-group="brand-assets"><span class="nav-icon"></span>品牌素材库<span class="nav-arrow"></span></button>
+        <button class="nav-leaf active" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
+
+        <div class="nav-divider"></div>
+        <button class="nav-leaf plain" type="button" data-single-menu="任务记录"><span class="nav-icon"></span>任务记录</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="AI广场"><span class="nav-icon"></span>AI广场</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="算力与账单"><span class="nav-icon"></span>算力与账单</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="操作说明"><span class="nav-icon"></span>操作说明</button>
+        </nav>
+      </aside>
+
+    <main class="main workspace">
+        <section class="stats-grid" aria-label="商品统计">
+          <article class="stat-card">
+            <span>商品总数</span>
+            <strong>1,286</strong>
+            <small>覆盖 18 个品类</small>
+          </article>
+          <article class="stat-card warning">
+            <span>待完善商品</span>
+            <strong>94</strong>
+            <small>缺少卖点或细节图</small>
+          </article>
+          <article class="stat-card success">
+            <span>可创作商品</span>
+            <strong>1,074</strong>
+            <small>素材完整度达标</small>
+          </article>
+          <article class="stat-card">
+            <span>今日新增</span>
+            <strong>27</strong>
+            <small>较昨日 +12%</small>
+          </article>
+        </section>
+
+        <section class="content-card">
+          <section class="toolbar">
+            <div class="search-field">
+              <span class="search-icon"></span>
+              <input type="search" placeholder="搜索商品名称 / 商品唯一码 / 货号" data-search-input />
+            </div>
+            <select data-filter-select>
+              <option>全部品牌</option>
+              <option>Carter Kids</option>
+              <option>Lovera</option>
+              <option>YunFit</option>
+              <option>Softline</option>
+            </select>
+            <select data-filter-select>
+              <option>全部品类</option>
+              <option>童装</option>
+              <option>内衣</option>
+              <option>套装</option>
+          </select>
+          <button class="btn primary toolbar-create" type="button">
+            <img class="toolbar-create-icon" src="assets/voice-upload-icon.png" alt="">
+            新增商品
+          </button>
+          </section>
+
+          <div class="loading-state" data-loading-state>
+            <span class="spinner"></span>
+            <strong>正在加载商品库...</strong>
+          </div>
+
+          <div class="empty-state" data-empty-state>
+            <div class="empty-visual"></div>
+            <h3>暂无商品</h3>
+            <p>新增商品后，可在这里管理商品档案并发起 AI 创作。</p>
+            <button class="btn primary" type="button">新增商品</button>
+          </div>
+
+          <div class="empty-state" data-no-result-state>
+            <div class="empty-visual search"></div>
+            <h3>搜索无结果</h3>
+            <p>没有匹配当前筛选条件的商品，建议调整关键词、品牌、品类或状态。</p>
+          </div>
+
+          <div class="product-grid" data-card-view></div>
+        </section>
+      </main>
+  </div>
+
+  <div class="drawer-backdrop" data-drawer-backdrop></div>
+  <aside class="detail-drawer" data-detail-drawer aria-hidden="true">
+    <div class="drawer-head">
+      <div>
+        <h2 data-drawer-title>商品名称</h2>
+      </div>
+      <button class="icon-btn close" type="button" data-close-drawer aria-label="关闭详情"></button>
+    </div>
+    <div class="drawer-body">
+      <section class="drawer-section">
+        <h3>基础信息</h3>
+        <div class="info-grid" data-basic-info></div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>面料信息</h3>
+        <div class="material-info" data-material-info></div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>商品卖点</h3>
+        <div class="selling-point-box" data-selling-point></div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>商品图片</h3>
+        <div class="color-image-list" data-color-images></div>
+      </section>
+
+      <section class="drawer-section">
+        <h3>尺码配置</h3>
+        <div class="size-config" data-size-config></div>
+      </section>
+    </div>
+    <div class="drawer-foot" data-drawer-foot></div>
+  </aside>
+
+  <div class="action-popover" data-action-popover>
+    <div class="popover-title" data-popover-title>选择 AI 创作入口</div>
+    <button type="button" data-create-action="自由生图">自由生图</button>
+    <button type="button" data-create-action="参考图复刻">参考图复刻</button>
+    <button type="button" data-create-action="基于模块生图">基于模块生图</button>
+    <button type="button" data-create-action="基于模板生图">基于模板生图</button>
+    <button type="button" data-create-action="扩图编辑">扩图编辑</button>
+  </div>
+
+  <div class="toast" data-toast>已选择创作入口</div>
+
+  <script src="script.js"></script>
+</body>
+</html>

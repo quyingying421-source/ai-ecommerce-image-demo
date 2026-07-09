@@ -1,0 +1,693 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>自由生图 - AI 电商平台</title>
+  <style>
+    :root {
+      --brand: #505cff;
+      --brand-soft: #eef1ff;
+      --page: #f4f6fb;
+      --panel: #fff;
+      --text: #252632;
+      --sub: #657084;
+      --muted: #9aa1ad;
+      --line: #e8eaf2;
+      --success: #5ed23a;
+      --green-soft: #f3ffe9;
+      font-family: "PingFang SC", "Noto Sans SC", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    html,
+    body {
+      min-height: 100%;
+      margin: 0;
+      color: var(--text);
+      background: var(--page);
+      letter-spacing: 0;
+    }
+
+    button,
+    input,
+    select,
+    textarea {
+      font: inherit;
+    }
+
+    button {
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      color: inherit;
+    }
+
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-rows: 64px minmax(0, 1fr);
+    }
+
+    .global-header {
+      height: 64px;
+      background: #fff;
+      border-bottom: 1px solid #e9ebf2;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 20px;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand-logo {
+      width: 232px;
+      display: block;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 24px;
+    }
+
+    .notice {
+      width: 32px;
+      height: 32px;
+      position: relative;
+    }
+
+    .notice:before {
+      content: "";
+      position: absolute;
+      left: 3px;
+      top: 3px;
+      width: 26px;
+      height: 26px;
+      background: url("assets/notification-bell.png") center / contain no-repeat;
+    }
+
+    .notice:after {
+      content: "99+";
+      position: absolute;
+      left: 14px;
+      top: 0;
+      min-width: 24px;
+      height: 13px;
+      padding: 0 3px;
+      border-radius: 10px;
+      background: #ff3b30;
+      color: #fff;
+      font-size: 10px;
+      line-height: 13px;
+      text-align: center;
+    }
+
+    .header-pill {
+      min-height: 36px;
+      border: 1px solid #e1e1e1;
+      border-radius: 20px;
+      background: #fff;
+      padding: 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 15px;
+    }
+
+    .header-chevron {
+      width: 7px;
+      height: 7px;
+      border-right: 1.7px solid #4b5565;
+      border-bottom: 1.7px solid #4b5565;
+      border-radius: 1.5px;
+      transform: rotate(45deg);
+      margin-top: -4px;
+    }
+
+    .credit-pill {
+      min-height: 36px;
+      border-radius: 20px;
+      background: #f1f4ff;
+      padding: 0 20px 0 12px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 16px;
+    }
+
+    .credit-dot {
+      width: 20px;
+      height: 20px;
+      display: inline-block;
+      background: url("assets/rongdou-credit-icon.png") center / contain no-repeat;
+    }
+
+    .avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      background: #eef1ff;
+    }
+
+    .layout {
+      min-height: 0;
+      display: grid;
+      grid-template-columns: 214px minmax(0, 1fr);
+    }
+
+    .sidebar {
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 18px 12px;
+      display: grid;
+      align-content: start;
+      gap: 8px;
+    }
+
+    .side-title,
+    .side-item {
+      height: 42px;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 0 14px;
+      font-size: 15px;
+      color: #3f4654;
+      font-weight: 600;
+    }
+
+    .side-item {
+      padding-left: 42px;
+      color: #8a909e;
+      font-weight: 400;
+    }
+
+    .side-item.active {
+      color: var(--brand);
+      background: #e9edff;
+      font-weight: 600;
+    }
+
+    .side-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 4px;
+      background: linear-gradient(135deg, #6976ff, var(--brand));
+    }
+
+    .workspace {
+      min-width: 0;
+      display: grid;
+      grid-template-columns: minmax(520px, 44%) minmax(0, 1fr);
+      overflow: hidden;
+    }
+
+    .config-pane {
+      position: relative;
+      min-height: calc(100vh - 64px);
+      background: #fff;
+      border-right: 1px solid var(--line);
+      padding: 22px 24px 92px;
+      overflow: auto;
+    }
+
+    .record-pane {
+      min-height: calc(100vh - 64px);
+      padding: 28px 26px;
+      overflow: auto;
+      background: #f3f5f9;
+    }
+
+    .section-title {
+      margin: 0 0 14px;
+      font-size: 18px;
+      line-height: 24px;
+      font-weight: 700;
+    }
+
+    .prompt-box {
+      min-height: 136px;
+      border-radius: 10px;
+      background: #f3f4f7;
+      padding: 16px 18px 54px;
+      color: #2c3038;
+      font-size: 15px;
+      line-height: 1.7;
+      position: relative;
+    }
+
+    .prompt-actions {
+      position: absolute;
+      left: 18px;
+      right: 18px;
+      bottom: 16px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .soft-btn {
+      height: 34px;
+      border-radius: 9px;
+      padding: 0 14px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      background: #fff;
+      color: #424957;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .soft-btn.blue {
+      color: var(--brand);
+      background: #f5f7ff;
+    }
+
+    .asset-box {
+      margin-top: 14px;
+      border: 1px solid #9de86f;
+      background: #f5ffef;
+      border-radius: 9px;
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) 162px;
+      overflow: hidden;
+    }
+
+    .asset-main,
+    .asset-ref {
+      padding: 20px 22px;
+    }
+
+    .asset-ref {
+      border-left: 1px solid #d8f6c8;
+    }
+
+    .asset-title {
+      margin: 0 0 16px;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .thumb-row,
+    .related-grid {
+      display: flex;
+      gap: 16px;
+      flex-wrap: wrap;
+    }
+
+    .thumb,
+    .related {
+      position: relative;
+      width: 112px;
+      height: 112px;
+      border-radius: 9px;
+      border: 1px solid #dce2ee;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .thumb img,
+    .related img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .thumb-num {
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      min-width: 24px;
+      height: 22px;
+      padding: 0 6px;
+      border-radius: 0 7px 0 0;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: rgba(40, 44, 52, .62);
+      font-size: 12px;
+    }
+
+    .related-title {
+      margin: 24px 0 14px;
+      font-size: 15px;
+      font-weight: 700;
+    }
+
+    .related-title span {
+      color: #55c936;
+      margin-left: 8px;
+    }
+
+    .related {
+      width: 106px;
+      height: 86px;
+    }
+
+    .setting-section {
+      margin-top: 28px;
+    }
+
+    .setting-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 22px;
+    }
+
+    .field-label {
+      margin-bottom: 8px;
+      color: #9aa1ad;
+      font-size: 14px;
+    }
+
+    .select-field {
+      height: 48px;
+      border-radius: 9px;
+      background: #f3f4f7;
+      padding: 0 14px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: #4d5360;
+      font-size: 15px;
+    }
+
+    .fixed-generate {
+      position: sticky;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      margin: 40px -24px -92px;
+      padding: 16px 24px 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,.82), #fff 34%);
+      border-top: 1px solid var(--line);
+    }
+
+    .generate-btn {
+      width: min(440px, 80%);
+      height: 52px;
+      margin: 0 auto;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 18px;
+      background: var(--brand);
+      color: #fff;
+      font-size: 16px;
+      font-weight: 700;
+      box-shadow: 0 10px 24px rgba(80, 92, 255, .2);
+    }
+
+    .record-toolbar {
+      margin: 0 0 26px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+    }
+
+    .record-title {
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 18px;
+      font-weight: 700;
+    }
+
+    .record-card {
+      border-radius: 10px;
+      background: #fff;
+      padding: 20px 24px 24px;
+      box-shadow: 0 8px 24px rgba(23, 32, 51, .04);
+    }
+
+    .record-head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      border-bottom: 1px solid #eef0f5;
+      padding-bottom: 14px;
+    }
+
+    .record-id {
+      margin: 0;
+      font-size: 16px;
+      font-weight: 700;
+    }
+
+    .record-time {
+      margin: 6px 0 0;
+      color: #a2a8b3;
+      font-size: 13px;
+    }
+
+    .done-tag {
+      height: 32px;
+      padding: 0 14px;
+      border-radius: 6px;
+      border: 1px solid #97df70;
+      display: inline-flex;
+      align-items: center;
+      color: #55c936;
+      background: #f5ffef;
+      font-size: 14px;
+      font-weight: 700;
+    }
+
+    .record-desc {
+      margin: 16px 0 14px;
+      color: #3e4450;
+      font-size: 14px;
+      line-height: 1.7;
+    }
+
+    .result-label {
+      margin: 18px 0 12px;
+      color: #8b92a0;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .output-wrap {
+      position: relative;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #eceff5;
+    }
+
+    .output-img {
+      width: 100%;
+      display: block;
+      aspect-ratio: 4 / 3;
+      object-fit: cover;
+    }
+
+    .zoom-btn {
+      position: absolute;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%);
+      width: 58px;
+      height: 58px;
+      border-radius: 14px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: rgba(28, 30, 36, .54);
+      font-size: 32px;
+    }
+
+    .download-btn {
+      position: absolute;
+      right: 18px;
+      top: 18px;
+      width: 34px;
+      height: 34px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      color: #fff;
+      background: rgba(28, 30, 36, .54);
+      font-size: 18px;
+    }
+
+    .result-actions {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-top: 18px;
+    }
+
+    .action-btn {
+      height: 40px;
+      border-radius: 9px;
+      padding: 0 16px;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #343945;
+      background: #f5f6f9;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .action-btn.primary {
+      color: #fff;
+      background: var(--brand);
+      box-shadow: 0 8px 18px rgba(80, 92, 255, .18);
+    }
+
+    .action-btn.edit {
+      margin-left: auto;
+      color: var(--brand);
+      background: #eef1ff;
+    }
+
+    .outpaint-action-icon {
+      width: 18px;
+      height: 18px;
+      background: url("assets/outpaint-icon-active.png") center / 18px 18px no-repeat;
+    }
+
+    @media (max-width: 1180px) {
+      .workspace {
+        grid-template-columns: 1fr;
+      }
+
+      .record-pane {
+        min-height: auto;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <header class="global-header">
+      <div class="brand"><img class="brand-logo" src="assets/carter-ai-logo.png" alt="卡特加特 AI"></div>
+      <div class="header-actions">
+        <button class="notice" type="button" aria-label="通知"></button>
+        <div class="header-pill">管理中心<span class="header-chevron"></span></div>
+        <div class="credit-pill"><span class="credit-dot"></span>融豆 92</div>
+        <img class="avatar" src="assets/user-avatar.png" alt="">
+      </div>
+    </header>
+
+    <div class="layout">
+      <aside class="sidebar" aria-label="AI 电商导航">
+        <div class="side-title"><span class="side-icon"></span>商品信息</div>
+        <div class="side-title">商品图创作</div>
+        <a class="side-item active" href="free-create.html">单图创作</a>
+        <button class="side-item" type="button">套图创作</button>
+        <button class="side-item" type="button">套图模板</button>
+        <button class="side-item" type="button">成品中心</button>
+        <a class="side-item" href="history.html">创作记录</a>
+        <button class="side-item" type="button">自定义模板</button>
+        <button class="side-item" type="button">数据字典配置</button>
+      </aside>
+
+      <main class="workspace">
+        <section class="config-pane">
+          <h1 class="section-title">文本描述</h1>
+          <div class="prompt-box">
+            写实电商内衣产品摄影，东亚女性模特，双手轻放于腰腹处，穿着浅紫色中腰女士内裤（内裤带有精致爱心+花卉压纹，腰头印有黑色“HONFERTOS”字样与小爱心标识，罗纹弹力腰边，无痕平滑裤脚，纹理细节严格保留不变）。背景替换为清新户外草地与茂密绿植，柔和自然日光，光影与模特统一协调，浅景深虚化背景，保留模特与内裤的...
+            <div class="prompt-actions">
+              <div>
+                <button class="soft-btn" type="button">▣ 上传商品图</button>
+                <button class="soft-btn" type="button">▣ 上传参照图</button>
+              </div>
+              <button class="soft-btn blue" type="button">✧ AI润色</button>
+            </div>
+          </div>
+
+          <div class="asset-box">
+            <div class="asset-main">
+              <p class="asset-title">商品图</p>
+              <div class="thumb-row">
+                <div class="thumb"><img src="assets/product-cover-01.png" alt=""><span class="thumb-num">1</span></div>
+                <div class="thumb"><img src="assets/product-cover-02.png" alt=""><span class="thumb-num">2</span></div>
+                <div class="thumb"><img src="assets/product-cover-03.png" alt=""><span class="thumb-num">3</span></div>
+              </div>
+              <p class="related-title">关联商品：<span>纯棉舒适内裤</span></p>
+              <div class="related-grid">
+                <div class="related"><img src="assets/product-cover-01.png" alt=""><span class="thumb-num">a1</span></div>
+                <div class="related"><img src="assets/product-cover-02.png" alt=""><span class="thumb-num">a2</span></div>
+                <div class="related"><img src="assets/product-cover-03.png" alt=""><span class="thumb-num">a3</span></div>
+                <div class="related"><img src="assets/product-cover-04.png" alt=""><span class="thumb-num">b1</span></div>
+                <div class="related"><img src="assets/product-cover-02.png" alt=""><span class="thumb-num">b2</span></div>
+                <div class="related"><img src="assets/product-cover-03.png" alt=""><span class="thumb-num">b3</span></div>
+              </div>
+            </div>
+            <div class="asset-ref">
+              <p class="asset-title">参照图</p>
+              <div class="thumb"><img src="assets/product-cover-04.png" alt=""><span class="thumb-num">1</span></div>
+              <button class="soft-btn blue" type="button" style="margin-top:14px;">✎ 修改文字</button>
+            </div>
+          </div>
+
+          <div class="setting-section">
+            <h2 class="section-title">图片设置</h2>
+            <div class="setting-grid">
+              <div>
+                <div class="field-label">分辨率</div>
+                <div class="select-field"><span>1K&nbsp;&nbsp;1024*1024</span><span>⌄</span></div>
+              </div>
+              <div>
+                <div class="field-label">图片比例 <span style="color:#ff9f2e;">（保持与模板图的比例一致）</span></div>
+                <div class="select-field"><span>3:4</span><span>⌄</span></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="fixed-generate">
+            <button class="generate-btn" type="button">生成图片 <span>10 🟡</span></button>
+          </div>
+        </section>
+
+        <section class="record-pane">
+          <div class="record-toolbar">
+            <h2 class="record-title">◷ 执行记录</h2>
+            <a class="action-btn primary" href="index.html"><span class="outpaint-action-icon" aria-hidden="true"></span>智能扩图</a>
+          </div>
+          <article class="record-card">
+            <div class="record-head">
+              <div>
+                <p class="record-id">ID: 2640</p>
+                <p class="record-time">提交时间：2020/3/30 16:37:12</p>
+              </div>
+              <span class="done-tag">已完成</span>
+            </div>
+            <p class="record-desc">写实电商内衣产品摄影，东亚女性模特，双手轻放于腰腹处，穿着浅紫色中腰女士内裤。背景替换为清新户外草地与茂密绿植，柔和自然日光，光影与模特统一协调...</p>
+            <div class="result-label">输出结果</div>
+            <div class="output-wrap">
+              <img class="output-img" src="assets/product-cover-04.png" alt="输出结果">
+              <button class="download-btn" type="button" aria-label="下载">⇩</button>
+              <button class="zoom-btn" type="button" aria-label="预览">⌕</button>
+            </div>
+            <div class="result-actions">
+              <button class="action-btn" type="button">↻ 重新生成</button>
+              <a class="action-btn" href="index.html?source=free-create-output">↗ 扩图</a>
+              <button class="action-btn edit" type="button">▧ 编辑图片</button>
+            </div>
+          </article>
+        </section>
+      </main>
+    </div>
+  </div>
+</body>
+</html>
