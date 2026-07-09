@@ -157,7 +157,17 @@ const state = {
   view: "card",
   activeDate: false,
   activeProduct: products[0],
-  drawerMode: "view"
+  drawerMode: "view",
+  creation: {
+    category: "文胸",
+    productUploaded: false,
+    referenceUploaded: false,
+    template: "",
+    templateKind: "",
+    ratio: "3:4",
+    resolution: "2K",
+    recordSeq: 0
+  }
 };
 
 const els = {
@@ -183,6 +193,18 @@ const els = {
   actionPopover: document.querySelector("[data-action-popover]"),
   toast: document.querySelector("[data-toast]")
 };
+
+els.pages = Array.from(document.querySelectorAll("[data-page]"));
+els.creationPrompt = document.querySelector("[data-creation-prompt]");
+els.creationMode = document.querySelector("[data-creation-mode]");
+els.creationCategories = Array.from(document.querySelectorAll("[data-creation-categories] button"));
+els.creationRecordList = document.querySelector("[data-creation-record-list]");
+els.creationCost = document.querySelector("[data-cost-label]");
+els.templateLabel = document.querySelector("[data-template-label]");
+els.templateModal = document.querySelector("[data-template-modal]");
+els.paramModal = document.querySelector("[data-param-modal]");
+els.ratioLabel = document.querySelector("[data-ratio-label]");
+els.resolutionLabel = document.querySelector("[data-resolution-label]");
 
 function statusClass(status) {
   return {
@@ -521,6 +543,186 @@ function setNavGroupExpanded(group, expanded) {
   getNavGroupItems(group).forEach((item) => item.classList.toggle("nav-hidden", !expanded));
 }
 
+function setWorkspacePage(pageName) {
+  els.pages.forEach((page) => {
+    page.classList.toggle("active", page.dataset.page === pageName);
+  });
+  closeCreateMenu();
+  if (pageName !== "product-library") {
+    closeDrawer();
+  }
+}
+
+function getCreationMode() {
+  const hasPrompt = els.creationPrompt.value.trim().length > 0;
+  if (state.creation.templateKind === "suite") return "套图创作";
+  if (state.creation.template) return "模板创作";
+  if (state.creation.productUploaded && state.creation.referenceUploaded) return "参考图复刻";
+  if (state.creation.productUploaded && hasPrompt) return "商品图生成";
+  if (hasPrompt) return "自由生图";
+  return "待识别";
+}
+
+function getCreationCost(mode) {
+  return {
+    待识别: 0,
+    自由生图: 4,
+    商品图生成: 6,
+    参考图复刻: 10,
+    模板创作: 8,
+    套图创作: 18
+  }[mode] || 0;
+}
+
+function updateCreationMode() {
+  const mode = getCreationMode();
+  els.creationMode.textContent = mode;
+  els.creationCost.textContent = `${getCreationCost(mode)} 融豆`;
+}
+
+function setCreationCategory(category) {
+  state.creation.category = category;
+  els.creationCategories.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.category === category);
+  });
+}
+
+function setCreationUpload(type, uploaded) {
+  state.creation[`${type}Uploaded`] = uploaded;
+  const button = document.querySelector(`[data-creation-upload="${type}"]`);
+  const label = document.querySelector(`[data-upload-label="${type}"]`);
+  button.classList.toggle("is-filled", uploaded);
+  if (type === "product") {
+    label.textContent = uploaded ? "已上传：商品图 4 张" : "正面、背面、细节图";
+  } else {
+    label.textContent = uploaded ? "已上传：参考图 1 张" : "构图、风格、场景复刻";
+  }
+  updateCreationMode();
+}
+
+function setCreationTemplate(name, kind) {
+  state.creation.template = name;
+  state.creation.templateKind = kind;
+  els.templateLabel.textContent = name || "未选择模板";
+  document.querySelector("[data-template-open]").classList.toggle("is-selected", Boolean(name));
+  document.querySelectorAll("[data-template-choice]").forEach((button) => {
+    button.classList.toggle("is-selected", button.dataset.templateChoice === name);
+  });
+  updateCreationMode();
+}
+
+function openPrototypeModal(modal) {
+  modal.classList.add("is-open");
+  modal.setAttribute("aria-hidden", "false");
+}
+
+function closePrototypeModals() {
+  document.querySelectorAll(".prototype-modal").forEach((modal) => {
+    modal.classList.remove("is-open");
+    modal.setAttribute("aria-hidden", "true");
+  });
+}
+
+function creationRelationText() {
+  const relations = [];
+  if (state.creation.productUploaded) relations.push("商品图 4 张");
+  if (state.creation.referenceUploaded) relations.push("参考图 1 张");
+  if (state.creation.template) relations.push(state.creation.template);
+  return relations.length ? relations.join(" / ") : "无关联素材";
+}
+
+function resultImagesMarkup() {
+  return [
+    "assets/product-cover-01.png",
+    "assets/product-cover-02.png",
+    "assets/product-cover-03.png",
+    "assets/product-cover-04.png"
+  ].map((image) => `<img src="${image}" alt="">`).join("");
+}
+
+function updateCreationRecord(record, status) {
+  const statusMap = {
+    queued: "排队中",
+    running: "生成中",
+    done: "已完成",
+    failed: "失败"
+  };
+  const statusNode = record.querySelector("[data-record-status]");
+  const resultNode = record.querySelector("[data-record-result]");
+  statusNode.className = `record-status ${status}`;
+  statusNode.textContent = statusMap[status];
+  if (status === "done") {
+    resultNode.className = "record-result-grid";
+    resultNode.innerHTML = resultImagesMarkup();
+  } else {
+    resultNode.className = "record-result-grid pending";
+    resultNode.innerHTML = "";
+  }
+}
+
+function createGenerationRecord() {
+  const mode = getCreationMode();
+  const prompt = els.creationPrompt.value.trim();
+  if (mode === "待识别") {
+    showToast("请先填写提示词、上传图片或选择模板");
+    return;
+  }
+
+  state.creation.recordSeq += 1;
+  const cost = getCreationCost(mode);
+  const title = state.creation.template || `${state.creation.category}${mode}`;
+  const record = document.createElement("article");
+  record.className = "creation-record";
+  record.innerHTML = `
+    <div class="record-result-grid pending" data-record-result></div>
+    <div class="record-copy">
+      <div class="record-meta">
+        <span class="record-status queued" data-record-status>排队中</span>
+        <span>${mode}</span>
+        <span>${cost} 融豆</span>
+      </div>
+      <h3>${title}</h3>
+      <p>${prompt || `${state.creation.category}商品图，按${mode}生成。`}</p>
+      <small>关联：${creationRelationText()}</small>
+      <div class="record-actions">
+        <button type="button">查看大图</button>
+        <button type="button">下载</button>
+        <button type="button">保存为素材</button>
+        <button type="button">保存为模板</button>
+        <button type="button">上架到创作广场</button>
+        <button type="button">继续编辑</button>
+        <button type="button">扩图</button>
+      </div>
+    </div>
+  `;
+  els.creationRecordList.prepend(record);
+  showToast("已提交生成任务");
+  window.setTimeout(() => updateCreationRecord(record, "running"), 700);
+  window.setTimeout(() => {
+    updateCreationRecord(record, "done");
+    showToast("生成完成，已展示 4 张结果图");
+  }, 1900);
+}
+
+function useResource(card) {
+  setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]').classList.add("active");
+  setCreationCategory(card.dataset.category);
+  els.creationPrompt.value = card.dataset.prompt;
+
+  if (card.dataset.type === "模板") {
+    setCreationTemplate(card.dataset.title, "template");
+  } else if (card.dataset.type === "套图模板") {
+    setCreationTemplate(card.dataset.title, "suite");
+  } else {
+    setCreationUpload("reference", true);
+  }
+
+  updateCreationMode();
+  showToast(`已使用资源：${card.dataset.title}`);
+}
+
 document.querySelectorAll(".nav-group").forEach((group) => {
   group.addEventListener("click", () => {
     setNavGroupExpanded(group, group.classList.contains("collapsed"));
@@ -531,9 +733,106 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
   button.addEventListener("click", () => {
     clearMenuActive();
     button.classList.add("active");
-    if (button.dataset.singleMenu !== "商品库") {
-      showToast(`${button.dataset.singleMenu} 将在页面内部用 Tab / 筛选承载细分类`);
+    if (button.dataset.singleMenu === "创作广场") {
+      setWorkspacePage("creation-plaza");
+      return;
     }
+    if (button.dataset.singleMenu === "商品库") {
+      setWorkspacePage("product-library");
+      return;
+    }
+    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场和商品库`);
+  });
+});
+
+els.creationCategories.forEach((button) => {
+  button.addEventListener("click", () => {
+    setCreationCategory(button.dataset.category);
+    updateCreationMode();
+  });
+});
+
+els.creationPrompt.addEventListener("input", updateCreationMode);
+
+document.querySelectorAll("[data-creation-upload]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const type = button.dataset.creationUpload;
+    const nextValue = !state.creation[`${type}Uploaded`];
+    setCreationUpload(type, nextValue);
+    showToast(nextValue ? "已模拟上传" : "已移除上传内容");
+  });
+});
+
+document.querySelector("[data-template-open]").addEventListener("click", () => {
+  openPrototypeModal(els.templateModal);
+});
+
+document.querySelectorAll("[data-template-choice]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setCreationTemplate(button.dataset.templateChoice, button.dataset.templateKind);
+    closePrototypeModals();
+    showToast(`已选择模板：${button.dataset.templateChoice}`);
+  });
+});
+
+document.querySelector("[data-template-clear]").addEventListener("click", () => {
+  setCreationTemplate("", "");
+  closePrototypeModals();
+  showToast("已取消模板");
+});
+
+document.querySelectorAll("[data-param-open]").forEach((button) => {
+  button.addEventListener("click", () => openPrototypeModal(els.paramModal));
+});
+
+document.querySelectorAll("[data-modal-close]").forEach((button) => {
+  button.addEventListener("click", closePrototypeModals);
+});
+
+document.querySelectorAll(".prototype-modal").forEach((modal) => {
+  modal.addEventListener("click", (event) => {
+    if (event.target === modal) closePrototypeModals();
+  });
+});
+
+document.querySelectorAll("[data-ratio-options] button").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-ratio-options] button").forEach((item) => item.classList.remove("is-active"));
+    button.classList.add("is-active");
+    state.creation.ratio = button.dataset.value;
+    els.ratioLabel.textContent = state.creation.ratio;
+  });
+});
+
+document.querySelectorAll("[data-resolution-options] button").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-resolution-options] button").forEach((item) => item.classList.remove("is-active"));
+    button.classList.add("is-active");
+    state.creation.resolution = button.dataset.value;
+    els.resolutionLabel.textContent = state.creation.resolution;
+  });
+});
+
+document.querySelector("[data-creation-generate]").addEventListener("click", createGenerationRecord);
+
+document.querySelectorAll("[data-resource-filter] button").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-resource-filter] button").forEach((item) => item.classList.remove("is-active"));
+    button.classList.add("is-active");
+    const filter = button.dataset.filter;
+    document.querySelectorAll("[data-resource-card]").forEach((card) => {
+      card.style.display = filter === "全部" || card.dataset.tags.includes(filter) ? "" : "none";
+    });
+  });
+});
+
+document.querySelectorAll("[data-resource-use]").forEach((button) => {
+  button.addEventListener("click", () => useResource(button.closest("[data-resource-card]")));
+});
+
+document.querySelectorAll("[data-resource-preview]").forEach((button) => {
+  button.addEventListener("click", () => {
+    showToast(`预览资源：${button.closest("[data-resource-card]").dataset.title}`);
   });
 });
 
@@ -582,7 +881,13 @@ document.addEventListener("click", (event) => {
 
   if (popoverAction) {
     const actionName = popoverAction.dataset.createAction;
-    showToast(`${actionName}入口已展示，当前 HTML 原型不接入真实创作流程`);
+    setWorkspacePage("creation-plaza");
+    clearMenuActive();
+    document.querySelector('[data-single-menu="创作广场"]').classList.add("active");
+    els.creationPrompt.value = `${state.activeProduct.name}，${actionName}，生成适合电商详情页的商品图。`;
+    setCreationUpload("product", true);
+    updateCreationMode();
+    showToast(`${actionName}已带入创作广场`);
     closeCreateMenu();
     return;
   }
@@ -599,6 +904,7 @@ document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
     closeDrawer();
     closeCreateMenu();
+    closePrototypeModals();
   }
 });
 
@@ -610,6 +916,7 @@ document.querySelectorAll("[data-drawer-action]").forEach((button) => {
 });
 
 els.loadingState.classList.add("is-visible");
+updateCreationMode();
 window.setTimeout(() => {
   els.loadingState.classList.remove("is-visible");
   renderProducts(state.filtered);

@@ -21,23 +21,193 @@
     <aside class="sidebar" aria-label="平台导航">
       <nav class="nav" id="nav">
         <button class="nav-group expanded" type="button" data-nav-group="ecommerce"><span class="nav-icon"></span>AI电商智能体<span class="nav-arrow"></span></button>
-        <button class="nav-leaf plain" type="button" data-single-menu="单图创作"><span class="nav-icon"></span>单图创作</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="创作广场"><span class="nav-icon"></span>创作广场</button>
         <button class="nav-leaf plain" type="button" data-single-menu="模板中心"><span class="nav-icon"></span>模板中心</button>
         <button class="nav-leaf plain" type="button" data-single-menu="模特库"><span class="nav-icon"></span>模特库</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="品牌元素"><span class="nav-icon"></span>品牌元素</button>
-
-        <button class="nav-group expanded" type="button" data-nav-group="brand-assets"><span class="nav-icon"></span>品牌素材库<span class="nav-arrow"></span></button>
-        <button class="nav-leaf active" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
-
-        <div class="nav-divider"></div>
-        <button class="nav-leaf plain" type="button" data-single-menu="任务记录"><span class="nav-icon"></span>任务记录</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="AI广场"><span class="nav-icon"></span>AI广场</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="算力与账单"><span class="nav-icon"></span>算力与账单</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="操作说明"><span class="nav-icon"></span>操作说明</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="素材库"><span class="nav-icon"></span>素材库</button>
+        <button class="nav-leaf plain active" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="创作记录"><span class="nav-icon"></span>创作记录</button>
         </nav>
       </aside>
 
     <main class="main workspace">
+      <section class="workspace-page" data-page="creation-plaza">
+        <section class="creation-layout">
+          <article class="creation-composer">
+            <div class="creation-card-head">
+              <div>
+                <h1>创作广场</h1>
+                <p>填写提示词、上传商品图或参考图、选择模板后，系统自动判断创作方式。</p>
+              </div>
+              <div class="creation-mode">
+                <span>当前创作方式</span>
+                <strong data-creation-mode>待识别</strong>
+              </div>
+            </div>
+
+            <div class="category-picker" data-creation-categories>
+              <button class="is-active" type="button" data-category="文胸">文胸</button>
+              <button type="button" data-category="内裤">内裤</button>
+              <button type="button" data-category="童装">童装</button>
+              <button type="button" data-category="鞋子">鞋子</button>
+              <button type="button" data-category="箱包">箱包</button>
+              <button type="button" data-category="帽子">帽子</button>
+            </div>
+
+            <label class="creation-field">
+              <span>需求描述 / 提示词</span>
+              <textarea data-creation-prompt maxlength="500" placeholder="描述你想生成的商品图，例如：生成一张浅色卧室场景的文胸模特图"></textarea>
+            </label>
+
+            <div class="creation-tools">
+              <button class="creation-tool" type="button" data-creation-upload="product">
+                <span class="creation-tool-icon product"></span>
+                <strong>上传商品图</strong>
+                <small data-upload-label="product">正面、背面、细节图</small>
+              </button>
+              <button class="creation-tool" type="button" data-creation-upload="reference">
+                <span class="creation-tool-icon reference"></span>
+                <strong>上传参考图</strong>
+                <small data-upload-label="reference">构图、风格、场景复刻</small>
+              </button>
+              <button class="creation-tool" type="button" data-template-open>
+                <span class="creation-tool-icon template"></span>
+                <strong>选择模板</strong>
+                <small data-template-label>未选择模板</small>
+              </button>
+            </div>
+
+            <div class="creation-params">
+              <button class="creation-param" type="button" data-param-open>
+                <span>图片比例</span>
+                <strong data-ratio-label>3:4</strong>
+              </button>
+              <button class="creation-param" type="button" data-param-open>
+                <span>分辨率</span>
+                <strong data-resolution-label>2K</strong>
+              </button>
+              <div class="creation-cost">
+                <span>预计消耗</span>
+                <strong data-cost-label>0 融豆</strong>
+              </div>
+              <button class="btn primary creation-generate" type="button" data-creation-generate>生成图片</button>
+            </div>
+          </article>
+
+          <aside class="creation-records">
+            <div class="creation-card-head compact">
+              <div>
+                <h2>创作记录</h2>
+                <p>保留任务状态、创作方式、提示词和生成结果。</p>
+              </div>
+            </div>
+            <div class="creation-record-list" data-creation-record-list>
+              <article class="creation-record is-done">
+                <div class="record-result-grid">
+                  <img src="assets/product-cover-03.png" alt="">
+                  <img src="assets/product-cover-04.png" alt="">
+                  <img src="assets/product-cover-01.png" alt="">
+                  <img src="assets/product-cover-02.png" alt="">
+                </div>
+                <div class="record-copy">
+                  <div class="record-meta">
+                    <span class="record-status done">已完成</span>
+                    <span>模板创作</span>
+                    <span>8 融豆</span>
+                  </div>
+                  <h3>浅色卧室文胸模特图</h3>
+                  <p>浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。</p>
+                  <small>关联：商品图 4 张 / 蓝调棚拍主图模板</small>
+                  <div class="record-actions">
+                    <button type="button">查看大图</button>
+                    <button type="button">下载</button>
+                    <button type="button">保存为素材</button>
+                    <button type="button">保存为模板</button>
+                    <button type="button">上架到创作广场</button>
+                    <button type="button">继续编辑</button>
+                    <button type="button">扩图</button>
+                  </div>
+                </div>
+              </article>
+            </div>
+          </aside>
+        </section>
+
+        <section class="plaza-resources">
+          <div class="resource-head">
+            <div>
+              <h2>创作广场资源</h2>
+              <p>平台官方资源和用户上架资源，可购买、收藏并直接用于创作。</p>
+            </div>
+            <div class="resource-filter" data-resource-filter>
+              <button class="is-active" type="button" data-filter="全部">全部</button>
+              <button type="button" data-filter="官方推荐">官方推荐</button>
+              <button type="button" data-filter="用户上架">用户上架</button>
+              <button type="button" data-filter="单图案例">单图案例</button>
+              <button type="button" data-filter="套图模板">套图模板</button>
+              <button type="button" data-filter="模板">模板</button>
+              <button type="button" data-filter="模特">模特</button>
+              <button type="button" data-filter="素材模块">素材模块</button>
+            </div>
+          </div>
+          <div class="resource-grid" data-resource-grid>
+            <article class="resource-card" data-resource-card data-tags="官方推荐 模板 单图案例" data-type="模板" data-title="蓝调棚拍主图模板" data-category="文胸" data-prompt="蓝调棚拍背景，自然柔光，生成一张文胸模特图，突出蕾丝纹理、承托效果和舒适感。">
+              <div class="resource-cover blue"><img src="assets/product-cover-03.png" alt=""></div>
+              <div class="resource-body">
+                <div class="resource-title"><h3>蓝调棚拍主图模板</h3><span>模板</span></div>
+                <p>来源：官方 · 价格：免费 · 使用 12,430 次</p>
+                <small>适用品类：文胸、内裤、童装</small>
+                <div class="resource-actions">
+                  <button type="button" data-resource-preview>预览</button>
+                  <button type="button" data-resource-use>使用</button>
+                  <button type="button">收藏</button>
+                </div>
+              </div>
+            </article>
+            <article class="resource-card" data-resource-card data-tags="用户上架 套图模板" data-type="套图模板" data-title="五图详情页套图" data-category="箱包" data-prompt="生成五张详情页套图：主图、卖点图、尺寸图、场景图、细节图，统一浅灰白背景。">
+              <div class="resource-cover purple"><img src="assets/product-cover-04.png" alt=""></div>
+              <div class="resource-body">
+                <div class="resource-title"><h3>五图详情页套图</h3><span>套图模板</span></div>
+                <p>来源：用户上架 · 价格：18 融豆 · 使用 5,821 次</p>
+                <small>适用品类：箱包、鞋子、帽子</small>
+                <div class="resource-actions">
+                  <button type="button" data-resource-preview>预览</button>
+                  <button type="button" data-resource-use>购买并使用</button>
+                  <button type="button">收藏</button>
+                </div>
+              </div>
+            </article>
+            <article class="resource-card" data-resource-card data-tags="官方推荐 模特" data-type="模特" data-title="通勤感亚洲女模" data-category="童装" data-prompt="通勤感亚洲女模，自然站姿，干净棚拍光线，适合生成童装和轻服饰商品图。">
+              <div class="resource-cover green"><img src="assets/product-cover-02.png" alt=""></div>
+              <div class="resource-body">
+                <div class="resource-title"><h3>通勤感亚洲女模</h3><span>模特</span></div>
+                <p>来源：官方 · 价格：免费 · 使用 8,906 次</p>
+                <small>适用品类：童装、鞋子、帽子</small>
+                <div class="resource-actions">
+                  <button type="button" data-resource-preview>预览</button>
+                  <button type="button" data-resource-use>使用</button>
+                  <button type="button">收藏</button>
+                </div>
+              </div>
+            </article>
+            <article class="resource-card" data-resource-card data-tags="用户上架 素材模块 单图案例" data-type="素材模块" data-title="轻奢卖点角标模块" data-category="文胸" data-prompt="使用轻奢卖点角标模块，保留大面积留白，突出面料、版型和活动利益点。">
+              <div class="resource-cover rose"><img src="assets/product-cover-01.png" alt=""></div>
+              <div class="resource-body">
+                <div class="resource-title"><h3>轻奢卖点角标模块</h3><span>素材模块</span></div>
+                <p>来源：用户上架 · 价格：6 融豆 · 使用 2,196 次</p>
+                <small>适用品类：文胸、内裤、帽子</small>
+                <div class="resource-actions">
+                  <button type="button" data-resource-preview>预览</button>
+                  <button type="button" data-resource-use>购买并使用</button>
+                  <button type="button">收藏</button>
+                </div>
+              </div>
+            </article>
+          </div>
+        </section>
+      </section>
+
+      <section class="workspace-page active" data-page="product-library">
         <section class="stats-grid" aria-label="商品统计">
           <article class="stat-card">
             <span>商品总数</span>
@@ -106,7 +276,67 @@
 
           <div class="product-grid" data-card-view></div>
         </section>
+      </section>
       </main>
+  </div>
+
+  <div class="prototype-modal" data-template-modal aria-hidden="true">
+    <div class="prototype-modal-panel">
+      <div class="prototype-modal-head">
+        <h2>选择模板</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="template-choice-grid">
+        <button type="button" data-template-choice="蓝调棚拍主图模板" data-template-kind="template">
+          <span class="template-preview blue"></span>
+          <strong>蓝调棚拍主图模板</strong>
+          <small>模板 · 8 融豆</small>
+        </button>
+        <button type="button" data-template-choice="白底质感商品图" data-template-kind="template">
+          <span class="template-preview gray"></span>
+          <strong>白底质感商品图</strong>
+          <small>模板 · 免费</small>
+        </button>
+        <button type="button" data-template-choice="五图详情页套图" data-template-kind="suite">
+          <span class="template-preview purple"></span>
+          <strong>五图详情页套图</strong>
+          <small>套图模板 · 18 融豆</small>
+        </button>
+      </div>
+      <div class="prototype-modal-actions">
+        <button class="btn ghost" type="button" data-template-clear>不使用模板</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-param-modal aria-hidden="true">
+    <div class="prototype-modal-panel small">
+      <div class="prototype-modal-head">
+        <h2>参数设置</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="param-section">
+        <h3>图片比例</h3>
+        <div class="param-options" data-ratio-options>
+          <button type="button" data-value="1:1">1:1</button>
+          <button class="is-active" type="button" data-value="3:4">3:4</button>
+          <button type="button" data-value="4:3">4:3</button>
+          <button type="button" data-value="9:16">9:16</button>
+          <button type="button" data-value="16:9">16:9</button>
+        </div>
+      </div>
+      <div class="param-section">
+        <h3>分辨率</h3>
+        <div class="param-options resolution" data-resolution-options>
+          <button type="button" data-value="1K">1K</button>
+          <button class="is-active" type="button" data-value="2K">2K</button>
+          <button type="button" data-value="4K">4K</button>
+        </div>
+      </div>
+      <div class="prototype-modal-actions right">
+        <button class="btn primary" type="button" data-modal-close>确认</button>
+      </div>
+    </div>
   </div>
 
   <div class="drawer-backdrop" data-drawer-backdrop></div>
