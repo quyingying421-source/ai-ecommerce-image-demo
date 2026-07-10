@@ -32,177 +32,187 @@
 
     <main class="main workspace">
       <section class="workspace-page" data-page="creation-plaza">
-        <section class="creation-layout">
-          <article class="creation-composer">
-            <div class="creation-card-head">
-              <div>
-                <h1>创作广场</h1>
-                <p>填写提示词、上传商品图或参考图、选择模板后，系统自动判断创作方式。</p>
-              </div>
-              <div class="creation-mode">
-                <span>当前创作方式</span>
-                <strong data-creation-mode>待识别</strong>
-              </div>
-            </div>
+        <section class="creation-plaza-surface">
+          <div class="creation-topline">
+            <div class="creation-slogan">用一句话描述商品图需求，素材和模板由系统自动匹配创作方式</div>
+            <button class="btn ghost creation-record-entry" type="button" data-record-open>创作记录</button>
+          </div>
 
-            <div class="category-picker" data-creation-categories>
-              <button class="is-active" type="button" data-category="文胸">文胸</button>
-              <button type="button" data-category="内裤">内裤</button>
-              <button type="button" data-category="童装">童装</button>
-              <button type="button" data-category="鞋子">鞋子</button>
-              <button type="button" data-category="箱包">箱包</button>
-              <button type="button" data-category="帽子">帽子</button>
-            </div>
-
-            <label class="creation-field">
-              <span>需求描述 / 提示词</span>
+          <section class="creation-project-composer">
+            <div class="creation-prompt-shell">
               <textarea data-creation-prompt maxlength="500" placeholder="描述你想生成的商品图，例如：生成一张浅色卧室场景的文胸模特图"></textarea>
-            </label>
-
-            <div class="creation-tools">
-              <button class="creation-tool" type="button" data-creation-upload="product">
-                <span class="creation-tool-icon product"></span>
-                <strong>上传商品图</strong>
-                <small data-upload-label="product">正面、背面、细节图</small>
-              </button>
-              <button class="creation-tool" type="button" data-creation-upload="reference">
-                <span class="creation-tool-icon reference"></span>
-                <strong>上传参考图</strong>
-                <small data-upload-label="reference">构图、风格、场景复刻</small>
-              </button>
-              <button class="creation-tool" type="button" data-template-open>
-                <span class="creation-tool-icon template"></span>
-                <strong>选择模板</strong>
-                <small data-template-label>未选择模板</small>
-              </button>
-            </div>
-
-            <div class="creation-params">
-              <button class="creation-param" type="button" data-param-open>
-                <span>图片比例</span>
-                <strong data-ratio-label>3:4</strong>
-              </button>
-              <button class="creation-param" type="button" data-param-open>
-                <span>分辨率</span>
-                <strong data-resolution-label>2K</strong>
-              </button>
-              <div class="creation-cost">
-                <span>预计消耗</span>
-                <strong data-cost-label>0 融豆</strong>
+              <div class="creation-composer-bottom">
+                <div class="composer-toolbar">
+                <button class="composer-attach-btn" type="button" data-creation-upload="product">
+                  <span class="creation-tool-icon product"></span>
+                  <strong>上传商品图</strong>
+                </button>
+                <button class="composer-attach-btn" type="button" data-creation-upload="reference">
+                  <span class="creation-tool-icon reference"></span>
+                  <strong>上传参考图</strong>
+                </button>
+                <button class="composer-attach-btn" type="button" data-creation-upload="model">
+                  <span class="creation-tool-icon model"></span>
+                  <strong>选择模特</strong>
+                </button>
+                <button class="composer-attach-btn" type="button" data-template-open>
+                  <span class="creation-tool-icon template"></span>
+                  <strong>选择模板</strong>
+                </button>
               </div>
-              <button class="btn primary creation-generate" type="button" data-creation-generate>生成图片</button>
-            </div>
-          </article>
-
-          <aside class="creation-records">
-            <div class="creation-card-head compact">
-              <div>
-                <h2>创作记录</h2>
-                <p>保留任务状态、创作方式、提示词和生成结果。</p>
+              <div class="composer-actions">
+                <button class="composer-param-summary" type="button" data-param-open>
+                  <span data-ratio-label>3:4</span>
+                  <i></i>
+                  <span data-resolution-label>2K</span>
+                </button>
+                <button class="btn primary creation-generate" type="button" data-creation-generate>生成图片</button>
               </div>
             </div>
-            <div class="creation-record-list" data-creation-record-list>
-              <article class="creation-record is-done">
-                <div class="record-result-grid">
-                  <img src="assets/product-cover-03.png" alt="">
-                  <img src="assets/product-cover-04.png" alt="">
-                  <img src="assets/product-cover-01.png" alt="">
-                  <img src="assets/product-cover-02.png" alt="">
-                </div>
-                <div class="record-copy">
-                  <div class="record-meta">
-                    <span class="record-status done">已完成</span>
-                    <span>模板创作</span>
-                    <span>8 融豆</span>
-                  </div>
-                  <h3>浅色卧室文胸模特图</h3>
-                  <p>浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。</p>
-                  <small>关联：商品图 4 张 / 蓝调棚拍主图模板</small>
-                  <div class="record-actions">
-                    <button type="button">查看大图</button>
-                    <button type="button">下载</button>
-                    <button type="button">保存为素材</button>
-                    <button type="button">保存为模板</button>
-                    <button type="button">上架到创作广场</button>
-                    <button type="button">继续编辑</button>
-                    <button type="button">扩图</button>
-                  </div>
-                </div>
-              </article>
             </div>
-          </aside>
-        </section>
+          </section>
 
-        <section class="plaza-resources">
+          <section class="plaza-resources">
           <div class="resource-head">
             <div>
-              <h2>创作广场资源</h2>
-              <p>平台官方资源和用户上架资源，可购买、收藏并直接用于创作。</p>
-            </div>
-            <div class="resource-filter" data-resource-filter>
-              <button class="is-active" type="button" data-filter="全部">全部</button>
-              <button type="button" data-filter="官方推荐">官方推荐</button>
-              <button type="button" data-filter="用户上架">用户上架</button>
-              <button type="button" data-filter="单图案例">单图案例</button>
-              <button type="button" data-filter="套图模板">套图模板</button>
-              <button type="button" data-filter="模板">模板</button>
-              <button type="button" data-filter="模特">模特</button>
-              <button type="button" data-filter="素材模块">素材模块</button>
+              <h2>图片创作广场</h2>
             </div>
           </div>
+          <div class="resource-filter" data-resource-filter>
+            <button class="is-active" type="button" data-filter="全部">全部</button>
+            <button type="button" data-filter="官方推荐">官方推荐</button>
+            <button type="button" data-filter="用户上架">用户上架</button>
+            <button type="button" data-filter="单图案例">单图案例</button>
+            <button type="button" data-filter="套图模板">套图模板</button>
+            <button type="button" data-filter="模板">模板</button>
+            <button type="button" data-filter="模特">模特</button>
+            <button type="button" data-filter="素材模块">素材模块</button>
+          </div>
           <div class="resource-grid" data-resource-grid>
-            <article class="resource-card" data-resource-card data-tags="官方推荐 模板 单图案例" data-type="模板" data-title="蓝调棚拍主图模板" data-category="文胸" data-prompt="蓝调棚拍背景，自然柔光，生成一张文胸模特图，突出蕾丝纹理、承托效果和舒适感。">
-              <div class="resource-cover blue"><img src="assets/product-cover-03.png" alt=""></div>
-              <div class="resource-body">
-                <div class="resource-title"><h3>蓝调棚拍主图模板</h3><span>模板</span></div>
-                <p>来源：官方 · 价格：免费 · 使用 12,430 次</p>
-                <small>适用品类：文胸、内裤、童装</small>
-                <div class="resource-actions">
-                  <button type="button" data-resource-preview>预览</button>
-                  <button type="button" data-resource-use>使用</button>
-                  <button type="button">收藏</button>
+            <article class="resource-card" data-resource-card data-tags="官方推荐 模板 单图案例" data-type="模板" data-title="第二层肌肤裸感无痕" data-category="文胸" data-source="官方" data-price="免费" data-usage="12,430" data-fit="文胸、内衣套图、详情页" data-prompt="生成第二层肌肤感的文胸详情图，轻薄裸感、自然肤色、柔和布景，突出点胶贴合和无痕舒适。">
+              <div class="resource-cover blue">
+                <img src="assets/creation-cover-608.jpg" alt="">
+                <span class="resource-badge featured">精选</span>
+                <span class="resource-badge category">文胸</span>
+                <div class="resource-hover-actions">
+                  <button type="button" data-resource-use>购买</button>
+                  <button type="button" data-resource-preview>查看</button>
                 </div>
               </div>
             </article>
-            <article class="resource-card" data-resource-card data-tags="用户上架 套图模板" data-type="套图模板" data-title="五图详情页套图" data-category="箱包" data-prompt="生成五张详情页套图：主图、卖点图、尺寸图、场景图、细节图，统一浅灰白背景。">
-              <div class="resource-cover purple"><img src="assets/product-cover-04.png" alt=""></div>
-              <div class="resource-body">
-                <div class="resource-title"><h3>五图详情页套图</h3><span>套图模板</span></div>
-                <p>来源：用户上架 · 价格：18 融豆 · 使用 5,821 次</p>
-                <small>适用品类：箱包、鞋子、帽子</small>
-                <div class="resource-actions">
-                  <button type="button" data-resource-preview>预览</button>
-                  <button type="button" data-resource-use>购买并使用</button>
-                  <button type="button">收藏</button>
+            <article class="resource-card" data-resource-card data-tags="官方推荐 套图模板 单图案例" data-type="套图模板" data-title="阶梯智能扣五档稳提拉" data-category="文胸" data-source="官方" data-price="18 融豆" data-usage="5,821" data-fit="文胸、内衣套图、卖点图" data-prompt="生成文胸五档智能扣详情图，明亮窗帘背景，展示肩带调节和稳定提拉卖点，整体干净高级。">
+              <div class="resource-cover purple">
+                <img src="assets/creation-cover-610.jpg" alt="">
+                <span class="resource-badge featured">精选</span>
+                <span class="resource-badge category">文胸</span>
+                <div class="resource-hover-actions">
+                  <button type="button" data-resource-use>购买</button>
+                  <button type="button" data-resource-preview>查看</button>
                 </div>
               </div>
             </article>
-            <article class="resource-card" data-resource-card data-tags="官方推荐 模特" data-type="模特" data-title="通勤感亚洲女模" data-category="童装" data-prompt="通勤感亚洲女模，自然站姿，干净棚拍光线，适合生成童装和轻服饰商品图。">
-              <div class="resource-cover green"><img src="assets/product-cover-02.png" alt=""></div>
-              <div class="resource-body">
-                <div class="resource-title"><h3>通勤感亚洲女模</h3><span>模特</span></div>
-                <p>来源：官方 · 价格：免费 · 使用 8,906 次</p>
-                <small>适用品类：童装、鞋子、帽子</small>
-                <div class="resource-actions">
-                  <button type="button" data-resource-preview>预览</button>
-                  <button type="button" data-resource-use>使用</button>
-                  <button type="button">收藏</button>
+            <article class="resource-card" data-resource-card data-tags="用户上架 模特 单图案例" data-type="模特" data-title="高弹不紧勒收遮副乳" data-category="文胸" data-source="用户上架" data-price="8 融豆" data-usage="8,906" data-fit="文胸、模特图、详情页" data-prompt="生成高弹不紧勒文胸模特图，白色西装外搭，突出半包围提拉和侧比收副乳效果。">
+              <div class="resource-cover green">
+                <img src="assets/creation-cover-616.jpg" alt="">
+                <span class="resource-badge featured">精选</span>
+                <span class="resource-badge category">文胸</span>
+                <div class="resource-hover-actions">
+                  <button type="button" data-resource-use>购买</button>
+                  <button type="button" data-resource-preview>查看</button>
                 </div>
               </div>
             </article>
-            <article class="resource-card" data-resource-card data-tags="用户上架 素材模块 单图案例" data-type="素材模块" data-title="轻奢卖点角标模块" data-category="文胸" data-prompt="使用轻奢卖点角标模块，保留大面积留白，突出面料、版型和活动利益点。">
-              <div class="resource-cover rose"><img src="assets/product-cover-01.png" alt=""></div>
-              <div class="resource-body">
-                <div class="resource-title"><h3>轻奢卖点角标模块</h3><span>素材模块</span></div>
-                <p>来源：用户上架 · 价格：6 融豆 · 使用 2,196 次</p>
-                <small>适用品类：文胸、内裤、帽子</small>
-                <div class="resource-actions">
-                  <button type="button" data-resource-preview>预览</button>
-                  <button type="button" data-resource-use>购买并使用</button>
-                  <button type="button">收藏</button>
+            <article class="resource-card" data-resource-card data-tags="官方推荐 素材模块 单图案例" data-type="素材模块" data-title="提拉黑科技调胸型" data-category="文胸" data-source="官方" data-price="免费" data-usage="2,196" data-fit="文胸、卖点图、详情页" data-prompt="生成提拉黑科技文胸卖点图，浅色窗帘背景，标注四重功能设计，突出稳提大胸舒适显小。">
+              <div class="resource-cover rose">
+                <img src="assets/creation-cover-606.jpg" alt="">
+                <span class="resource-badge featured">精选</span>
+                <span class="resource-badge category">文胸</span>
+                <div class="resource-hover-actions">
+                  <button type="button" data-resource-use>购买</button>
+                  <button type="button" data-resource-preview>查看</button>
                 </div>
               </div>
             </article>
+            <article class="resource-card" data-resource-card data-tags="用户上架 套图模板 模板" data-type="套图模板" data-title="大胸稳提拉详情套图" data-category="文胸" data-source="用户上架" data-price="18 融豆" data-usage="3,428" data-fit="文胸、详情套图、主图" data-prompt="生成大胸稳提拉文胸详情套图，白色自然光场景，突出五档智能扣、轻薄承托和都市丽人风格。">
+              <div class="resource-cover rose">
+                <img src="assets/creation-cover-602.jpg" alt="">
+                <span class="resource-badge featured">精选</span>
+                <span class="resource-badge category">文胸</span>
+                <div class="resource-hover-actions">
+                  <button type="button" data-resource-use>购买</button>
+                  <button type="button" data-resource-preview>查看</button>
+                </div>
+              </div>
+            </article>
+          </div>
+          </section>
+        </section>
+      </section>
+
+      <section class="workspace-page" data-page="template-center">
+        <section class="template-center-card">
+          <div class="template-toolbar">
+            <div class="search-field template-search">
+              <span class="search-icon"></span>
+              <input type="search" placeholder="搜索模板名称 / 品类 / 标签" data-template-search />
+            </div>
+            <select data-template-type-filter>
+              <option value="全部类型">全部类型</option>
+              <option value="主图模板">主图模板</option>
+              <option value="详情图模板">详情图模板</option>
+              <option value="SKU图模板">SKU图模板</option>
+              <option value="套图模板">套图模板</option>
+            </select>
+            <select data-template-category-filter>
+              <option value="全部品类">全部品类</option>
+              <option value="文胸">文胸</option>
+              <option value="内裤">内裤</option>
+              <option value="童装">童装</option>
+              <option value="鞋子">鞋子</option>
+              <option value="箱包">箱包</option>
+            </select>
+            <select data-template-status-filter>
+              <option value="全部状态">全部状态</option>
+              <option value="草稿">草稿</option>
+              <option value="可使用">可使用</option>
+              <option value="可上架">可上架</option>
+              <option value="已上架">已上架</option>
+              <option value="审核中">审核中</option>
+              <option value="已下架">已下架</option>
+            </select>
+            <div class="template-create-wrap">
+              <button class="btn primary template-create-btn" type="button" data-template-create-trigger>新建模板</button>
+              <div class="template-create-menu" data-template-create-menu>
+                <button type="button" data-new-template="主图模板">新建主图模板</button>
+                <button type="button" data-new-template="详情图模板">新建详情图模板</button>
+                <button type="button" data-new-template="SKU图模板">新建SKU图模板</button>
+                <button type="button" data-new-template="套图模板">新建套图模板</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="template-tabs" data-template-tabs>
+            <button class="is-active" type="button" data-template-tab="全部">全部</button>
+            <button type="button" data-template-tab="主图模板">主图模板</button>
+            <button type="button" data-template-tab="详情图模板">详情图模板</button>
+            <button type="button" data-template-tab="SKU图模板">SKU图模板</button>
+            <button type="button" data-template-tab="套图模板">套图模板</button>
+            <button type="button" data-template-tab="可上架">可上架</button>
+          </div>
+
+          <div class="template-grid" data-template-grid></div>
+
+          <div class="empty-state template-empty" data-template-empty-state>
+            <div class="empty-visual"></div>
+            <h3>暂无模板</h3>
+            <p>新建主图、详情图、SKU图或套图模板后，可在这里统一管理。</p>
+            <button class="btn primary" type="button" data-template-create-trigger-empty>新建模板</button>
+          </div>
+
+          <div class="empty-state template-empty" data-template-no-result-state>
+            <div class="empty-visual search"></div>
+            <h3>搜索无结果</h3>
+            <p>没有匹配当前筛选条件的模板，建议调整关键词、类型、品类或状态。</p>
           </div>
         </section>
       </section>
@@ -277,6 +287,53 @@
           <div class="product-grid" data-card-view></div>
         </section>
       </section>
+
+      <section class="workspace-page" data-page="model-library">
+        <div class="model-title-row">
+          <div>
+            <h2>模特库</h2>
+            <p data-model-count>共 0 个模特</p>
+          </div>
+          <button class="btn primary model-create-entry" type="button" data-model-create-open>
+            <span class="model-create-entry-icon"></span>
+            新增模特
+          </button>
+        </div>
+        <div class="model-workspace">
+          <div class="model-filter-panel">
+            <div class="model-filter-list" data-model-gender-filter>
+              <button class="pill-btn active" type="button" data-filter-value="全部">全部</button>
+              <button class="pill-btn" type="button" data-filter-value="男性">男性</button>
+              <button class="pill-btn" type="button" data-filter-value="女性">女性</button>
+              <button class="pill-btn" type="button" data-filter-value="男童">男童</button>
+              <button class="pill-btn" type="button" data-filter-value="女童">女童</button>
+            </div>
+            <div class="model-title-actions">
+              <div class="square-search model-search">
+                <span class="search-icon"></span>
+                <input type="search" placeholder="搜索模特名称 / 风格 / 标签" data-model-search>
+              </div>
+            </div>
+            <div class="model-tag-filter" data-model-style-filter>
+              <button class="pill-btn" type="button" data-filter-value="真实感">真实感</button>
+              <button class="pill-btn" type="button" data-filter-value="3D">3D</button>
+              <button class="pill-btn" type="button" data-filter-value="亚洲">亚洲</button>
+              <button class="pill-btn" type="button" data-filter-value="欧美">欧美</button>
+              <button class="pill-btn" type="button" data-filter-value="商务">商务</button>
+              <button class="pill-btn" type="button" data-filter-value="休闲">休闲</button>
+              <button class="pill-btn" type="button" data-filter-value="古风">古风</button>
+            </div>
+          </div>
+          <div class="model-content">
+            <div class="model-grid" data-model-grid></div>
+            <div class="empty-state model-empty" data-model-empty>
+              <div class="empty-visual search"></div>
+              <h3>暂无匹配模特</h3>
+              <p>调整筛选条件或创建新的文生模特。</p>
+            </div>
+          </div>
+        </div>
+      </section>
       </main>
   </div>
 
@@ -339,6 +396,219 @@
     </div>
   </div>
 
+  <div class="prototype-modal" data-record-modal aria-hidden="true">
+    <div class="prototype-modal-panel record-panel">
+      <div class="prototype-modal-head">
+        <h2>创作记录</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="creation-record-list" data-creation-record-list>
+        <article class="creation-record is-done">
+          <div class="record-result-grid">
+            <img src="assets/product-cover-03.png" alt="">
+            <img src="assets/product-cover-04.png" alt="">
+            <img src="assets/product-cover-01.png" alt="">
+            <img src="assets/product-cover-02.png" alt="">
+          </div>
+          <div class="record-copy">
+            <div class="record-meta">
+              <span class="record-status done">已完成</span>
+              <span>模板创作</span>
+              <span>8 融豆</span>
+            </div>
+            <h3>浅色卧室文胸模特图</h3>
+            <p>浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。</p>
+            <small>关联：商品图 4 张 / 蓝调棚拍主图模板</small>
+            <div class="record-actions">
+              <button type="button">查看大图</button>
+              <button type="button">下载</button>
+              <button type="button">保存为素材</button>
+              <button type="button">保存为模板</button>
+              <button type="button">上架到创作广场</button>
+              <button type="button">继续编辑</button>
+              <button type="button">扩图</button>
+            </div>
+          </div>
+        </article>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-resource-preview-modal aria-hidden="true">
+    <div class="prototype-modal-panel resource-preview-panel">
+      <div class="prototype-modal-head">
+        <h2 data-preview-title>资源预览</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="resource-preview-layout">
+        <div class="resource-preview-image">
+          <img src="assets/creation-cover-608.jpg" alt="" data-preview-image>
+          <span data-preview-category>文胸</span>
+        </div>
+        <div class="resource-preview-info">
+          <dl>
+            <div>
+              <dt>类型</dt>
+              <dd data-preview-type>模板</dd>
+            </div>
+            <div>
+              <dt>来源</dt>
+              <dd data-preview-source>官方</dd>
+            </div>
+            <div>
+              <dt>价格</dt>
+              <dd data-preview-price>免费</dd>
+            </div>
+            <div>
+              <dt>使用次数</dt>
+              <dd data-preview-usage>12,430</dd>
+            </div>
+            <div>
+              <dt>适用品类</dt>
+              <dd data-preview-fit>文胸、内裤、童装</dd>
+            </div>
+          </dl>
+          <div class="resource-preview-actions">
+            <button class="btn ghost" type="button" data-modal-close>关闭</button>
+            <button class="btn primary" type="button" data-preview-use>使用</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-template-publish-modal aria-hidden="true">
+    <div class="prototype-modal-panel publish-panel">
+      <div class="prototype-modal-head">
+        <h2>上架到创作广场</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="publish-form">
+        <label>
+          <span>资源名称</span>
+          <input type="text" data-publish-name>
+        </label>
+        <label>
+          <span>资源类型</span>
+          <input type="text" data-publish-type readonly>
+        </label>
+        <label>
+          <span>适用品类</span>
+          <input type="text" data-publish-category>
+        </label>
+        <label>
+          <span>价格</span>
+          <select data-publish-price>
+            <option>免费</option>
+            <option>8 融豆</option>
+            <option>18 融豆</option>
+            <option>28 融豆</option>
+          </select>
+        </label>
+        <label class="publish-desc">
+          <span>简短说明</span>
+          <textarea data-publish-desc placeholder="说明模板适合的商品、场景和使用方式。"></textarea>
+        </label>
+        <div class="publish-preview">
+          <span>预览图</span>
+          <img src="assets/product-cover-03.png" alt="" data-publish-preview>
+        </div>
+      </div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn primary" type="button" data-publish-submit>提交审核</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-model-create-modal aria-hidden="true">
+    <div class="prototype-modal-panel model-create-panel" data-model-create-state="idle">
+      <div class="prototype-modal-head">
+        <div>
+          <h2>文生模特</h2>
+        </div>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="model-create-body">
+        <div class="model-text-top">
+          <section class="model-text-reference">
+            <div class="model-text-reference-title"><strong>参考图分析</strong><small>可上传参考图提取人物特征，系统会自动建议下方配置项。</small></div>
+            <div class="model-text-reference-box" role="button" tabindex="0" data-model-reference>
+              <div>
+                <span class="model-ref-upload-icon"></span>
+                <p>上传人物图片</p>
+              </div>
+              <div class="model-ref-preview">
+                <img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="">
+                <span>已分析</span>
+                <button type="button" data-model-reference-remove>删除</button>
+              </div>
+            </div>
+          </section>
+          <label class="model-text-description">
+            <span>文本描述</span>
+            <textarea data-model-prompt rows="4" placeholder="例如：生成一位适合女装直播的年轻亚洲女模特，通勤风，干净自然光，温柔微笑，适合展示衬衫和半身裙。"></textarea>
+          </label>
+        </div>
+
+        <div class="model-text-layout model-text-config-layout">
+          <aside class="model-text-nav" data-model-section-tabs>
+            <button class="active" type="button" data-model-section-tab="basic"><img class="model-text-nav-icon" src="../../../AI视频/ai-ecommerce-video-demo/assets/model-text-tab-basic.png" alt=""><span>基础身份</span><small class="is-required">必填</small></button>
+            <button type="button" data-model-section-tab="face"><img class="model-text-nav-icon" src="../../../AI视频/ai-ecommerce-video-demo/assets/model-text-tab-face.png" alt=""><span>脸部与发型</span><small>可选</small></button>
+            <button type="button" data-model-section-tab="body"><img class="model-text-nav-icon" src="../../../AI视频/ai-ecommerce-video-demo/assets/model-text-tab-body.png" alt=""><span>身材体型</span><small>可选</small></button>
+            <button type="button" data-model-section-tab="temperament"><img class="model-text-nav-icon" src="../../../AI视频/ai-ecommerce-video-demo/assets/model-text-tab-temperament.png" alt=""><span>气质与风格</span><small>可选</small></button>
+          </aside>
+          <div class="model-text-content">
+            <div class="model-text-section active" data-model-section="basic">
+              <div class="model-text-section-head"><h4>基础身份</h4><p>确定模特主体的基础形象。</p></div>
+              <div class="model-text-field"><div class="model-text-label"><span>性别</span><em>必填</em></div><div class="model-option-grid compact" data-model-required="gender" data-model-single><button type="button" data-value="男性">男性</button><button type="button" data-value="女性">女性</button></div></div>
+              <div class="model-text-field"><div class="model-text-label"><span>年龄 / 年龄段</span><em>必填</em></div><div class="model-option-grid" data-model-required="age" data-model-single><button type="button" data-value="3-6岁">3-6岁</button><button type="button" data-value="7-12岁">7-12岁</button><button type="button" data-value="13-17岁">13-17岁</button><button type="button" data-value="18-24岁">18-24岁</button><button type="button" data-value="25-34岁">25-34岁</button><button type="button" data-value="35-44岁">35-44岁</button><button type="button" data-value="45-54岁">45-54岁</button><button type="button" data-value="55岁以上">55岁以上</button></div><input class="model-text-custom" type="text" placeholder="自主填写年龄分段"></div>
+              <div class="model-text-field"><div class="model-text-label"><span>人种</span><em>必填</em></div><div class="model-option-grid" data-model-required="race" data-model-single><button type="button" data-value="东亚">东亚</button><button type="button" data-value="东南亚">东南亚</button><button type="button" data-value="欧美">欧美</button><button type="button" data-value="拉美">拉美</button><button type="button" data-value="中东">中东</button><button type="button" data-value="非洲">非洲</button><button type="button" data-value="混血">混血</button></div></div>
+              <div class="model-text-field"><div class="model-text-label"><span>肤色</span><em>必填</em></div><div class="model-option-grid" data-model-required="skin" data-model-single><button type="button" data-value="自然肤色">自然肤色</button><button type="button" data-value="白皙肤色">白皙肤色</button><button type="button" data-value="小麦肤色">小麦肤色</button><button type="button" data-value="深肤色">深肤色</button></div></div>
+            </div>
+            <div class="model-text-section" data-model-section="face">
+              <div class="model-text-section-head"><h4>脸部与发型</h4><p>控制面部辨识度和发型细节。</p></div>
+              <div class="model-text-field"><div class="model-text-label"><span>发型</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="长发">长发</button><button type="button" data-value="短发">短发</button><button type="button" data-value="中长发">中长发</button><button type="button" data-value="卷发">卷发</button><button type="button" data-value="直发">直发</button><button type="button" data-value="马尾">马尾</button><button type="button" data-value="丸子头">丸子头</button><button type="button" data-value="背头">背头</button></div><input class="model-text-custom" type="text" placeholder="自定义发型"></div>
+              <div class="model-text-field"><div class="model-text-label"><span>发色</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="黑发">黑发</button><button type="button" data-value="深棕发">深棕发</button><button type="button" data-value="浅棕发">浅棕发</button><button type="button" data-value="亚麻色">亚麻色</button><button type="button" data-value="金发">金发</button><button type="button" data-value="银灰发">银灰发</button></div><input class="model-text-custom" type="text" placeholder="自定义发色"></div>
+              <div class="model-text-field"><div class="model-text-label"><span>脸型 / 五官</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="鹅蛋脸">鹅蛋脸</button><button type="button" data-value="圆脸">圆脸</button><button type="button" data-value="瓜子脸">瓜子脸</button><button type="button" data-value="方脸">方脸</button><button type="button" data-value="大眼">大眼</button><button type="button" data-value="高鼻梁">高鼻梁</button><button type="button" data-value="微笑唇">微笑唇</button><button type="button" data-value="自然眉">自然眉</button></div><input class="model-text-custom" type="text" placeholder="自定义脸型或五官"></div>
+            </div>
+            <div class="model-text-section" data-model-section="body">
+              <div class="model-text-section-head"><h4>身材体型</h4><p>设置身形和身高比例。</p></div>
+              <div class="model-text-field"><div class="model-text-label"><span>身材</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="苗条">苗条</button><button type="button" data-value="匀称">匀称</button><button type="button" data-value="高挑">高挑</button><button type="button" data-value="健美">健美</button><button type="button" data-value="丰满">丰满</button><button type="button" data-value="娇小">娇小</button><button type="button" data-value="儿童体型">儿童体型</button></div><input class="model-text-custom" type="text" placeholder="自定义身材体型"></div>
+              <div class="model-text-field"><div class="model-text-label"><span>身高比例</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="正常比例">正常比例</button><button type="button" data-value="九头身">九头身</button><button type="button" data-value="腿部修长">腿部修长</button><button type="button" data-value="小个子">小个子</button><button type="button" data-value="儿童比例">儿童比例</button></div><input class="model-text-custom" type="text" placeholder="自定义身高比例"></div>
+            </div>
+            <div class="model-text-section" data-model-section="temperament">
+              <div class="model-text-section-head"><h4>气质与应用</h4><p>用于控制整体视觉风格和适用品类。</p></div>
+              <div class="model-text-field"><div class="model-text-label"><span>气质 / 风格</span></div><div class="model-option-grid" data-model-single><button type="button" data-value="甜美">甜美</button><button type="button" data-value="可爱">可爱</button><button type="button" data-value="优雅">优雅</button><button type="button" data-value="知性">知性</button><button type="button" data-value="通勤">通勤</button><button type="button" data-value="商务">商务</button><button type="button" data-value="运动">运动</button><button type="button" data-value="轻奢">轻奢</button><button type="button" data-value="休闲">休闲</button><button type="button" data-value="古风">古风</button></div><input class="model-text-custom" type="text" placeholder="自定义气质与风格"></div>
+              <div class="model-text-field"><div class="model-text-label"><span>适用品类</span></div><div class="model-option-grid" data-model-multi><button type="button" data-value="文胸">文胸</button><button type="button" data-value="内裤">内裤</button><button type="button" data-value="童装">童装</button><button type="button" data-value="女装">女装</button><button type="button" data-value="男装">男装</button><button type="button" data-value="鞋子">鞋子</button><button type="button" data-value="箱包">箱包</button><button type="button" data-value="配饰">配饰</button></div><input class="model-text-custom" type="text" placeholder="自定义适用品类"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="model-text-summary"><span>已选摘要</span><div data-model-summary>请先选择年龄分段、性别、人种、肤色</div></div>
+
+        <div class="model-text-result">
+          <div class="model-text-result-side">
+            <h4>模特图已生成</h4>
+            <p>请确认当前模特图是否符合预期。确认创建后，这张图会保存到模特库，可用于后续图片创作。</p>
+          </div>
+          <div class="model-text-result-preview">
+            <div class="model-text-result-loading"><span class="model-spinner"></span><strong>正在生成模特图...</strong><small>系统会先生成单张模特图</small></div>
+            <div class="model-text-result-ready"><img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="" data-model-preview-image><span>文生模特图</span></div>
+          </div>
+          <div class="model-text-result-actions">
+            <button class="btn ghost model-text-regenerate-btn" type="button" data-model-regenerate>重新生成</button>
+            <button class="btn primary" type="button" data-model-confirm>确认创建</button>
+          </div>
+        </div>
+      </div>
+      <div class="prototype-modal-actions right model-create-actions">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn primary" type="button" data-model-generate disabled>生成模特图</button>
+      </div>
+    </div>
+  </div>
+
   <div class="drawer-backdrop" data-drawer-backdrop></div>
   <aside class="detail-drawer" data-detail-drawer aria-hidden="true">
     <div class="drawer-head">
@@ -348,27 +618,27 @@
       <button class="icon-btn close" type="button" data-close-drawer aria-label="关闭详情"></button>
     </div>
     <div class="drawer-body">
-      <section class="drawer-section">
+      <section class="drawer-section" data-drawer-section="basic">
         <h3>基础信息</h3>
         <div class="info-grid" data-basic-info></div>
       </section>
 
-      <section class="drawer-section">
+      <section class="drawer-section" data-drawer-section="material">
         <h3>面料信息</h3>
         <div class="material-info" data-material-info></div>
       </section>
 
-      <section class="drawer-section">
+      <section class="drawer-section" data-drawer-section="selling">
         <h3>商品卖点</h3>
         <div class="selling-point-box" data-selling-point></div>
       </section>
 
-      <section class="drawer-section">
+      <section class="drawer-section" data-drawer-section="images">
         <h3>商品图片</h3>
         <div class="color-image-list" data-color-images></div>
       </section>
 
-      <section class="drawer-section">
+      <section class="drawer-section" data-drawer-section="size">
         <h3>尺码配置</h3>
         <div class="size-config" data-size-config></div>
       </section>
