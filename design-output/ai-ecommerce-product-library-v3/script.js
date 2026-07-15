@@ -578,6 +578,7 @@ const state = {
   drawerMode: "view",
   productEdit: null,
   productEditSeq: 0,
+  detailBackPage: "creation-plaza",
   creation: {
     category: "文胸",
     productUploaded: false,
@@ -621,6 +622,11 @@ els.creationPrompt = document.querySelector("[data-creation-prompt]");
 els.creationMode = document.querySelector("[data-creation-mode]");
 els.creationCategories = Array.from(document.querySelectorAll("[data-creation-categories] button"));
 els.creationRecordList = document.querySelector("[data-creation-record-list]");
+els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
+els.creationTaskStatusButtons = Array.from(document.querySelectorAll("[data-creation-task-status]"));
+els.creationTaskTypeButtons = Array.from(document.querySelectorAll("[data-creation-task-type]"));
+els.creationTaskSearch = document.querySelector("[data-creation-task-search]");
+els.creationTaskEmpty = document.querySelector("[data-creation-task-empty]");
 els.creationCost = document.querySelector("[data-cost-label]");
 els.templateLabel = document.querySelector("[data-template-label]");
 els.detailPrompt = document.querySelector("[data-detail-prompt]");
@@ -631,6 +637,8 @@ els.templateModal = document.querySelector("[data-template-modal]");
 els.paramModal = document.querySelector("[data-param-modal]");
 els.recordModal = document.querySelector("[data-record-modal]");
 els.resourcePreviewModal = document.querySelector("[data-resource-preview-modal]");
+els.drawerImagePreview = document.querySelector("[data-drawer-image-preview]");
+els.drawerImagePreviewImg = document.querySelector("[data-drawer-image-preview-img]");
 els.ratioLabel = document.querySelector("[data-ratio-label]");
 els.resolutionLabel = document.querySelector("[data-resolution-label]");
 els.templateSearch = document.querySelector("[data-template-search]");
@@ -1032,6 +1040,8 @@ function setView(view) {
 }
 
 function buildProductDetail(product) {
+  if (product.isNew) return buildEmptyProductDetail();
+
   const isInnerwear = product.category.includes("内衣");
   const isKids = product.category.includes("童装");
   const allImages = [
@@ -1085,6 +1095,43 @@ function buildProductDetail(product) {
   };
 }
 
+function buildEmptyProductDraft() {
+  return {
+    id: `new-product-${Date.now()}`,
+    isNew: true,
+    name: "",
+    brand: "",
+    code: "",
+    sku: "",
+    category: "",
+    status: "待完善",
+    statusClass: "status-pending",
+    materialCount: 0,
+    updatedAt: "",
+    image: "",
+    points: {
+      core: "",
+      audience: "",
+      scene: "",
+      material: ""
+    },
+    assets: [],
+    records: []
+  };
+}
+
+function buildEmptyProductDetail() {
+  return {
+    size69: "",
+    factoryName: "",
+    materials: [{ name: "", desc: "" }],
+    colors: [{ name: "新颜色", images: [] }],
+    sizes: [],
+    parameters: [],
+    rows: []
+  };
+}
+
 function nextProductEditId(prefix) {
   state.productEditSeq += 1;
   return `${prefix}-${state.productEditSeq}`;
@@ -1098,12 +1145,14 @@ function buildProductEditState(product, detail) {
   const presetSizeSet = new Set(productSizePresets);
   const detailSizeSet = new Set(detail.sizes);
   const selectedPresetSizes = productSizePresets.filter((size) => detailSizeSet.has(size));
-  const fallbackSelectedSizes = selectedPresetSizes.length ? selectedPresetSizes : ["L", "XL", "XXL"];
+  const fallbackSelectedSizes = product.isNew ? [] : selectedPresetSizes.length ? selectedPresetSizes : ["L", "XL", "XXL"];
   const customDetailSizes = detail.sizes.filter((size) => !presetSizeSet.has(size));
   const detailParameterSet = new Set(detail.parameters);
   const selectedPresetParameters = productParameterPresets.filter((parameter) => detailParameterSet.has(parameter.name));
   const fallbackSelectedParameterNames = new Set(
-    selectedPresetParameters.length
+    product.isNew
+      ? []
+      : selectedPresetParameters.length
       ? selectedPresetParameters.map((parameter) => parameter.name)
       : ["衣长", "胸围", "腰围"]
   );
@@ -1168,6 +1217,15 @@ function tableValueKey(sizeId, parameterId) {
 
 function renderBasicInfo(product, detail, mode) {
   const requiredLabels = new Set(["品牌", "商品唯一码", "商品名称", "商品类别", "商品货号"]);
+  const placeholders = {
+    品牌: "请输入品牌信息",
+    商品唯一码: "请输入商品唯一码",
+    商品名称: "请输入商品名称",
+    商品类别: "请输入商品类别",
+    商品货号: "请输入商品货号",
+    "69码": "请输入69码",
+    工厂名称: "请输入工厂名称"
+  };
   const rows = [
     ["品牌", product.brand],
     ["商品唯一码", product.code],
@@ -1182,7 +1240,7 @@ function renderBasicInfo(product, detail, mode) {
     return rows.map(([label, value]) => `
       <label class="edit-field ${requiredLabels.has(label) ? "is-required" : ""}">
         <span>${label}</span>
-        <input class="drawer-control" type="text" value="${value}">
+        <input class="drawer-control" type="text" value="${value}" placeholder="${placeholders[label] || "请输入"}">
       </label>
     `).join("");
   }
@@ -1232,7 +1290,7 @@ function renderSellingPoint(product, mode) {
     return `
       <label class="edit-field full">
         <span>商品卖点</span>
-        <textarea class="drawer-textarea selling-edit">${product.points.core}</textarea>
+        <textarea class="drawer-textarea selling-edit" placeholder="请输入商品卖点">${product.points.core}</textarea>
       </label>
     `;
   }
@@ -1247,7 +1305,7 @@ function renderColorImages(detail, mode) {
       <div class="edit-color-card" data-edit-color-card="${color.id}">
         <div class="edit-color-head">
           <label class="edit-color-name">
-            <input type="text" value="${color.name}" data-edit-color-name="${color.id}" aria-label="颜色名称">
+            <input type="text" value="${color.name}" style="width: ${Math.max(2, color.name.length)}em;" data-edit-color-name="${color.id}" aria-label="颜色名称">
             <span class="edit-pencil" aria-hidden="true"></span>
           </label>
           <button class="edit-delete-btn" type="button" data-delete-color="${color.id}" aria-label="删除颜色"></button>
@@ -1258,7 +1316,12 @@ function renderColorImages(detail, mode) {
             <strong>上传图片</strong>
             <small>点击或拖拽到此处</small>
           </button>
-          ${color.images.map((image) => `<img src="${image}" alt="${color.name}商品图">`).join("")}
+          ${color.images.map((image, index) => `
+            <div class="edit-image-item">
+              <button class="edit-image-remove" type="button" data-delete-color-image="${color.id}" data-image-index="${index}" aria-label="删除图片"></button>
+              <img src="${image}" alt="${color.name}商品图" data-preview-drawer-image="${image}" data-preview-label="${color.name}">
+            </div>
+          `).join("")}
         </div>
       </div>
     `).join("");
@@ -1268,7 +1331,7 @@ function renderColorImages(detail, mode) {
     <div class="color-image-card">
       <div class="color-image-title">${color.name}</div>
       <div class="color-image-grid">
-        ${color.images.map((image) => `<img src="${image}" alt="${color.name}商品图">`).join("")}
+        ${color.images.map((image) => `<img src="${image}" alt="${color.name}商品图" data-preview-drawer-image="${image}" data-preview-label="${color.name}">`).join("")}
       </div>
     </div>
   `).join("");
@@ -1444,7 +1507,7 @@ function renderDrawer(product, mode = "view") {
     size: "尺码配置"
   });
   renderDrawerSectionActions(mode);
-  els.drawerTitle.textContent = mode === "edit" ? "编辑商品" : product.name;
+  els.drawerTitle.textContent = product.isNew ? "新增商品" : mode === "edit" ? "编辑商品" : product.name;
   els.basicInfo.innerHTML = renderBasicInfo(product, detail, mode);
   els.materialInfo.innerHTML = renderMaterialInfo(detail, mode);
   els.sellingPoint.innerHTML = renderSellingPoint(product, mode);
@@ -1490,6 +1553,20 @@ function addCustomParameter() {
   });
   closeCustomParameterModal();
   rerenderProductEditDrawer();
+}
+
+function openDrawerImagePreview(src) {
+  if (!src || !els.drawerImagePreview || !els.drawerImagePreviewImg) return;
+  els.drawerImagePreviewImg.src = src;
+  els.drawerImagePreview.classList.add("is-open");
+  els.drawerImagePreview.setAttribute("aria-hidden", "false");
+}
+
+function closeDrawerImagePreview() {
+  if (!els.drawerImagePreview || !els.drawerImagePreviewImg) return;
+  els.drawerImagePreview.classList.remove("is-open");
+  els.drawerImagePreview.setAttribute("aria-hidden", "true");
+  els.drawerImagePreviewImg.removeAttribute("src");
 }
 
 function moveSelectedSize(sizeId, direction) {
@@ -1569,6 +1646,14 @@ function openDrawer(productId) {
   if (!product) return;
 
   renderDrawer(product, "view");
+  els.drawer.classList.add("is-open");
+  els.drawerBackdrop.classList.add("is-open");
+}
+
+function openCreateProductDrawer() {
+  const product = buildEmptyProductDraft();
+  state.productEdit = null;
+  renderDrawer(product, "edit");
   els.drawer.classList.add("is-open");
   els.drawerBackdrop.classList.add("is-open");
 }
@@ -1654,6 +1739,34 @@ function setWorkspacePage(pageName) {
   if (pageName !== "product-library" || els.drawer.dataset.drawerKind !== "product") {
     closeDrawer();
   }
+}
+
+function openCreationRecordsPage() {
+  setWorkspacePage("creation-records");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作记录"]')?.classList.add("active");
+  filterCreationTasks();
+}
+
+function filterCreationTasks() {
+  if (!els.creationTaskCards.length) return;
+
+  const activeStatus = document.querySelector("[data-creation-task-status].is-active")?.dataset.creationTaskStatus || "all";
+  const activeType = document.querySelector("[data-creation-task-type].is-active")?.dataset.creationTaskType || "all";
+  const keyword = (els.creationTaskSearch?.value || "").trim().toLowerCase();
+  let visibleCount = 0;
+
+  els.creationTaskCards.forEach((card) => {
+    const statusMatched = activeStatus === "all" || card.dataset.status === activeStatus;
+    const typeMatched = activeType === "all" || card.dataset.type === activeType;
+    const text = `${card.dataset.title || ""} ${card.dataset.product || ""}`.toLowerCase();
+    const keywordMatched = !keyword || text.includes(keyword);
+    const visible = statusMatched && typeMatched && keywordMatched;
+    card.style.display = visible ? "" : "none";
+    if (visible) visibleCount += 1;
+  });
+
+  els.creationTaskEmpty?.classList.toggle("is-active", visibleCount === 0);
 }
 
 function getCreationMode() {
@@ -1809,8 +1922,12 @@ function appendDetailTask({ prompt = "" } = {}) {
   return card;
 }
 
-function openCreationDetail({ fromHistory = false } = {}) {
-  syncDetailParamsFromCreation(fromHistory ? "浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。" : "");
+function openCreationDetail({ fromHistory = false, taskTitle = "", productName = "", backPage = "creation-plaza" } = {}) {
+  const historyPrompt = taskTitle ? `继续处理「${taskTitle}」，关联商品：${productName || "未指定商品"}。` : "浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。";
+  state.detailBackPage = backPage;
+  const backButton = document.querySelector("[data-back-creation]");
+  if (backButton) backButton.textContent = backPage === "creation-records" ? "返回创作记录" : "返回创作广场";
+  syncDetailParamsFromCreation(fromHistory ? historyPrompt : "");
   setWorkspacePage("creation-detail");
   closePrototypeModals();
   if (!fromHistory && !els.detailTaskList.children.length) {
@@ -2059,22 +2176,16 @@ function openModelDetail(modelId) {
   const modal = els.modelDetailModal;
   const detailImage = "../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png";
   const createdAt = model.createdAt || "2026-07-10 14:30";
-  const updatedAt = model.updatedAt || createdAt;
 
   modal.querySelector("[data-model-detail-name]").textContent = model.name;
   modal.querySelector("[data-model-detail-source-image]").src = detailImage;
   modal.querySelector("[data-model-detail-main-image]").src = detailImage;
   modal.querySelector("[data-model-detail-thumb]").src = detailImage;
-  modal.querySelector("[data-model-detail-source-type]").textContent = model.sourceType || "文生模特";
-  modal.querySelector("[data-model-detail-source-note]").textContent = model.sourceNote || "结构化配置生成";
-  modal.querySelector("[data-model-detail-method]").textContent = model.createMethod || "文生模特";
+  modal.querySelector("[data-model-detail-method]").textContent = model.createMethod || "模特生成";
   modal.querySelector("[data-model-detail-source-desc]").textContent = `${model.name}，适合${model.category}图片创作。`;
   modal.querySelector("[data-model-detail-tags]").innerHTML = modelTagMarkup(model);
   modal.querySelector("[data-model-detail-category]").textContent = model.category;
-  modal.querySelector("[data-model-detail-status]").textContent = model.status;
-  modal.querySelector("[data-model-detail-usage]").textContent = `${model.usage.toLocaleString()} 次`;
   modal.querySelector("[data-model-detail-created]").textContent = createdAt;
-  modal.querySelector("[data-model-detail-updated]").textContent = updatedAt;
   openPrototypeModal(modal);
 }
 
@@ -2198,7 +2309,7 @@ function applyModelReferenceAnalysis() {
     prompt.value = "参考图分析为年轻亚洲女性，整体通勤自然风，适合服装和箱包商品图。";
   }
   updateModelCreateSummary();
-  showToast("参考图特征已填入文生配置");
+  showToast("参考图特征已填入模特生成配置");
 }
 
 function removeModelReferenceAnalysis() {
@@ -2219,6 +2330,7 @@ function startModelPreviewGeneration() {
   state.modelCreateTimer = window.setTimeout(() => {
     const image = getModelCreatePanel()?.querySelector("[data-model-preview-image]");
     if (image) image.src = "../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png";
+    populateModelConfirmFields();
     setModelCreateState("complete");
     showToast("模特图生成完成");
   }, 1100);
@@ -2231,6 +2343,102 @@ function getActiveModelValue(selector, fallback = "") {
   return custom || group?.querySelector("button.active")?.dataset.value || fallback;
 }
 
+function getModelSectionFieldValue(sectionName, fieldIndex, fallback = "") {
+  const panel = getModelCreatePanel();
+  const fields = Array.from(panel?.querySelectorAll(`[data-model-section="${sectionName}"] .model-text-field`) || []);
+  const field = fields[fieldIndex];
+  const custom = field?.querySelector(".model-text-custom")?.value.trim();
+  return custom || field?.querySelector(".model-option-grid button.active")?.dataset.value || fallback;
+}
+
+function splitModelTokens(value) {
+  return (value || "")
+    .split(/[、,，\s]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+}
+
+function formatModelTimestamp(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())} ${pad(date.getHours())}:${pad(date.getMinutes())}`;
+}
+
+function getModelCreateSnapshot() {
+  const panel = getModelCreatePanel();
+  const gender = getActiveModelValue('[data-model-required="gender"]', "女性");
+  const age = getActiveModelValue('[data-model-required="age"]', "18-24岁");
+  const race = getActiveModelValue('[data-model-required="race"]', "东亚");
+  const skin = getActiveModelValue('[data-model-required="skin"]', "自然肤色");
+  const hair = getModelSectionFieldValue("face", 0, "长发");
+  const hairColor = getModelSectionFieldValue("face", 1, "黑发");
+  const face = getModelSectionFieldValue("face", 2, "自然五官");
+  const body = getModelSectionFieldValue("body", 0, "匀称");
+  const proportion = getModelSectionFieldValue("body", 1, "正常比例");
+  const style = getModelSectionFieldValue("temperament", 0, "真实感");
+  const categoryValues = Array.from(panel?.querySelectorAll("[data-model-multi] button.active") || []).map((button) => button.dataset.value);
+  const categoryCustom = panel?.querySelector('[data-model-multi]')?.closest(".model-text-field")?.querySelector(".model-text-custom")?.value.trim();
+  const category = categoryCustom || categoryValues.join("、") || "服装、箱包、配饰";
+  const prompt = panel?.querySelector("[data-model-prompt]")?.value.trim() || "";
+  const raceLabel = race === "东亚" || race === "东南亚" ? "亚洲" : race;
+  return {
+    gender,
+    age,
+    race,
+    raceLabel,
+    skin,
+    hair,
+    hairColor,
+    face,
+    body,
+    proportion,
+    style,
+    category,
+    prompt,
+    name: `${gender}${age}${style}模特`
+  };
+}
+
+function populateModelConfirmFields() {
+  const panel = getModelCreatePanel();
+  if (!panel) return;
+  const snapshot = getModelCreateSnapshot();
+  const fields = {
+    "[data-model-confirm-name]": snapshot.name,
+    "[data-model-confirm-gender]": snapshot.gender,
+    "[data-model-confirm-age]": snapshot.age,
+    "[data-model-confirm-style]": snapshot.style,
+    "[data-model-confirm-category]": snapshot.category,
+    "[data-model-confirm-note]": snapshot.prompt || `${snapshot.gender}${snapshot.age}，${snapshot.style}风格，适合${snapshot.category}图片创作。`
+  };
+  Object.entries(fields).forEach(([selector, value]) => {
+    const input = panel.querySelector(selector);
+    if (input) input.value = value;
+  });
+
+  const attributes = [
+    `性别 ${snapshot.gender}`,
+    `年龄 ${snapshot.age}`,
+    `风格 ${snapshot.style}`,
+    `人种 ${snapshot.race}`,
+    `肤色 ${snapshot.skin}`,
+    `发型 ${snapshot.hair}`,
+    `发色 ${snapshot.hairColor}`,
+    `脸型 ${snapshot.face}`,
+    `体型 ${snapshot.body}`,
+    `比例 ${snapshot.proportion}`
+  ];
+  const attributeBox = panel.querySelector("[data-model-ai-attributes]");
+  if (attributeBox) {
+    attributeBox.innerHTML = "";
+    attributes.forEach((item) => {
+      const tag = document.createElement("span");
+      tag.className = "model-ai-attribute";
+      tag.textContent = item;
+      attributeBox.append(tag);
+    });
+  }
+}
+
 function createModelFromForm() {
   if (!state.modelPreviewReady) {
     startModelPreviewGeneration();
@@ -2241,32 +2449,38 @@ function createModelFromForm() {
     return;
   }
   const panel = getModelCreatePanel();
-  const gender = getActiveModelValue('[data-model-required="gender"]', "女性");
-  const age = getActiveModelValue('[data-model-required="age"]', "18-24岁");
-  const race = getActiveModelValue('[data-model-required="race"]', "东亚");
-  const style = getActiveModelValue('[data-model-section="temperament"] .model-option-grid', "真实感");
-  const categoryValues = Array.from(panel.querySelectorAll("[data-model-multi] button.active")).map((button) => button.dataset.value);
-  const categoryCustom = panel.querySelector('[data-model-multi]')?.closest(".model-text-field")?.querySelector(".model-text-custom")?.value.trim();
-  const name = `${race}${gender}${style}模特`;
+  const snapshot = getModelCreateSnapshot();
+  const name = panel.querySelector("[data-model-confirm-name]")?.value.trim() || snapshot.name;
+  const gender = panel.querySelector("[data-model-confirm-gender]")?.value.trim() || snapshot.gender;
+  const age = panel.querySelector("[data-model-confirm-age]")?.value.trim() || snapshot.age;
+  const style = panel.querySelector("[data-model-confirm-style]")?.value.trim() || snapshot.style;
+  const category = panel.querySelector("[data-model-confirm-category]")?.value.trim() || snapshot.category;
+  const note = panel.querySelector("[data-model-confirm-note]")?.value.trim() || snapshot.prompt;
+  if (!name) {
+    showToast("请填写模特名称");
+    return;
+  }
   const image = "../../../AI视频/ai-ecommerce-video-demo/assets/model-cover-black-dress.png";
-  const raceLabel = race === "东亚" || race === "东南亚" ? "亚洲" : race;
+  const createdAt = formatModelTimestamp();
+  const styleTags = splitModelTokens(style);
   const model = {
     id: `m${Date.now()}`,
     name,
     gender,
     age,
-    race: raceLabel,
+    race: snapshot.raceLabel,
     style,
-    category: categoryCustom || categoryValues.join("、") || "服装、箱包、配饰",
+    category,
     status: "可使用",
     usage: 0,
     image,
-    sourceType: "文生模特",
-    sourceNote: "结构化配置生成",
-    createMethod: "文生模特",
-    createdAt: "2026-07-10 14:30",
-    updatedAt: "2026-07-10 14:30",
-    tags: [gender, raceLabel, style, "真实感"].filter(Boolean)
+    sourceType: "模特生成",
+    sourceNote: "单图生成资产",
+    createMethod: "模特生成",
+    createdAt,
+    updatedAt: createdAt,
+    note,
+    tags: [gender, snapshot.raceLabel, ...styleTags].filter(Boolean)
   };
   state.models.unshift(model);
   filterModels();
@@ -2304,7 +2518,12 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
       setWorkspacePage("product-library");
       return;
     }
-    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、模板中心、模特库、素材库和商品库`);
+    if (button.dataset.singleMenu === "创作记录") {
+      setWorkspacePage("creation-records");
+      filterCreationTasks();
+      return;
+    }
+    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、模板中心、模特库、素材库、商品库和创作记录`);
   });
 });
 
@@ -2349,11 +2568,33 @@ document.querySelectorAll("[data-param-open]").forEach((button) => {
 });
 
 document.querySelector("[data-record-open]")?.addEventListener("click", () => {
-  openPrototypeModal(els.recordModal);
+  openCreationRecordsPage();
 });
 
+els.creationTaskStatusButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    els.creationTaskStatusButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+    filterCreationTasks();
+  });
+});
+
+els.creationTaskTypeButtons.forEach((button) => {
+  button.addEventListener("click", () => {
+    els.creationTaskTypeButtons.forEach((item) => item.classList.toggle("is-active", item === button));
+    filterCreationTasks();
+  });
+});
+
+els.creationTaskSearch?.addEventListener("input", filterCreationTasks);
+
 document.querySelector("[data-back-creation]")?.addEventListener("click", () => {
+  if (state.detailBackPage === "creation-records") {
+    openCreationRecordsPage();
+    return;
+  }
   setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
 });
 
 document.querySelectorAll("[data-detail-upload]").forEach((button) => {
@@ -2603,6 +2844,7 @@ els.viewButtons.forEach((button) => {
 });
 
 document.addEventListener("click", (event) => {
+  const addProductButton = event.target.closest("[data-add-product]");
   const detailButton = event.target.closest("[data-detail]");
   const createButton = event.target.closest("[data-create]");
   const popoverAction = event.target.closest("[data-create-action]");
@@ -2613,6 +2855,9 @@ document.addEventListener("click", (event) => {
   const deleteMaterialButton = event.target.closest("[data-delete-material]");
   const addColorButton = event.target.closest("[data-add-color]");
   const deleteColorButton = event.target.closest("[data-delete-color]");
+  const deleteColorImageButton = event.target.closest("[data-delete-color-image]");
+  const drawerImagePreview = event.target.closest("[data-preview-drawer-image]");
+  const closeDrawerImagePreviewButton = event.target.closest("[data-close-drawer-image-preview]");
   const addCustomSizeButton = event.target.closest("[data-add-custom-size]");
   const moveSizeButton = event.target.closest("[data-move-size]");
   const openCustomParameterButton = event.target.closest("[data-open-custom-parameter]");
@@ -2634,8 +2879,25 @@ document.addEventListener("click", (event) => {
   const historyRegenerateButton = event.target.closest("[data-history-regenerate]");
   const detailRegenerateButton = event.target.closest(".detail-result-actions [data-detail-regenerate]");
 
+  if (addProductButton) {
+    openCreateProductDrawer();
+    closeCreateMenu();
+    return;
+  }
+
+  if (closeDrawerImagePreviewButton) {
+    closeDrawerImagePreview();
+    return;
+  }
+
   if (openCreationDetailButton) {
-    openCreationDetail({ fromHistory: true });
+    const taskCard = openCreationDetailButton.closest("[data-creation-task-card]");
+    openCreationDetail({
+      fromHistory: true,
+      taskTitle: taskCard?.dataset.title || "",
+      productName: taskCard?.dataset.product || "",
+      backPage: taskCard ? "creation-records" : "creation-plaza"
+    });
     return;
   }
 
@@ -2675,11 +2937,20 @@ document.addEventListener("click", (event) => {
   }
 
   if (cancelEditButton) {
+    if (state.activeProduct?.isNew) {
+      closeDrawer();
+      return;
+    }
     renderDrawer(state.activeProduct, "view");
     return;
   }
 
   if (saveEditButton) {
+    if (state.activeProduct?.isNew) {
+      showToast("商品已新增");
+      closeDrawer();
+      return;
+    }
     showToast("编辑内容已保存");
     renderDrawer(state.activeProduct, "view");
     return;
@@ -2714,6 +2985,19 @@ document.addEventListener("click", (event) => {
   if (deleteColorButton && state.productEdit) {
     state.productEdit.colors = state.productEdit.colors.filter((color) => color.id !== deleteColorButton.dataset.deleteColor);
     rerenderProductEditDrawer();
+    return;
+  }
+
+  if (deleteColorImageButton && state.productEdit) {
+    const color = state.productEdit.colors.find((item) => item.id === deleteColorImageButton.dataset.deleteColorImage);
+    const index = Number(deleteColorImageButton.dataset.imageIndex);
+    if (color && Number.isInteger(index)) color.images.splice(index, 1);
+    rerenderProductEditDrawer();
+    return;
+  }
+
+  if (drawerImagePreview) {
+    openDrawerImagePreview(drawerImagePreview.dataset.previewDrawerImage || drawerImagePreview.getAttribute("src"));
     return;
   }
 
@@ -2863,6 +3147,7 @@ document.addEventListener("input", (event) => {
   if (colorName) {
     const color = state.productEdit.colors.find((item) => item.id === colorName.dataset.editColorName);
     if (color) color.name = colorName.value;
+    colorName.style.width = `${Math.max(2, colorName.value.length)}em`;
     return;
   }
 
@@ -2906,11 +3191,19 @@ els.customParamModal?.addEventListener("click", (event) => {
   if (event.target === els.customParamModal) closeCustomParameterModal();
 });
 
+els.drawerImagePreview?.addEventListener("click", (event) => {
+  if (event.target === els.drawerImagePreview) closeDrawerImagePreview();
+});
+
 els.closeDrawerButtons.forEach((button) => button.addEventListener("click", closeDrawer));
 els.drawerBackdrop.addEventListener("click", closeDrawer);
 
 document.addEventListener("keydown", (event) => {
   if (event.key === "Escape") {
+    if (els.drawerImagePreview?.classList.contains("is-open")) {
+      closeDrawerImagePreview();
+      return;
+    }
     closeCustomParameterModal();
     closeDrawer();
     closeCreateMenu();
