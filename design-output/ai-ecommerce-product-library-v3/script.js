@@ -154,135 +154,86 @@ const products = [
 const templates = [
   {
     id: "tpl001",
-    name: "蓝调棚拍主图模板",
-    type: "主图模板",
-    typeShort: "主图",
-    category: "文胸",
-    source: "官方",
-    status: "可使用",
+    name: "童装上衣模板-1",
+    description: "童装主图与详情图组合模板，适合活动套图复刻。",
+    category: "童装",
+    brand: "Carter Kids",
+    scope: "我的模板",
+    groups: ["主图", "详情图"],
     usage: 12430,
-    updatedAt: "2026-07-08 18:20",
-    image: "assets/product-cover-03.png",
-    coverTone: "main",
-    tags: ["棚拍", "浅蓝灰", "内衣", "主图"],
-    composition: {
-      main: "1 张主图",
-      detail: "无",
-      sku: "无",
-      brand: "可替换 Logo 位",
-      material: "卖点角标、活动利益点"
-    },
-    records: ["蕾丝聚拢文胸主图 · 2026-07-08", "基础无痕内衣主图 · 2026-07-07"]
+    updatedAt: "2026-07-15 18:20",
+    tags: ["童装", "主图", "详情图"],
+    items: [
+      { id: "tpl001-1", title: "售后说明条", group: "详情图", purpose: "固定插入", source: "素材库", image: "assets/creation-cover-602.jpg" },
+      { id: "tpl001-2", title: "户外童装模特图", group: "主图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-608.jpg" },
+      { id: "tpl001-3", title: "童装场景图", group: "详情图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-610.jpg" }
+    ]
   },
   {
     id: "tpl002",
-    name: "详情长图卖点组合",
-    type: "详情图模板",
-    typeShort: "详情图",
-    category: "内裤",
-    source: "自建",
-    status: "可上架",
-    usage: 286,
-    updatedAt: "2026-07-08 16:12",
-    image: "assets/product-cover-01.png",
-    coverTone: "detail",
-    tags: ["详情页", "卖点", "长图", "男士内裤"],
-    composition: {
-      main: "无",
-      detail: "5 个详情模块",
-      sku: "无",
-      brand: "品牌色与标题样式",
-      material: "尺码、面料、洗护说明"
-    },
-    records: ["男士冰丝平角裤详情长图 · 2026-07-08", "四条装男士内裤组合详情图 · 2026-07-06"]
+    name: "童装-测试1",
+    description: "品牌头图、主图和活动详情图组合。",
+    category: "童装",
+    brand: "Carter Kids",
+    scope: "我的模板",
+    groups: ["主图", "详情图", "SKU图"],
+    usage: 5821,
+    updatedAt: "2026-07-15 16:12",
+    tags: ["套图", "童装", "SKU"],
+    items: [
+      { id: "tpl002-1", title: "30天售后品牌条", group: "详情图", purpose: "固定插入", source: "素材库", image: "assets/creation-cover-602.jpg" },
+      { id: "tpl002-2", title: "童装蓝天主图", group: "主图", purpose: "参考生成", source: "历史创作", image: "assets/product-cover-04.png" },
+      { id: "tpl002-3", title: "组合 SKU 展示", group: "SKU图", purpose: "参考生成", source: "本地上传", image: "assets/product-cover-02.png" },
+      { id: "tpl002-4", title: "亲子详情图", group: "详情图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-610.jpg" }
+    ]
   },
   {
     id: "tpl003",
-    name: "多色 SKU 平铺展示",
-    type: "SKU图模板",
-    typeShort: "SKU图",
-    category: "童装",
-    source: "历史生成",
-    status: "草稿",
-    usage: 48,
-    updatedAt: "2026-07-07 20:34",
-    image: "assets/product-cover-04.png",
-    coverTone: "sku",
-    tags: ["SKU", "多颜色", "童装", "平铺"],
-    composition: {
-      main: "无",
-      detail: "无",
-      sku: "6 个颜色展示位",
-      brand: "无",
-      material: "色卡、尺码说明"
-    },
-    records: ["儿童亲子短袖套装 SKU 图 · 2026-07-07"]
+    name: "女装内衣模板5",
+    description: "文胸详情长图模板，含卖点说明与模特参考。",
+    category: "文胸",
+    brand: "Lovera",
+    scope: "已购模板",
+    groups: ["详情图"],
+    usage: 3428,
+    updatedAt: "2026-07-14 20:34",
+    tags: ["文胸", "详情图", "内衣"],
+    items: [
+      { id: "tpl003-1", title: "聚拢有型文字图", group: "详情图", purpose: "固定插入", source: "文字素材", image: "assets/creation-cover-606.jpg" },
+      { id: "tpl003-2", title: "文胸模特参考", group: "详情图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-616.jpg" }
+    ]
   },
   {
     id: "tpl004",
-    name: "五图详情页套图",
-    type: "套图模板",
-    typeShort: "套图",
-    category: "箱包",
-    source: "已购买",
-    status: "已上架",
-    usage: 5821,
-    updatedAt: "2026-07-07 15:10",
-    image: "assets/product-cover-02.png",
-    coverTone: "suite",
-    tags: ["套图", "主图", "详情图", "SKU", "箱包"],
-    composition: {
-      main: "1 张主图",
-      detail: "3 张详情图",
-      sku: "1 张 SKU 图",
-      brand: "品牌元素区",
-      material: "尺寸、材质、保养说明"
-    },
-    records: ["通勤托特包套图 · 2026-07-07", "轻奢手提包套图 · 2026-07-06"]
+    name: "测试616",
+    description: "内衣主图模板，卧室场景与模特姿态参考。",
+    category: "文胸",
+    brand: "Lovera",
+    scope: "我的模板",
+    groups: ["主图"],
+    usage: 667,
+    updatedAt: "2026-07-14 15:10",
+    tags: ["主图", "文胸", "模特"],
+    items: [
+      { id: "tpl004-1", title: "卧室内衣主图", group: "主图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-616.jpg" },
+      { id: "tpl004-2", title: "尺码说明固定图", group: "主图", purpose: "固定插入", source: "素材库", image: "assets/product-cover-03.png" }
+    ]
   },
   {
     id: "tpl005",
-    name: "运动鞋白底 SKU 模板",
-    type: "SKU图模板",
-    typeShort: "SKU图",
-    category: "鞋子",
-    source: "复制官方资源",
-    status: "审核中",
+    name: "内裤多色 SKU 模板",
+    description: "多色内裤 SKU 展示模板。",
+    category: "内裤",
+    brand: "Softline",
+    scope: "我的模板",
+    groups: ["SKU图"],
     usage: 913,
-    updatedAt: "2026-07-06 19:28",
-    image: "assets/product-cover-01.png",
-    coverTone: "sku",
-    tags: ["鞋子", "SKU", "白底", "多规格"],
-    composition: {
-      main: "无",
-      detail: "无",
-      sku: "4 个角度展示位",
-      brand: "可替换 Logo 位",
-      material: "尺码、颜色、材质说明"
-    },
-    records: ["白色运动休闲鞋 SKU 图 · 2026-07-06"]
-  },
-  {
-    id: "tpl006",
-    name: "可上架内衣套图",
-    type: "套图模板",
-    typeShort: "套图",
-    category: "文胸",
-    source: "自建",
-    status: "可上架",
-    usage: 667,
-    updatedAt: "2026-07-06 11:42",
-    image: "assets/product-cover-03.png",
-    coverTone: "suite",
-    tags: ["可上架", "内衣", "套图", "详情页"],
-    composition: {
-      main: "2 张主图",
-      detail: "4 张详情图",
-      sku: "2 张颜色图",
-      brand: "品牌元素区",
-      material: "尺码、资质、面料说明"
-    },
-    records: ["蕾丝聚拢文胸套图 · 2026-07-06", "无痕内衣套图 · 2026-07-05"]
+    updatedAt: "2026-07-13 19:28",
+    tags: ["SKU", "内裤", "多色"],
+    items: [
+      { id: "tpl005-1", title: "多色内裤平铺", group: "SKU图", purpose: "参考生成", source: "本地上传", image: "assets/product-cover-01.png" },
+      { id: "tpl005-2", title: "浅色内裤 SKU", group: "SKU图", purpose: "参考生成", source: "历史创作", image: "assets/product-cover-02.png" }
+    ]
   }
 ];
 
@@ -567,8 +518,25 @@ const state = {
   modelStyleFilters: [],
   modelCreateTimer: null,
   modelPreviewReady: false,
-  templateTab: "全部",
+  templateScope: "全部",
+  templateCategory: "全部品类",
+  templateGroupFilters: [],
   activeTemplate: templates[0],
+  templateModalEditing: false,
+  contentTargetGroup: "主图",
+  contentSource: "local",
+  contentSelections: [],
+  builderMode: "create",
+  builderEditingId: null,
+  builderSeq: 1,
+  builder: {
+    name: "",
+    description: "",
+    category: "",
+    brand: "",
+    groups: ["主图", "详情图"],
+    items: []
+  },
   publishTemplate: null,
   publishMaterial: null,
   previewResourceCard: null,
@@ -644,11 +612,30 @@ els.resolutionLabel = document.querySelector("[data-resolution-label]");
 els.templateSearch = document.querySelector("[data-template-search]");
 els.templateTypeFilter = document.querySelector("[data-template-type-filter]");
 els.templateCategoryFilter = document.querySelector("[data-template-category-filter]");
+els.templateCategoryButtons = Array.from(document.querySelectorAll("[data-template-category-tab]"));
 els.templateStatusFilter = document.querySelector("[data-template-status-filter]");
 els.templateGrid = document.querySelector("[data-template-grid]");
 els.templateEmptyState = document.querySelector("[data-template-empty-state]");
 els.templateNoResultState = document.querySelector("[data-template-no-result-state]");
 els.templateCreateMenu = document.querySelector("[data-template-create-menu]");
+els.templateContentModal = document.querySelector("[data-template-content-modal]");
+els.contentSourceGrid = document.querySelector("[data-content-source-grid]");
+els.contentModalSubtitle = document.querySelector("[data-content-modal-subtitle]");
+els.templateDetailModal = document.querySelector("[data-template-detail-modal]");
+els.templateDetailPanel = document.querySelector("[data-template-detail-modal] .template-detail-panel");
+els.templateDetailTitle = document.querySelector("[data-template-detail-title]");
+els.templateDetailSubtitle = document.querySelector("[data-template-detail-subtitle]");
+els.templateDetailPreview = document.querySelector("[data-template-detail-preview]");
+els.templateDetailMeta = document.querySelector("[data-template-detail-meta]");
+els.templateDetailItems = document.querySelector("[data-template-detail-items]");
+els.templateDetailEdit = document.querySelector("[data-template-detail-edit]");
+els.builderName = document.querySelector("[data-builder-name]");
+els.builderDescription = document.querySelector("[data-builder-description]");
+els.builderCategory = document.querySelector("[data-builder-category]");
+els.builderBrand = document.querySelector("[data-builder-brand]");
+els.builderGroupBoard = document.querySelector("[data-builder-group-board]");
+els.builderPreview = document.querySelector("[data-builder-preview]");
+els.builderPreviewCount = document.querySelector("[data-builder-preview-count]");
 els.templatePublishModal = document.querySelector("[data-template-publish-modal]");
 els.publishName = document.querySelector("[data-publish-name]");
 els.publishType = document.querySelector("[data-publish-type]");
@@ -699,42 +686,79 @@ function formatUsage(value) {
   return value >= 10000 ? `${(value / 10000).toFixed(1)}万` : String(value);
 }
 
+const templateContentOptions = {
+  local: [
+    { title: "本地上传-内裤平铺", image: "assets/product-cover-01.png", purpose: "参考生成", source: "本地上传" },
+    { title: "本地上传-浅色套装", image: "assets/product-cover-02.png", purpose: "参考生成", source: "本地上传" },
+    { title: "本地上传-文胸细节", image: "assets/product-cover-03.png", purpose: "参考生成", source: "本地上传" },
+    { title: "本地上传-童装主图", image: "assets/product-cover-04.png", purpose: "参考生成", source: "本地上传" }
+  ],
+  material: [
+    { title: "30天售后品牌条", image: "assets/creation-cover-602.jpg", purpose: "固定插入", source: "素材库" },
+    { title: "聚拢有型文字图", image: "assets/creation-cover-606.jpg", purpose: "固定插入", source: "素材库" },
+    { title: "尺码表说明图", image: "assets/product-cover-03.png", purpose: "固定插入", source: "素材库" },
+    { title: "洗护说明图", image: "assets/product-cover-02.png", purpose: "固定插入", source: "素材库" }
+  ],
+  history: [
+    { title: "历史生成-童装户外", image: "assets/creation-cover-608.jpg", purpose: "参考生成", source: "历史创作" },
+    { title: "历史生成-童装蓝天", image: "assets/creation-cover-610.jpg", purpose: "参考生成", source: "历史创作" },
+    { title: "历史生成-内衣模特", image: "assets/creation-cover-616.jpg", purpose: "参考生成", source: "历史创作" },
+    { title: "历史生成-详情卖点", image: "assets/product-cover-04.png", purpose: "参考生成", source: "历史创作" }
+  ],
+  text: [
+    { title: "黑暗无论怎样漫长", image: "assets/creation-cover-606.jpg", purpose: "固定插入", source: "文字素材" },
+    { title: "品牌标题文字条", image: "assets/creation-cover-602.jpg", purpose: "固定插入", source: "文字素材" }
+  ]
+};
+
+function templateComboLabel(template) {
+  const groups = template.groups || [];
+  if (groups.length === 3 && groups.includes("主图") && groups.includes("详情图") && groups.includes("SKU图")) return "套图";
+  return groups.join("+") || "未分组";
+}
+
+function isTemplateItemEnabled(item) {
+  return item.enabled !== false;
+}
+
+function getEnabledTemplateItems(items = []) {
+  return items.filter(isTemplateItemEnabled);
+}
+
+function renderLongPreview(items = [], options = {}) {
+  const emptyText = options.emptyText || "暂无内容，添加图片后实时生成长图预览";
+  if (!items.length) return `<div class="template-long-empty">${emptyText}</div>`;
+  return items.map((item) => `
+    <div class="template-long-piece">
+      <img src="${item.image}" alt="${item.title}">
+      ${options.showBadges ? `<div class="template-piece-tags"><span>${item.group}</span><span>${item.purpose}</span><span>${item.source}</span></div>` : ""}
+    </div>
+  `).join("");
+}
+
 function renderTemplateCards(list) {
   if (!els.templateGrid) return;
 
   els.templateGrid.innerHTML = list.map((template) => `
-    <article class="template-card" data-template-id="${template.id}">
-      <div class="template-cover ${template.coverTone}">
-        <img src="${template.image}" alt="${template.name}">
-      </div>
-      <div class="template-card-body">
-        <div class="template-title-row">
-          <h3>${template.name}</h3>
-          <span class="template-type-badge">${template.typeShort}</span>
+    <article class="template-card long-template-card" data-template-id="${template.id}">
+      <div class="template-long-cover" data-template-preview="${template.id}">
+        <div class="template-combo-badge">${templateComboLabel(template)}</div>
+        <div class="template-long-stack">
+          ${renderLongPreview(getEnabledTemplateItems(template.items), { emptyText: "暂无启用内容" })}
         </div>
-        <div class="template-meta">
-          <span>品类：<strong>${template.category}</strong></span>
-          <span>来源：<strong>${template.source}</strong></span>
-          <span>状态：<em class="template-status ${templateStatusClass(template.status)}">${template.status}</em></span>
-          <span>使用：<strong>${formatUsage(template.usage)}次</strong></span>
-          <span>更新：<strong>${template.updatedAt}</strong></span>
-        </div>
-        <div class="template-card-actions">
-          <button class="primary-action" type="button" data-template-create="${template.id}">去创作</button>
-          <button type="button" data-template-preview="${template.id}">预览</button>
+        <div class="template-card-title">${template.name}</div>
+        <div class="template-hover-actions">
           <button type="button" data-template-edit="${template.id}">编辑</button>
-          <button type="button" data-template-publish="${template.id}">上架到创作广场</button>
-          <button class="danger-action" type="button" data-template-delete="${template.id}">删除</button>
+          <button type="button" data-template-create="${template.id}">去创作</button>
         </div>
       </div>
     </article>
   `).join("");
 
   const hasKeyword = Boolean(els.templateSearch?.value.trim());
-  const hasFilter = state.templateTab !== "全部" ||
-    els.templateTypeFilter?.value !== "全部类型" ||
-    els.templateCategoryFilter?.value !== "全部品类" ||
-    els.templateStatusFilter?.value !== "全部状态";
+  const hasFilter = state.templateScope !== "全部" ||
+    state.templateGroupFilters.length > 0 ||
+    state.templateCategory !== "全部品类";
   els.templateGrid.classList.toggle("is-hidden", list.length === 0);
   els.templateEmptyState?.classList.toggle("is-visible", templates.length === 0);
   els.templateNoResultState?.classList.toggle("is-visible", templates.length > 0 && list.length === 0 && (hasKeyword || hasFilter));
@@ -742,32 +766,322 @@ function renderTemplateCards(list) {
 
 function filterTemplates() {
   if (!els.templateGrid) return;
-  const keyword = els.templateSearch.value.trim().toLowerCase();
-  const type = els.templateTypeFilter.value;
-  const category = els.templateCategoryFilter.value;
-  const status = els.templateStatusFilter.value;
+  const keyword = els.templateSearch?.value.trim().toLowerCase() || "";
+  const category = state.templateCategory;
 
   state.filteredTemplates = templates.filter((template) => {
-    const haystack = [template.name, template.type, template.category, template.source, template.status, ...template.tags].join(" ").toLowerCase();
+    const haystack = [template.name, template.description, template.category, template.brand, template.scope, ...template.tags].join(" ").toLowerCase();
     const matchKeyword = !keyword || haystack.includes(keyword);
-    const matchTab = state.templateTab === "全部" ||
-      template.type === state.templateTab ||
-      (state.templateTab === "可上架" && template.status === "可上架");
-    const matchType = type === "全部类型" || template.type === type;
+    const matchScope = state.templateScope === "全部" || template.scope === state.templateScope;
+    const matchGroups = state.templateGroupFilters.length === 0 || state.templateGroupFilters.every((group) => template.groups.includes(group));
     const matchCategory = category === "全部品类" || template.category === category;
-    const matchStatus = status === "全部状态" || template.status === status;
-    return matchKeyword && matchTab && matchType && matchCategory && matchStatus;
+    return matchKeyword && matchScope && matchGroups && matchCategory;
   });
 
   renderTemplateCards(state.filteredTemplates);
 }
 
-function setTemplateTab(tab) {
-  state.templateTab = tab;
-  document.querySelectorAll("[data-template-tab]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.templateTab === tab);
+function setTemplateScope(scope) {
+  state.templateScope = scope;
+  document.querySelectorAll("[data-template-scope]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.templateScope === scope);
   });
   filterTemplates();
+}
+
+function setTemplateCategory(category) {
+  state.templateCategory = category;
+  els.templateCategoryButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.templateCategoryTab === category);
+  });
+  filterTemplates();
+}
+
+function toggleTemplateGroupFilter(group) {
+  if (group === "全部") {
+    state.templateGroupFilters = [];
+  } else if (state.templateGroupFilters.includes(group)) {
+    state.templateGroupFilters = state.templateGroupFilters.filter((item) => item !== group);
+  } else {
+    state.templateGroupFilters.push(group);
+  }
+  document.querySelectorAll("[data-template-group-filter]").forEach((button) => {
+    const filter = button.dataset.templateGroupFilter;
+    button.classList.toggle("is-active", filter === "全部" ? state.templateGroupFilters.length === 0 : state.templateGroupFilters.includes(filter));
+  });
+  filterTemplates();
+}
+
+function cloneTemplate(template) {
+  return {
+    name: template.name,
+    description: template.description || "",
+    category: template.category || "",
+    brand: template.brand || "",
+    groups: [...template.groups],
+    items: template.items.map((item) => ({ ...item, enabled: isTemplateItemEnabled(item) }))
+  };
+}
+
+function resetTemplateBuilder(template = null) {
+  state.builderMode = template ? "edit" : "create";
+  state.builderEditingId = template?.id || null;
+  state.builderSeq = 1;
+  state.builder = template ? cloneTemplate(template) : {
+    name: "",
+    description: "",
+    category: "",
+    brand: "",
+    groups: ["主图", "详情图"],
+    items: []
+  };
+  syncBuilderForm();
+  renderTemplateBuilder();
+}
+
+function syncBuilderForm() {
+  if (!els.builderName) return;
+  els.builderName.value = state.builder.name;
+  els.builderDescription.value = state.builder.description;
+  els.builderCategory.value = state.builder.category;
+  els.builderBrand.value = state.builder.brand;
+  document.querySelectorAll("[data-builder-group]").forEach((button) => {
+    button.classList.toggle("is-active", state.builder.groups.includes(button.dataset.builderGroup));
+  });
+}
+
+function getGroupItems(group) {
+  return state.builder.items.filter((item) => item.group === group);
+}
+
+function renderTemplateBuilder() {
+  if (!els.builderGroupBoard) return;
+  const groups = state.builder.groups;
+  els.builderGroupBoard.innerHTML = groups.map((group) => {
+    const items = getGroupItems(group);
+    return `
+      <section class="builder-group-section" data-builder-group-section="${group}">
+        <div class="builder-group-head">
+          <div><h3>${group}配置</h3><span>${items.length} 张内容</span></div>
+          <button class="btn ghost builder-add-content-btn" type="button" data-open-content-picker="${group}"><span class="builder-add-plus">+</span>添加内容</button>
+        </div>
+        <div class="builder-item-list">
+          ${items.length ? items.map((item) => renderBuilderItem(item)).join("") : `<div class="builder-empty-group">暂无内容，可从本地上传、素材库或历史创作中选择</div>`}
+        </div>
+      </section>
+    `;
+  }).join("");
+  renderBuilderPreview();
+}
+
+function renderBuilderItem(item) {
+  const enabled = isTemplateItemEnabled(item);
+  return `
+    <article class="builder-item ${enabled ? "" : "is-disabled"}" draggable="true" data-builder-item="${item.id}">
+      <button class="builder-item-enable" type="button" data-builder-toggle-enabled="${item.id}" aria-label="${enabled ? "取消参与拼接" : "启用参与拼接"}">
+        ${enabled ? "✓" : ""}
+      </button>
+      <img src="${item.image}" alt="${item.title}" data-builder-preview-image="${item.image}">
+      ${enabled ? "" : `<span class="builder-item-disabled-label">未启用</span>`}
+      <button class="builder-item-remove" type="button" data-builder-remove-item="${item.id}" aria-label="删除图片"></button>
+    </article>
+  `;
+}
+
+function renderBuilderPreview() {
+  if (!els.builderPreview) return;
+  const enabledItems = getEnabledTemplateItems(state.builder.items);
+  els.builderPreview.innerHTML = renderLongPreview(enabledItems, { showBadges: true, emptyText: "暂无启用内容，勾选图片后展示长图预览" });
+  if (els.builderPreviewCount) els.builderPreviewCount.textContent = "支持拖拽调整顺序";
+}
+
+function updateBuilderFromInputs() {
+  state.builder.name = els.builderName?.value.trim() || "";
+  state.builder.description = els.builderDescription?.value.trim() || "";
+  state.builder.category = els.builderCategory?.value || "";
+  state.builder.brand = els.builderBrand?.value.trim() || "";
+}
+
+function toggleBuilderGroup(group) {
+  if (state.builder.groups.includes(group)) {
+    if (state.builder.groups.length === 1) {
+      showToast("至少选择一个模板分组");
+      return;
+    }
+    state.builder.groups = state.builder.groups.filter((item) => item !== group);
+    state.builder.items = state.builder.items.filter((item) => item.group !== group);
+  } else {
+    state.builder.groups.push(group);
+  }
+  syncBuilderForm();
+  renderTemplateBuilder();
+}
+
+function openContentPicker(group) {
+  state.contentTargetGroup = group;
+  state.contentSelections = [];
+  state.contentSource = "local";
+  if (els.contentModalSubtitle) els.contentModalSubtitle.textContent = `将内容加入「${group}」分组`;
+  document.querySelectorAll("[data-content-source]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.contentSource === "local");
+  });
+  renderContentOptions();
+  openPrototypeModal(els.templateContentModal);
+}
+
+function renderContentOptions() {
+  if (!els.contentSourceGrid) return;
+  const options = templateContentOptions[state.contentSource] || [];
+  if (state.contentSource === "local") {
+    const selectedKey = "local-0";
+    els.contentSourceGrid.innerHTML = `
+      <button class="content-upload-zone ${state.contentSelections.includes(selectedKey) ? "is-selected" : ""}" type="button" data-content-option="${selectedKey}">
+        <span class="content-upload-icon"></span>
+        <strong>上传本地图片</strong>
+        <small>支持 JPG / PNG / WEBP，可一次选择多张图片</small>
+        <em>选择本地图片</em>
+      </button>
+    `;
+    return;
+  }
+  els.contentSourceGrid.innerHTML = options.map((option, index) => {
+    const key = `${state.contentSource}-${index}`;
+    return `
+      <button class="content-option-card ${state.contentSelections.includes(key) ? "is-selected" : ""}" type="button" data-content-option="${key}">
+        <img src="${option.image}" alt="${option.title}">
+        <strong>${option.title}</strong>
+      </button>
+    `;
+  }).join("");
+}
+
+function setContentSource(source) {
+  state.contentSource = source;
+  state.contentSelections = [];
+  document.querySelectorAll("[data-content-source]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.contentSource === source);
+  });
+  renderContentOptions();
+}
+
+function toggleContentSelection(key) {
+  if (state.contentSelections.includes(key)) {
+    state.contentSelections = state.contentSelections.filter((item) => item !== key);
+  } else {
+    state.contentSelections.push(key);
+  }
+  renderContentOptions();
+}
+
+function confirmContentSelection() {
+  if (!state.contentSelections.length) {
+    showToast("请先选择内容");
+    return;
+  }
+  state.contentSelections.forEach((key) => {
+    const [source, indexText] = key.split("-");
+    const option = templateContentOptions[source]?.[Number(indexText)];
+    if (!option) return;
+    state.builder.items.push({
+      id: `builder-${Date.now()}-${state.builderSeq++}`,
+      title: option.title,
+      group: state.contentTargetGroup,
+      purpose: option.purpose,
+      source: option.source,
+      image: option.image,
+      enabled: true
+    });
+  });
+  closePrototypeModals();
+  renderTemplateBuilder();
+  showToast(`已加入 ${state.contentSelections.length} 个内容`);
+}
+
+function moveBuilderItem(itemId, direction) {
+  const index = state.builder.items.findIndex((item) => item.id === itemId);
+  if (index < 0) return;
+  const nextIndex = direction === "up" ? index - 1 : index + 1;
+  if (nextIndex < 0 || nextIndex >= state.builder.items.length) return;
+  const [item] = state.builder.items.splice(index, 1);
+  state.builder.items.splice(nextIndex, 0, item);
+  renderTemplateBuilder();
+}
+
+function moveBuilderItemGroup(itemId, group) {
+  const item = state.builder.items.find((entry) => entry.id === itemId);
+  if (!item) return;
+  item.group = group;
+  renderTemplateBuilder();
+}
+
+function toggleBuilderItemPurpose(itemId) {
+  const item = state.builder.items.find((entry) => entry.id === itemId);
+  if (!item) return;
+  item.purpose = item.purpose === "参考生成" ? "固定插入" : "参考生成";
+  renderTemplateBuilder();
+}
+
+function toggleBuilderItemEnabled(itemId) {
+  const item = state.builder.items.find((entry) => entry.id === itemId);
+  if (!item) return;
+  item.enabled = !isTemplateItemEnabled(item);
+  renderTemplateBuilder();
+}
+
+function removeBuilderItem(itemId) {
+  state.builder.items = state.builder.items.filter((item) => item.id !== itemId);
+  renderTemplateBuilder();
+}
+
+function validateBuilder() {
+  updateBuilderFromInputs();
+  if (!state.builder.name) return "请输入模板名称";
+  if (!state.builder.category) return "请选择商品分类";
+  if (!state.builder.groups.length) return "请至少选择一个模板分组";
+  if (!state.builder.items.length) return "请至少添加一张图片内容";
+  if (!getEnabledTemplateItems(state.builder.items).length) return "请至少启用一张图片参与长图拼接";
+  return "";
+}
+
+function saveTemplateBuilder() {
+  const error = validateBuilder();
+  if (error) {
+    showToast(error);
+    return;
+  }
+  const now = "2026-07-16 11:30";
+  if (state.builderMode === "edit" && state.builderEditingId) {
+    const template = getTemplate(state.builderEditingId);
+    if (template) {
+      Object.assign(template, {
+        name: state.builder.name,
+        description: state.builder.description,
+        category: state.builder.category,
+        brand: state.builder.brand,
+        groups: [...state.builder.groups],
+        tags: [...state.builder.groups, state.builder.category],
+        items: state.builder.items.map((item) => ({ ...item })),
+        updatedAt: now
+      });
+    }
+  } else {
+    templates.unshift({
+      id: `tpl${String(Date.now()).slice(-6)}`,
+      name: state.builder.name,
+      description: state.builder.description,
+      category: state.builder.category,
+      brand: state.builder.brand,
+      scope: "我的模板",
+      groups: [...state.builder.groups],
+      usage: 0,
+      updatedAt: now,
+      tags: [...state.builder.groups, state.builder.category],
+      items: state.builder.items.map((item) => ({ ...item }))
+    });
+  }
+  filterTemplates();
+  setWorkspacePage("template-center");
+  showToast("模板已保存");
 }
 
 function renderMaterialCards(list) {
@@ -1555,9 +1869,10 @@ function addCustomParameter() {
   rerenderProductEditDrawer();
 }
 
-function openDrawerImagePreview(src) {
+function openDrawerImagePreview(src, options = {}) {
   if (!src || !els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreviewImg.src = src;
+  els.drawerImagePreview.classList.toggle("is-model-preview", Boolean(options.modelPreview));
   els.drawerImagePreview.classList.add("is-open");
   els.drawerImagePreview.setAttribute("aria-hidden", "false");
 }
@@ -1565,6 +1880,7 @@ function openDrawerImagePreview(src) {
 function closeDrawerImagePreview() {
   if (!els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreview.classList.remove("is-open");
+  els.drawerImagePreview.classList.remove("is-model-preview");
   els.drawerImagePreview.setAttribute("aria-hidden", "true");
   els.drawerImagePreviewImg.removeAttribute("src");
 }
@@ -1582,63 +1898,67 @@ function moveSelectedSize(sizeId, direction) {
   rerenderProductEditDrawer();
 }
 
-function renderTemplateDrawer(template) {
+function renderTemplateDetailModal(template) {
+  if (!els.templateDetailModal) return;
   state.activeTemplate = template;
-  state.drawerMode = "template";
-  els.drawer.dataset.mode = "template";
-  els.drawer.dataset.drawerKind = "template";
-  setDrawerSectionTitles({
-    basic: "模板信息",
-    material: "模板组成",
-    selling: "预览图",
-    images: "最近使用记录",
-    size: ""
-  });
-  els.drawerTitle.textContent = template.name;
-  els.basicInfo.innerHTML = [
-    ["模板类型", template.type],
-    ["适用品类", template.category],
-    ["来源", template.source],
-    ["状态", template.status],
-    ["使用次数", `${formatUsage(template.usage)}次`],
-    ["更新时间", template.updatedAt]
-  ].map(([label, value]) => `
-    <div class="info-item">
-      <span>${label}</span>
-      <strong>${value}</strong>
-    </div>
+  els.templateDetailTitle.textContent = template.name;
+  els.templateDetailSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · ${template.scope}`;
+  els.templateDetailPreview.innerHTML = renderLongPreview(getEnabledTemplateItems(template.items), { showBadges: true, emptyText: "暂无启用内容" });
+  els.templateDetailMeta.innerHTML = `
+    <dl>
+      <div><dt>模板名称</dt><dd>${template.name}</dd></div>
+      <div><dt>商品分类</dt><dd>${template.category}</dd></div>
+      <div><dt>品牌名称</dt><dd>${template.brand || "未填写"}</dd></div>
+      <div><dt>模板分组</dt><dd>${template.groups.join(" / ")}</dd></div>
+      <div><dt>更新时间</dt><dd>${template.updatedAt}</dd></div>
+    </dl>
+    <p>${template.description || "暂无模板描述"}</p>
+  `;
+  els.templateDetailItems.innerHTML = template.items.map((item, index) => `
+    <article class="template-detail-item ${isTemplateItemEnabled(item) ? "" : "is-disabled"}">
+      <img src="${item.image}" alt="${item.title}">
+      <div>
+        <strong>${index + 1}. ${item.title}</strong>
+        <span>${item.group} · ${item.purpose} · ${item.source} · ${isTemplateItemEnabled(item) ? "已启用" : "未启用"}</span>
+      </div>
+    </article>
   `).join("");
-  els.materialInfo.innerHTML = `
-    <div class="template-composition">
-      <div class="info-item"><span>主图</span><strong>${template.composition.main}</strong></div>
-      <div class="info-item"><span>详情图</span><strong>${template.composition.detail}</strong></div>
-      <div class="info-item"><span>SKU图</span><strong>${template.composition.sku}</strong></div>
-      <div class="info-item"><span>品牌元素</span><strong>${template.composition.brand}</strong></div>
-      <div class="info-item"><span>尺码/资质/说明素材</span><strong>${template.composition.material}</strong></div>
-    </div>
-  `;
-  els.sellingPoint.innerHTML = `
-    <div class="template-preview-large">
-      <img src="${template.image}" alt="${template.name}">
-      <p>${template.name}适用于${template.category}品类的${template.typeShort}生成，可从卡片去创作带入创作广场。</p>
-    </div>
-  `;
-  els.colorImages.innerHTML = `
-    <div class="record-list">
-      ${template.records.map((record) => `
-        <div class="record-item">
-          <strong>${record}</strong>
-          <p>${template.type} · ${template.category}</p>
-        </div>
-      `).join("")}
-    </div>
-  `;
-  els.sizeConfig.innerHTML = "";
-  els.drawerFoot.innerHTML = `
-    <button class="btn ghost" type="button" data-template-drawer-edit="${template.id}">编辑模板</button>
-    <button class="btn ghost" type="button" data-template-drawer-publish="${template.id}">上架到创作广场</button>
-    <button class="btn primary" type="button" data-template-drawer-create="${template.id}">去创作</button>
-  `;
+  els.templateDetailEdit.innerHTML = "";
+}
+
+function setTemplateDetailMode(mode) {
+  state.templateModalEditing = mode === "edit";
+  els.templateDetailPanel?.setAttribute("data-template-detail-mode", mode);
+  if (mode === "edit" && state.activeTemplate) {
+    resetTemplateBuilder(state.activeTemplate);
+    els.templateDetailEdit.innerHTML = `
+      <div class="template-modal-edit-note">编辑态已载入模板内容，可保存、添加内容、调整用途或删除模板。</div>
+      <div class="template-modal-edit-grid">
+        <label><span>模板名称</span><input type="text" data-modal-edit-name value="${state.builder.name}"></label>
+        <label><span>商品分类</span><select data-modal-edit-category>
+          ${["文胸", "内裤", "童装", "鞋子", "箱包"].map((category) => `<option value="${category}" ${state.builder.category === category ? "selected" : ""}>${category}</option>`).join("")}
+        </select></label>
+        <label><span>品牌名称</span><input type="text" data-modal-edit-brand value="${state.builder.brand}"></label>
+        <label class="wide"><span>模板描述</span><textarea data-modal-edit-description>${state.builder.description}</textarea></label>
+      </div>
+      <div class="template-modal-edit-list">
+        ${state.activeTemplate.items.map((item) => `
+          <article class="template-modal-edit-item ${isTemplateItemEnabled(item) ? "" : "is-disabled"}">
+            <img src="${item.image}" alt="${item.title}">
+            <div>
+              <strong>${item.title}</strong>
+              <span>${item.group} · ${item.purpose} · ${item.source} · ${isTemplateItemEnabled(item) ? "已启用" : "未启用"}</span>
+            </div>
+            <button type="button" data-modal-toggle-enabled="${item.id}">${isTemplateItemEnabled(item) ? "取消启用" : "启用"}</button>
+            <button type="button" data-modal-toggle-purpose="${item.id}">${item.purpose === "参考生成" ? "设为固定插入" : "设为参考生成"}</button>
+            <button type="button" data-modal-remove-item="${item.id}">删除</button>
+          </article>
+        `).join("")}
+      </div>
+    `;
+  } else if (state.activeTemplate) {
+    renderTemplateDetailModal(state.activeTemplate);
+  }
 }
 
 function openDrawer(productId) {
@@ -1662,9 +1982,21 @@ function openTemplateDrawer(templateId) {
   const template = templates.find((item) => item.id === templateId);
   if (!template) return;
 
-  renderTemplateDrawer(template);
-  els.drawer.classList.add("is-open");
-  els.drawerBackdrop.classList.add("is-open");
+  renderTemplateDetailModal(template);
+  setTemplateDetailMode("view");
+  openPrototypeModal(els.templateDetailModal);
+}
+
+function editTemplateInBuilder(templateId) {
+  const template = templates.find((item) => item.id === templateId);
+  if (!template) return;
+
+  resetTemplateBuilder(template);
+  closePrototypeModals();
+  clearMenuActive();
+  document.querySelector('[data-single-menu="模板中心"]')?.classList.add("active");
+  setWorkspacePage("template-builder");
+  showToast("已进入模板编辑页");
 }
 
 function closeDrawer() {
@@ -1967,11 +2299,12 @@ function goCreateWithTemplate(templateId) {
   clearMenuActive();
   document.querySelector('[data-single-menu="创作广场"]').classList.add("active");
   setCreationCategory(template.category);
-  els.creationPrompt.value = `${template.name}，适用于${template.category}品类，生成符合电商上架标准的${template.typeShort}图片。`;
-  setCreationTemplate(template.name, template.type === "套图模板" ? "suite" : "template");
+  els.creationPrompt.value = `已带入多图模板「${template.name}」（${templateComboLabel(template)}），多图创作补素材流程后续接入。`;
+  setCreationTemplate(template.name, "suite");
   updateCreationMode();
   closeDrawer();
-  showToast(`${template.type === "套图模板" ? "套图模板" : "模板"}已带入图片创作`);
+  closePrototypeModals();
+  showToast(`已带入「${template.name}」，多图创作流程后续接入`);
 }
 
 function openTemplatePublish(templateId) {
@@ -1981,11 +2314,11 @@ function openTemplatePublish(templateId) {
   state.publishTemplate = template;
   state.publishMaterial = null;
   els.publishName.value = template.name;
-  els.publishType.value = template.type;
+  els.publishType.value = templateComboLabel(template);
   els.publishCategory.value = template.category;
-  els.publishPrice.value = template.status === "已上架" ? "18 融豆" : "免费";
-  els.publishDesc.value = `${template.name}，适合${template.category}品类的${template.typeShort}资源。`;
-  els.publishPreview.src = template.image;
+  els.publishPrice.value = "免费";
+  els.publishDesc.value = `${template.name}，适合${template.category}品类的${templateComboLabel(template)}资源。`;
+  els.publishPreview.src = template.items[0]?.image || "assets/product-cover-03.png";
   openPrototypeModal(els.templatePublishModal);
 }
 
@@ -2787,11 +3120,19 @@ document.querySelector("[data-preview-use]")?.addEventListener("click", () => {
   closePrototypeModals();
 });
 
-document.querySelectorAll("[data-template-tab]").forEach((button) => {
-  button.addEventListener("click", () => setTemplateTab(button.dataset.templateTab));
+document.querySelectorAll("[data-template-scope]").forEach((button) => {
+  button.addEventListener("click", () => setTemplateScope(button.dataset.templateScope));
 });
 
-[els.templateSearch, els.templateTypeFilter, els.templateCategoryFilter, els.templateStatusFilter].forEach((control) => {
+document.querySelectorAll("[data-template-group-filter]").forEach((button) => {
+  button.addEventListener("click", () => toggleTemplateGroupFilter(button.dataset.templateGroupFilter));
+});
+
+els.templateCategoryButtons.forEach((button) => {
+  button.addEventListener("click", () => setTemplateCategory(button.dataset.templateCategoryTab));
+});
+
+[els.templateSearch, els.templateCategoryFilter].forEach((control) => {
   control?.addEventListener("input", filterTemplates);
   control?.addEventListener("change", filterTemplates);
 });
@@ -2799,18 +3140,109 @@ document.querySelectorAll("[data-template-tab]").forEach((button) => {
 document.querySelectorAll("[data-template-create-trigger], [data-template-create-trigger-empty]").forEach((button) => {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
-    els.templateCreateMenu.classList.toggle("is-open");
+    resetTemplateBuilder();
+    clearMenuActive();
+    document.querySelector('[data-single-menu="模板中心"]').classList.add("active");
+    setWorkspacePage("template-builder");
   });
 });
 
-document.querySelectorAll("[data-new-template]").forEach((button) => {
-  button.addEventListener("click", () => {
-    els.templateCreateMenu.classList.remove("is-open");
-    showToast(`${button.dataset.newTemplate}创建状态已模拟`);
-  });
+document.querySelectorAll("[data-template-query]").forEach((button) => {
+  button.addEventListener("click", filterTemplates);
 });
 
 document.querySelector("[data-publish-submit]")?.addEventListener("click", submitTemplatePublish);
+
+document.querySelectorAll("[data-builder-group]").forEach((button) => {
+  button.addEventListener("click", () => toggleBuilderGroup(button.dataset.builderGroup));
+});
+
+[els.builderName, els.builderDescription, els.builderCategory, els.builderBrand].forEach((control) => {
+  control?.addEventListener("input", updateBuilderFromInputs);
+  control?.addEventListener("change", updateBuilderFromInputs);
+});
+
+document.querySelector("[data-template-builder-save]")?.addEventListener("click", saveTemplateBuilder);
+
+document.querySelector("[data-template-builder-back]")?.addEventListener("click", () => {
+  setWorkspacePage("template-center");
+});
+
+document.querySelector("[data-template-builder-preview]")?.addEventListener("click", () => {
+  updateBuilderFromInputs();
+  const previewTemplate = {
+    id: "builder-preview",
+    name: state.builder.name || "未命名模板",
+    description: state.builder.description,
+    category: state.builder.category || "未选择品类",
+    brand: state.builder.brand,
+    scope: "我的模板",
+    groups: [...state.builder.groups],
+    items: state.builder.items.map((item) => ({ ...item })),
+    updatedAt: "预览中"
+  };
+  renderTemplateDetailModal(previewTemplate);
+  setTemplateDetailMode("view");
+  openPrototypeModal(els.templateDetailModal);
+});
+
+document.querySelectorAll("[data-content-source]").forEach((button) => {
+  button.addEventListener("click", () => setContentSource(button.dataset.contentSource));
+});
+
+document.querySelector("[data-content-confirm]")?.addEventListener("click", confirmContentSelection);
+
+document.querySelector("[data-template-modal-edit]")?.addEventListener("click", () => {
+  if (!state.activeTemplate || state.activeTemplate.id === "builder-preview") return;
+  editTemplateInBuilder(state.activeTemplate.id);
+});
+
+document.querySelector("[data-template-modal-cancel-edit]")?.addEventListener("click", () => setTemplateDetailMode("view"));
+
+document.querySelector("[data-template-modal-save]")?.addEventListener("click", () => {
+  if (!state.activeTemplate) return;
+  const name = document.querySelector("[data-modal-edit-name]")?.value.trim();
+  const category = document.querySelector("[data-modal-edit-category]")?.value;
+  const brand = document.querySelector("[data-modal-edit-brand]")?.value.trim();
+  const description = document.querySelector("[data-modal-edit-description]")?.value.trim();
+  if (!name || !category) {
+    showToast("请填写模板名称和商品分类");
+    return;
+  }
+  if (!getEnabledTemplateItems(state.activeTemplate.items).length) {
+    showToast("请至少启用一张图片参与长图拼接");
+    return;
+  }
+  Object.assign(state.activeTemplate, {
+    name,
+    category,
+    brand,
+    description,
+    updatedAt: "2026-07-16 11:40"
+  });
+  filterTemplates();
+  renderTemplateDetailModal(state.activeTemplate);
+  setTemplateDetailMode("view");
+  showToast("模板已保存");
+});
+
+document.querySelector("[data-template-modal-create]")?.addEventListener("click", () => {
+  if (!state.activeTemplate) return;
+  if (state.activeTemplate.id === "builder-preview") {
+    showToast("请先保存模板后再去创作");
+    return;
+  }
+  goCreateWithTemplate(state.activeTemplate.id);
+});
+
+document.querySelector("[data-template-modal-delete]")?.addEventListener("click", () => {
+  if (!state.activeTemplate) return;
+  const index = templates.findIndex((item) => item.id === state.activeTemplate.id);
+  if (index >= 0) templates.splice(index, 1);
+  closePrototypeModals();
+  filterTemplates();
+  showToast("模板已删除");
+});
 
 document.querySelectorAll("[data-material-tab]").forEach((button) => {
   button.addEventListener("click", () => setMaterialTab(button.dataset.materialTab));
@@ -2857,6 +3289,8 @@ document.addEventListener("click", (event) => {
   const deleteColorButton = event.target.closest("[data-delete-color]");
   const deleteColorImageButton = event.target.closest("[data-delete-color-image]");
   const drawerImagePreview = event.target.closest("[data-preview-drawer-image]");
+  const modelGeneratedPreview = event.target.closest("[data-model-generated-preview]");
+  const builderPreviewImage = event.target.closest("[data-builder-preview-image]");
   const closeDrawerImagePreviewButton = event.target.closest("[data-close-drawer-image-preview]");
   const addCustomSizeButton = event.target.closest("[data-add-custom-size]");
   const moveSizeButton = event.target.closest("[data-move-size]");
@@ -2868,6 +3302,16 @@ document.addEventListener("click", (event) => {
   const templateEditButton = event.target.closest("[data-template-edit], [data-template-drawer-edit]");
   const templatePublishButton = event.target.closest("[data-template-publish], [data-template-drawer-publish]");
   const templateDeleteButton = event.target.closest("[data-template-delete]");
+  const openContentButton = event.target.closest("[data-open-content-picker]");
+  const contentOptionButton = event.target.closest("[data-content-option]");
+  const builderMoveButton = event.target.closest("[data-builder-move]");
+  const builderMoveGroupButton = event.target.closest("[data-builder-move-group]");
+  const builderTogglePurposeButton = event.target.closest("[data-builder-toggle-purpose]");
+  const builderToggleEnabledButton = event.target.closest("[data-builder-toggle-enabled]");
+  const builderRemoveItemButton = event.target.closest("[data-builder-remove-item]");
+  const modalTogglePurposeButton = event.target.closest("[data-modal-toggle-purpose]");
+  const modalToggleEnabledButton = event.target.closest("[data-modal-toggle-enabled]");
+  const modalRemoveItemButton = event.target.closest("[data-modal-remove-item]");
   const materialPreviewButton = event.target.closest("[data-material-preview]");
   const materialUseButton = event.target.closest("[data-material-use], [data-material-drawer-use]");
   const materialEditButton = event.target.closest("[data-material-edit], [data-material-drawer-edit]");
@@ -3001,6 +3445,16 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (builderPreviewImage && !event.target.closest("[data-builder-remove-item]") && !event.target.closest("[data-builder-toggle-enabled]")) {
+    openDrawerImagePreview(builderPreviewImage.dataset.builderPreviewImage || builderPreviewImage.getAttribute("src"));
+    return;
+  }
+
+  if (modelGeneratedPreview) {
+    openDrawerImagePreview(modelGeneratedPreview.getAttribute("src"), { modelPreview: true });
+    return;
+  }
+
   if (addCustomSizeButton && state.productEdit) {
     state.productEdit.sizes.push({
       id: nextProductEditId("size"),
@@ -3033,8 +3487,67 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  if (templatePreviewButton) {
-    openTemplateDrawer(templatePreviewButton.dataset.templatePreview);
+  if (openContentButton) {
+    openContentPicker(openContentButton.dataset.openContentPicker);
+    return;
+  }
+
+  if (contentOptionButton) {
+    toggleContentSelection(contentOptionButton.dataset.contentOption);
+    return;
+  }
+
+  if (builderMoveButton) {
+    moveBuilderItem(builderMoveButton.dataset.builderMove, builderMoveButton.dataset.direction);
+    return;
+  }
+
+  if (builderMoveGroupButton) {
+    moveBuilderItemGroup(builderMoveGroupButton.dataset.builderMoveGroup, builderMoveGroupButton.dataset.targetGroup);
+    return;
+  }
+
+  if (builderTogglePurposeButton) {
+    toggleBuilderItemPurpose(builderTogglePurposeButton.dataset.builderTogglePurpose);
+    return;
+  }
+
+  if (builderToggleEnabledButton) {
+    toggleBuilderItemEnabled(builderToggleEnabledButton.dataset.builderToggleEnabled);
+    return;
+  }
+
+  if (builderRemoveItemButton) {
+    removeBuilderItem(builderRemoveItemButton.dataset.builderRemoveItem);
+    return;
+  }
+
+  if (modalTogglePurposeButton && state.activeTemplate) {
+    const item = state.activeTemplate.items.find((entry) => entry.id === modalTogglePurposeButton.dataset.modalTogglePurpose);
+    if (item) item.purpose = item.purpose === "参考生成" ? "固定插入" : "参考生成";
+    renderTemplateDetailModal(state.activeTemplate);
+    setTemplateDetailMode("edit");
+    return;
+  }
+
+  if (modalToggleEnabledButton && state.activeTemplate) {
+    const item = state.activeTemplate.items.find((entry) => entry.id === modalToggleEnabledButton.dataset.modalToggleEnabled);
+    if (item) item.enabled = !isTemplateItemEnabled(item);
+    renderTemplateDetailModal(state.activeTemplate);
+    setTemplateDetailMode("edit");
+    return;
+  }
+
+  if (modalRemoveItemButton && state.activeTemplate) {
+    state.activeTemplate.items = state.activeTemplate.items.filter((entry) => entry.id !== modalRemoveItemButton.dataset.modalRemoveItem);
+    renderTemplateDetailModal(state.activeTemplate);
+    setTemplateDetailMode("edit");
+    return;
+  }
+
+  if (templateEditButton) {
+    const templateId = templateEditButton.dataset.templateEdit || templateEditButton.dataset.templateDrawerEdit;
+    editTemplateInBuilder(templateId);
     return;
   }
 
@@ -3043,8 +3556,8 @@ document.addEventListener("click", (event) => {
     return;
   }
 
-  if (templateEditButton) {
-    showToast("已进入模板编辑状态（原型模拟）");
+  if (templatePreviewButton && !event.target.closest(".template-hover-actions")) {
+    openTemplateDrawer(templatePreviewButton.dataset.templatePreview);
     return;
   }
 
@@ -3185,6 +3698,44 @@ document.addEventListener("change", (event) => {
     if (parameter) parameter.selected = parameterToggle.checked;
     rerenderProductEditDrawer();
   }
+});
+
+document.addEventListener("dragstart", (event) => {
+  const item = event.target.closest("[data-builder-item]");
+  if (!item) return;
+  event.dataTransfer.setData("text/plain", item.dataset.builderItem);
+  event.dataTransfer.effectAllowed = "move";
+});
+
+document.addEventListener("dragover", (event) => {
+  if (event.target.closest("[data-builder-group-section]") || event.target.closest("[data-builder-item]")) {
+    event.preventDefault();
+  }
+});
+
+document.addEventListener("drop", (event) => {
+  const draggedId = event.dataTransfer?.getData("text/plain");
+  if (!draggedId) return;
+  const targetItem = event.target.closest("[data-builder-item]");
+  const targetGroupSection = event.target.closest("[data-builder-group-section]");
+  if (!targetItem && !targetGroupSection) return;
+  event.preventDefault();
+
+  const draggedIndex = state.builder.items.findIndex((item) => item.id === draggedId);
+  if (draggedIndex < 0) return;
+  const [draggedItem] = state.builder.items.splice(draggedIndex, 1);
+
+  if (targetItem && targetItem.dataset.builderItem !== draggedId) {
+    const targetIndex = state.builder.items.findIndex((item) => item.id === targetItem.dataset.builderItem);
+    const target = state.builder.items[targetIndex];
+    if (target) draggedItem.group = target.group;
+    state.builder.items.splice(Math.max(targetIndex, 0), 0, draggedItem);
+  } else {
+    draggedItem.group = targetGroupSection.dataset.builderGroupSection;
+    state.builder.items.push(draggedItem);
+  }
+
+  renderTemplateBuilder();
 });
 
 els.customParamModal?.addEventListener("click", (event) => {

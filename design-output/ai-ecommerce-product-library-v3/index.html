@@ -304,53 +304,34 @@
 
       <section class="workspace-page" data-page="template-center">
         <section class="template-center-card">
-          <div class="template-toolbar">
+          <div class="template-top-row">
+            <div class="template-scope-tabs" data-template-scope-tabs>
+              <button class="is-active" type="button" data-template-scope="全部">全部</button>
+              <button type="button" data-template-scope="我的模板">我的模板</button>
+              <button type="button" data-template-scope="已购模板">已购模板</button>
+            </div>
+            <button class="btn primary template-create-btn" type="button" data-template-create-trigger><span class="template-create-plus">+</span>新建模板</button>
+          </div>
+          <div class="template-filter-row">
+            <div class="template-category-tabs" data-template-category-tabs>
+              <button class="is-active" type="button" data-template-category-tab="全部品类">全部品类</button>
+              <button type="button" data-template-category-tab="文胸">文胸</button>
+              <button type="button" data-template-category-tab="内裤">内裤</button>
+              <button type="button" data-template-category-tab="童装">童装</button>
+              <button type="button" data-template-category-tab="鞋子">鞋子</button>
+              <button type="button" data-template-category-tab="箱包">箱包</button>
+            </div>
             <div class="search-field template-search">
               <span class="search-icon"></span>
               <input type="search" placeholder="搜索模板名称 / 品类 / 标签" data-template-search />
             </div>
-            <select data-template-type-filter>
-              <option value="全部类型">全部类型</option>
-              <option value="主图模板">主图模板</option>
-              <option value="详情图模板">详情图模板</option>
-              <option value="SKU图模板">SKU图模板</option>
-              <option value="套图模板">套图模板</option>
-            </select>
-            <select data-template-category-filter>
-              <option value="全部品类">全部品类</option>
-              <option value="文胸">文胸</option>
-              <option value="内裤">内裤</option>
-              <option value="童装">童装</option>
-              <option value="鞋子">鞋子</option>
-              <option value="箱包">箱包</option>
-            </select>
-            <select data-template-status-filter>
-              <option value="全部状态">全部状态</option>
-              <option value="草稿">草稿</option>
-              <option value="可使用">可使用</option>
-              <option value="可上架">可上架</option>
-              <option value="已上架">已上架</option>
-              <option value="审核中">审核中</option>
-              <option value="已下架">已下架</option>
-            </select>
-            <div class="template-create-wrap">
-              <button class="btn primary template-create-btn" type="button" data-template-create-trigger>新建模板</button>
-              <div class="template-create-menu" data-template-create-menu>
-                <button type="button" data-new-template="主图模板">新建主图模板</button>
-                <button type="button" data-new-template="详情图模板">新建详情图模板</button>
-                <button type="button" data-new-template="SKU图模板">新建SKU图模板</button>
-                <button type="button" data-new-template="套图模板">新建套图模板</button>
-              </div>
-            </div>
           </div>
 
-          <div class="template-tabs" data-template-tabs>
-            <button class="is-active" type="button" data-template-tab="全部">全部</button>
-            <button type="button" data-template-tab="主图模板">主图模板</button>
-            <button type="button" data-template-tab="详情图模板">详情图模板</button>
-            <button type="button" data-template-tab="SKU图模板">SKU图模板</button>
-            <button type="button" data-template-tab="套图模板">套图模板</button>
-            <button type="button" data-template-tab="可上架">可上架</button>
+          <div class="template-group-filters" data-template-group-filters>
+            <button class="is-active" type="button" data-template-group-filter="全部">全部</button>
+            <button type="button" data-template-group-filter="主图">主图</button>
+            <button type="button" data-template-group-filter="详情图">详情图</button>
+            <button type="button" data-template-group-filter="SKU图">SKU图</button>
           </div>
 
           <div class="template-grid" data-template-grid></div>
@@ -358,7 +339,7 @@
           <div class="empty-state template-empty" data-template-empty-state>
             <div class="empty-visual"></div>
             <h3>暂无模板</h3>
-            <p>新建主图、详情图、SKU图或套图模板后，可在这里统一管理。</p>
+            <p>新建模板并至少添加一张图片后，可在这里以长图卡片方式管理。</p>
             <button class="btn primary" type="button" data-template-create-trigger-empty>新建模板</button>
           </div>
 
@@ -366,6 +347,74 @@
             <div class="empty-visual search"></div>
             <h3>搜索无结果</h3>
             <p>没有匹配当前筛选条件的模板，建议调整关键词、类型、品类或状态。</p>
+          </div>
+        </section>
+      </section>
+
+      <section class="workspace-page" data-page="template-builder">
+        <section class="template-builder-page">
+          <div class="template-builder-head">
+            <button class="back-link" type="button" data-template-builder-back>返回模板中心</button>
+          </div>
+
+          <div class="template-builder-layout">
+            <div class="template-builder-main">
+              <section class="template-builder-card template-basic-card">
+                <div class="template-builder-title-row">
+                  <h2>基础信息</h2>
+                </div>
+                <div class="template-basic-grid">
+                  <label>
+                    <span>模板名称 <em>*</em></span>
+                    <input type="text" maxlength="50" placeholder="请输入模板名称" data-builder-name>
+                  </label>
+                  <label>
+                    <span>商品分类 <em>*</em></span>
+                    <select data-builder-category>
+                      <option value="">请选择商品分类</option>
+                      <option value="文胸">文胸</option>
+                      <option value="内裤">内裤</option>
+                      <option value="童装">童装</option>
+                      <option value="鞋子">鞋子</option>
+                      <option value="箱包">箱包</option>
+                    </select>
+                  </label>
+                  <label>
+                    <span>品牌名称</span>
+                    <input type="text" placeholder="请选择或输入品牌名称" data-builder-brand>
+                  </label>
+                  <label class="template-basic-wide">
+                    <span>模板描述</span>
+                    <textarea rows="2" maxlength="500" placeholder="请输入模板描述" data-builder-description></textarea>
+                  </label>
+                </div>
+                <div class="template-group-picker" data-builder-groups>
+                  <span>模板分组 <em>*</em></span>
+                  <button class="is-active" type="button" data-builder-group="主图">主图</button>
+                  <button class="is-active" type="button" data-builder-group="详情图">详情图</button>
+                  <button type="button" data-builder-group="SKU图">SKU图</button>
+                </div>
+              </section>
+
+              <section class="template-builder-card">
+                <div class="template-builder-title-row">
+                  <h2>模板内容</h2>
+                </div>
+                <div class="template-group-board" data-builder-group-board></div>
+              </section>
+            </div>
+
+            <aside class="template-live-preview">
+              <div class="template-live-head">
+                <h2>长图实时预览</h2>
+                <span data-builder-preview-count>支持拖拽调整顺序</span>
+              </div>
+              <div class="template-phone-preview" data-builder-preview></div>
+            </aside>
+          </div>
+          <div class="template-builder-actions">
+            <button class="btn ghost" type="button" data-template-builder-preview>预览</button>
+            <button class="btn primary" type="button" data-template-builder-save>保存模板</button>
           </div>
         </section>
       </section>
@@ -589,28 +638,28 @@
 
           <div class="creation-record-summary" data-creation-task-status-filter>
             <button class="creation-record-summary-card is-active" type="button" data-creation-task-status="all">
-              <span class="creation-record-summary-icon all"></span>
+              <img class="creation-record-summary-icon" src="assets/creation-summary-all.png" alt="">
               <span class="creation-record-summary-copy">
                 <span>全部任务</span>
                 <span class="summary-number">154</span>
               </span>
             </button>
             <button class="creation-record-summary-card" type="button" data-creation-task-status="running">
-              <span class="creation-record-summary-icon running"></span>
+              <img class="creation-record-summary-icon" src="assets/creation-summary-running.png" alt="">
               <span class="creation-record-summary-copy">
                 <span>生成中</span>
                 <span class="summary-number">7</span>
               </span>
             </button>
             <button class="creation-record-summary-card" type="button" data-creation-task-status="done">
-              <span class="creation-record-summary-icon done"></span>
+              <img class="creation-record-summary-icon" src="assets/creation-summary-done.png" alt="">
               <span class="creation-record-summary-copy">
                 <span>已完成</span>
                 <span class="summary-number">116</span>
               </span>
             </button>
             <button class="creation-record-summary-card" type="button" data-creation-task-status="failed">
-              <span class="creation-record-summary-icon failed"></span>
+              <img class="creation-record-summary-icon" src="assets/creation-summary-failed.png" alt="">
               <span class="creation-record-summary-copy">
                 <span>失败任务</span>
                 <span class="summary-number">3</span>
@@ -959,6 +1008,58 @@
     <img alt="商品图片预览" data-drawer-image-preview-img>
   </div>
 
+  <div class="prototype-modal" data-template-content-modal aria-hidden="true">
+    <div class="prototype-modal-panel template-content-panel">
+      <div class="prototype-modal-head">
+        <div>
+          <h2>添加内容</h2>
+          <p data-content-modal-subtitle>多选后加入当前分组</p>
+        </div>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="content-source-tabs" data-content-source-tabs>
+        <button class="is-active" type="button" data-content-source="local">本地上传</button>
+        <button type="button" data-content-source="material">素材库</button>
+        <button type="button" data-content-source="history">历史创作</button>
+        <button type="button" data-content-source="text">文字素材</button>
+      </div>
+      <div class="content-source-grid" data-content-source-grid></div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn primary" type="button" data-content-confirm>确认选择</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-template-detail-modal aria-hidden="true">
+    <div class="prototype-modal-panel template-detail-panel" data-template-detail-mode="view">
+      <div class="prototype-modal-head">
+        <div>
+          <h2 data-template-detail-title>模板预览</h2>
+          <p data-template-detail-subtitle>查看拼接长图和内容用途</p>
+        </div>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="template-detail-layout">
+        <div class="template-detail-preview" data-template-detail-preview></div>
+        <aside class="template-detail-side">
+          <div class="template-detail-meta" data-template-detail-meta></div>
+          <div class="template-detail-items" data-template-detail-items></div>
+        </aside>
+      </div>
+      <div class="template-detail-edit" data-template-detail-edit></div>
+      <div class="prototype-modal-actions template-detail-actions">
+        <button class="btn ghost template-delete-in-edit" type="button" data-template-modal-delete>删除模板</button>
+        <span></span>
+        <button class="btn ghost" type="button" data-modal-close>关闭</button>
+        <button class="btn ghost" type="button" data-template-modal-edit>编辑模板</button>
+        <button class="btn ghost" type="button" data-template-modal-cancel-edit>取消编辑</button>
+        <button class="btn primary" type="button" data-template-modal-save>保存</button>
+        <button class="btn primary" type="button" data-template-modal-create>去创作</button>
+      </div>
+    </div>
+  </div>
+
   <div class="prototype-modal" data-template-publish-modal aria-hidden="true">
     <div class="prototype-modal-panel publish-panel">
       <div class="prototype-modal-head">
@@ -1076,7 +1177,7 @@
           </div>
           <div class="model-text-result-preview">
             <div class="model-text-result-loading"><span class="model-spinner"></span><strong>正在生成模特图...</strong><small>系统会先生成单张模特图</small></div>
-            <div class="model-text-result-ready"><img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="" data-model-preview-image><span>模特图</span></div>
+            <div class="model-text-result-ready"><img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="" data-model-preview-image data-model-generated-preview><span>模特图</span></div>
           </div>
           <div class="model-confirm-fields">
             <label class="model-confirm-field model-confirm-field-wide">
