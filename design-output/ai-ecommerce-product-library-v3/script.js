@@ -234,6 +234,84 @@ const templates = [
       { id: "tpl005-1", title: "多色内裤平铺", group: "SKU图", purpose: "参考生成", source: "本地上传", image: "assets/product-cover-01.png" },
       { id: "tpl005-2", title: "浅色内裤 SKU", group: "SKU图", purpose: "参考生成", source: "历史创作", image: "assets/product-cover-02.png" }
     ]
+  },
+  {
+    id: "tpl006",
+    name: "童装详情页模板-2",
+    description: "童装详情图模板，适合活动卖点与模特图组合。",
+    category: "童装",
+    brand: "Carter Kids",
+    scope: "我的模板",
+    groups: ["详情图"],
+    usage: 428,
+    updatedAt: "2026-07-12 17:20",
+    tags: ["童装", "详情图"],
+    items: [
+      { id: "tpl006-1", title: "童装户外详情", group: "详情图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-608.jpg" },
+      { id: "tpl006-2", title: "童装蓝天详情", group: "详情图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-610.jpg" }
+    ]
+  },
+  {
+    id: "tpl007",
+    name: "文胸主图模板-浅色",
+    description: "文胸主图参考模板，适合浅色背景棚拍。",
+    category: "文胸",
+    brand: "Lovera",
+    scope: "已购模板",
+    groups: ["主图"],
+    usage: 1260,
+    updatedAt: "2026-07-12 15:48",
+    tags: ["文胸", "主图"],
+    items: [
+      { id: "tpl007-1", title: "浅色文胸主图", group: "主图", purpose: "参考生成", source: "历史创作", image: "assets/creation-cover-616.jpg" }
+    ]
+  },
+  {
+    id: "tpl008",
+    name: "内裤详情+SKU组合",
+    description: "内裤详情图与 SKU 展示组合模板。",
+    category: "内裤",
+    brand: "Softline",
+    scope: "我的模板",
+    groups: ["详情图", "SKU图"],
+    usage: 735,
+    updatedAt: "2026-07-11 14:36",
+    tags: ["内裤", "详情图", "SKU"],
+    items: [
+      { id: "tpl008-1", title: "详情卖点图", group: "详情图", purpose: "固定插入", source: "素材库", image: "assets/creation-cover-602.jpg" },
+      { id: "tpl008-2", title: "多色 SKU 平铺", group: "SKU图", purpose: "参考生成", source: "本地上传", image: "assets/product-cover-01.png" }
+    ]
+  },
+  {
+    id: "tpl009",
+    name: "箱包套图模板",
+    description: "箱包主图、详情图和 SKU 组合模板。",
+    category: "箱包",
+    brand: "Urban Bag",
+    scope: "已购模板",
+    groups: ["主图", "详情图", "SKU图"],
+    usage: 319,
+    updatedAt: "2026-07-10 19:05",
+    tags: ["箱包", "套图"],
+    items: [
+      { id: "tpl009-1", title: "箱包主图", group: "主图", purpose: "参考生成", source: "历史创作", image: "assets/product-cover-02.png" },
+      { id: "tpl009-2", title: "箱包详情说明", group: "详情图", purpose: "固定插入", source: "素材库", image: "assets/product-cover-03.png" }
+    ]
+  },
+  {
+    id: "tpl010",
+    name: "鞋子 SKU 展示模板",
+    description: "鞋子多规格 SKU 展示模板。",
+    category: "鞋子",
+    brand: "StepGo",
+    scope: "我的模板",
+    groups: ["SKU图"],
+    usage: 205,
+    updatedAt: "2026-07-09 13:42",
+    tags: ["鞋子", "SKU"],
+    items: [
+      { id: "tpl010-1", title: "鞋子 SKU 展示", group: "SKU图", purpose: "参考生成", source: "本地上传", image: "assets/product-cover-04.png" }
+    ]
   }
 ];
 
@@ -558,6 +636,15 @@ const state = {
     resolution: "2K",
     recordSeq: 0,
     detailSeq: 0
+  },
+  multiCreate: {
+    templateId: "",
+    selectedModuleId: "",
+    modules: [],
+    resolution: "2K",
+    model: "专业版",
+    count: "2 套",
+    generated: false
   }
 };
 
@@ -607,6 +694,8 @@ els.recordModal = document.querySelector("[data-record-modal]");
 els.resourcePreviewModal = document.querySelector("[data-resource-preview-modal]");
 els.drawerImagePreview = document.querySelector("[data-drawer-image-preview]");
 els.drawerImagePreviewImg = document.querySelector("[data-drawer-image-preview-img]");
+els.drawerLongPreview = document.querySelector("[data-drawer-long-preview]");
+els.drawerPreviewCaption = document.querySelector("[data-drawer-preview-caption]");
 els.ratioLabel = document.querySelector("[data-ratio-label]");
 els.resolutionLabel = document.querySelector("[data-resolution-label]");
 els.templateSearch = document.querySelector("[data-template-search]");
@@ -629,6 +718,19 @@ els.templateDetailPreview = document.querySelector("[data-template-detail-previe
 els.templateDetailMeta = document.querySelector("[data-template-detail-meta]");
 els.templateDetailItems = document.querySelector("[data-template-detail-items]");
 els.templateDetailEdit = document.querySelector("[data-template-detail-edit]");
+els.multiTemplateTitle = document.querySelector("[data-multi-template-title]");
+els.multiTemplateSubtitle = document.querySelector("[data-multi-template-subtitle]");
+els.multiTemplateName = document.querySelector("[data-multi-template-name]");
+els.multiModuleList = document.querySelector("[data-multi-module-list]");
+els.multiConfigEmpty = document.querySelector("[data-multi-config-empty]");
+els.multiConfigContent = document.querySelector("[data-multi-config-content]");
+els.multiEnabledCount = document.querySelector("[data-multi-enabled-count]");
+els.multiMissingCount = document.querySelector("[data-multi-missing-count]");
+els.multiCost = document.querySelector("[data-multi-cost]");
+els.multiReadyLabel = document.querySelector("[data-multi-ready-label]");
+els.multiConfirmModal = document.querySelector("[data-multi-confirm-modal]");
+els.multiConfirmSummary = document.querySelector("[data-multi-confirm-summary]");
+els.multiConfirmList = document.querySelector("[data-multi-confirm-list]");
 els.builderName = document.querySelector("[data-builder-name]");
 els.builderDescription = document.querySelector("[data-builder-description]");
 els.builderCategory = document.querySelector("[data-builder-category]");
@@ -882,7 +984,6 @@ function renderBuilderItem(item) {
         ${enabled ? "✓" : ""}
       </button>
       <img src="${item.image}" alt="${item.title}" data-builder-preview-image="${item.image}">
-      ${enabled ? "" : `<span class="builder-item-disabled-label">未启用</span>`}
       <button class="builder-item-remove" type="button" data-builder-remove-item="${item.id}" aria-label="删除图片"></button>
     </article>
   `;
@@ -1873,7 +1974,20 @@ function openDrawerImagePreview(src, options = {}) {
   if (!src || !els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreviewImg.src = src;
   els.drawerImagePreview.classList.toggle("is-model-preview", Boolean(options.modelPreview));
+  els.drawerImagePreview.classList.remove("is-template-long-preview");
+  if (els.drawerLongPreview) els.drawerLongPreview.innerHTML = "";
+  if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = "";
   els.drawerImagePreview.classList.add("is-open");
+  els.drawerImagePreview.setAttribute("aria-hidden", "false");
+}
+
+function openTemplateLongPreview(template) {
+  if (!template || !els.drawerImagePreview || !els.drawerLongPreview || !els.drawerImagePreviewImg) return;
+  els.drawerImagePreviewImg.removeAttribute("src");
+  els.drawerLongPreview.innerHTML = renderLongPreview(getEnabledTemplateItems(template.items), { emptyText: "暂无启用内容" });
+  if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = template.name;
+  els.drawerImagePreview.classList.remove("is-model-preview");
+  els.drawerImagePreview.classList.add("is-template-long-preview", "is-open");
   els.drawerImagePreview.setAttribute("aria-hidden", "false");
 }
 
@@ -1881,8 +1995,11 @@ function closeDrawerImagePreview() {
   if (!els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreview.classList.remove("is-open");
   els.drawerImagePreview.classList.remove("is-model-preview");
+  els.drawerImagePreview.classList.remove("is-template-long-preview");
   els.drawerImagePreview.setAttribute("aria-hidden", "true");
   els.drawerImagePreviewImg.removeAttribute("src");
+  if (els.drawerLongPreview) els.drawerLongPreview.innerHTML = "";
+  if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = "";
 }
 
 function moveSelectedSize(sizeId, direction) {
@@ -1903,6 +2020,7 @@ function renderTemplateDetailModal(template) {
   state.activeTemplate = template;
   els.templateDetailTitle.textContent = template.name;
   els.templateDetailSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · ${template.scope}`;
+  els.templateDetailPreview.dataset.templateLongPreview = template.id;
   els.templateDetailPreview.innerHTML = renderLongPreview(getEnabledTemplateItems(template.items), { showBadges: true, emptyText: "暂无启用内容" });
   els.templateDetailMeta.innerHTML = `
     <dl>
@@ -1912,14 +2030,13 @@ function renderTemplateDetailModal(template) {
       <div><dt>模板分组</dt><dd>${template.groups.join(" / ")}</dd></div>
       <div><dt>更新时间</dt><dd>${template.updatedAt}</dd></div>
     </dl>
-    <p>${template.description || "暂无模板描述"}</p>
   `;
   els.templateDetailItems.innerHTML = template.items.map((item, index) => `
     <article class="template-detail-item ${isTemplateItemEnabled(item) ? "" : "is-disabled"}">
       <img src="${item.image}" alt="${item.title}">
       <div>
         <strong>${index + 1}. ${item.title}</strong>
-        <span>${item.group} · ${item.purpose} · ${item.source} · ${isTemplateItemEnabled(item) ? "已启用" : "未启用"}</span>
+        <span>${item.group} · ${item.purpose} · ${item.source}</span>
       </div>
     </article>
   `).join("");
@@ -1947,7 +2064,7 @@ function setTemplateDetailMode(mode) {
             <img src="${item.image}" alt="${item.title}">
             <div>
               <strong>${item.title}</strong>
-              <span>${item.group} · ${item.purpose} · ${item.source} · ${isTemplateItemEnabled(item) ? "已启用" : "未启用"}</span>
+              <span>${item.group} · ${item.purpose} · ${item.source}</span>
             </div>
             <button type="button" data-modal-toggle-enabled="${item.id}">${isTemplateItemEnabled(item) ? "取消启用" : "启用"}</button>
             <button type="button" data-modal-toggle-purpose="${item.id}">${item.purpose === "参考生成" ? "设为固定插入" : "设为参考生成"}</button>
@@ -2291,20 +2408,268 @@ function getTemplate(templateId) {
   return templates.find((item) => item.id === templateId);
 }
 
+function isMultiModuleFixed(module) {
+  return module.purpose === "固定插入" || module.source === "文字素材";
+}
+
+function getMultiModuleRequiredCount(module) {
+  return isMultiModuleFixed(module) ? 0 : 1;
+}
+
+function getMultiModuleStatus(module) {
+  if (!module.enabled) return { key: "closed", text: "已关闭" };
+  if (isMultiModuleFixed(module)) return { key: "fixed", text: "固定图片" };
+  const missing = Math.max(getMultiModuleRequiredCount(module) - module.productImages.length, 0);
+  if (missing > 0) return { key: "missing", text: missing === 1 ? "缺商品图" : `缺 ${missing} 张商品图` };
+  if (module.generated) return { key: "done", text: "已生成" };
+  return { key: "ready", text: "已就绪" };
+}
+
+function getEnabledMultiModules() {
+  return state.multiCreate.modules.filter((module) => module.enabled);
+}
+
+function getGenerativeMultiModules() {
+  return getEnabledMultiModules().filter((module) => !isMultiModuleFixed(module));
+}
+
+function getMissingMultiModules() {
+  return getEnabledMultiModules().filter((module) => getMultiModuleStatus(module).key === "missing");
+}
+
+function buildMultiCreateModule(item, index) {
+  return {
+    id: item.id || `multi-${index}`,
+    title: item.title || `${item.group}模块 ${index + 1}`,
+    group: item.group || "详情图",
+    purpose: item.purpose || "参考生成",
+    source: item.source || "模板",
+    image: item.image,
+    enabled: isTemplateItemEnabled(item),
+    productImages: [],
+    referenceImages: item.source === "历史创作" ? [{ image: item.image, title: item.title || "参考图" }] : [],
+    prompt: "",
+    generated: false,
+    resultImage: ""
+  };
+}
+
+function setupMultiImageCreation(templateId) {
+  const template = getTemplate(templateId);
+  if (!template) return;
+
+  state.multiCreate.templateId = template.id;
+  state.multiCreate.selectedModuleId = "";
+  state.multiCreate.generated = false;
+  state.multiCreate.modules = template.items.map((item, index) => buildMultiCreateModule(item, index));
+  const firstEnabled = state.multiCreate.modules.find((module) => module.enabled) || state.multiCreate.modules[0];
+  state.multiCreate.selectedModuleId = firstEnabled?.id || "";
+
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+  setWorkspacePage("multi-image-creation");
+  renderMultiImageCreation();
+  closeDrawer();
+  closePrototypeModals();
+}
+
+function getActiveMultiTemplate() {
+  return getTemplate(state.multiCreate.templateId);
+}
+
+function getSelectedMultiModule() {
+  return state.multiCreate.modules.find((module) => module.id === state.multiCreate.selectedModuleId) || state.multiCreate.modules[0];
+}
+
+function renderMultiImageCreation() {
+  const template = getActiveMultiTemplate();
+  if (!template || !els.multiModuleList) return;
+
+  const enabledModules = getEnabledMultiModules();
+  const generativeModules = getGenerativeMultiModules();
+  const missingModules = getMissingMultiModules();
+  const readyCount = enabledModules.filter((module) => ["ready", "fixed", "done"].includes(getMultiModuleStatus(module).key)).length;
+  const cost = generativeModules.length * 20;
+
+  if (els.multiTemplateTitle) els.multiTemplateTitle.textContent = `${template.name} - 多图创作`;
+  if (els.multiTemplateSubtitle) els.multiTemplateSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · 先看整套模板，再补充缺失素材`;
+  if (els.multiTemplateName) els.multiTemplateName.textContent = template.name;
+  if (els.multiEnabledCount) els.multiEnabledCount.textContent = `${enabledModules.length} 个`;
+  if (els.multiMissingCount) els.multiMissingCount.textContent = `${missingModules.length} 个`;
+  if (els.multiCost) els.multiCost.textContent = `${cost} 融豆`;
+  if (els.multiReadyLabel) els.multiReadyLabel.textContent = `${readyCount}/${enabledModules.length} 已就绪`;
+
+  els.multiModuleList.innerHTML = state.multiCreate.modules.map((module, index) => {
+    const status = getMultiModuleStatus(module);
+    const selected = module.id === state.multiCreate.selectedModuleId;
+    const productCount = module.productImages.length;
+    return `
+      <article class="multi-module-card ${selected ? "is-selected" : ""} ${module.enabled ? "" : "is-closed"}" data-multi-module="${module.id}">
+        <div class="multi-module-index">${index + 1}</div>
+        <button class="multi-module-switch ${module.enabled ? "is-on" : ""}" type="button" data-multi-toggle="${module.id}" aria-label="${module.enabled ? "关闭模块" : "启用模块"}"></button>
+        ${module.enabled ? `
+          <div class="multi-module-cover">
+            <img src="${module.generated && module.resultImage ? module.resultImage : module.image}" alt="${module.title}">
+            <span class="multi-module-type">${module.group}</span>
+            <em class="multi-status ${status.key}">${status.text}</em>
+          </div>
+          <div class="multi-module-copy">
+            <strong>${module.title}</strong>
+            <span>${isMultiModuleFixed(module) ? "无需商品图" : `商品图 ${productCount}/${getMultiModuleRequiredCount(module)}`} · ${module.purpose}</span>
+          </div>
+        ` : `
+          <div class="multi-module-closed">
+            <strong>${module.title}</strong>
+            <span>${module.group} · 已关闭，不参与生成</span>
+          </div>
+        `}
+      </article>
+    `;
+  }).join("");
+
+  renderMultiConfigPanel();
+}
+
+function renderMultiConfigPanel() {
+  const module = getSelectedMultiModule();
+  if (!els.multiConfigContent || !els.multiConfigEmpty) return;
+  if (!module) {
+    els.multiConfigEmpty.classList.add("is-visible");
+    els.multiConfigContent.innerHTML = "";
+    return;
+  }
+  els.multiConfigEmpty.classList.remove("is-visible");
+  const status = getMultiModuleStatus(module);
+  els.multiConfigContent.innerHTML = `
+    <div class="multi-config-head">
+      <div>
+        <h3>${module.title}</h3>
+        <p>${module.group} · ${module.purpose}</p>
+      </div>
+      <button class="multi-inline-switch ${module.enabled ? "is-on" : ""}" type="button" data-multi-toggle="${module.id}">${module.enabled ? "关闭" : "启用"}</button>
+    </div>
+    <div class="multi-config-preview ${module.enabled ? "" : "is-disabled"}">
+      <img src="${module.image}" alt="${module.title}">
+      <span class="multi-status ${status.key}">${status.text}</span>
+    </div>
+    ${module.enabled ? `
+      <section class="multi-config-section">
+        <h4>商品图</h4>
+        <p>${isMultiModuleFixed(module) ? "固定图片模块无需上传商品图。" : `需 ${getMultiModuleRequiredCount(module)} 张商品图。`}</p>
+        <div class="multi-thumb-row">
+          ${module.productImages.map((image, index) => `<img src="${image.image}" alt="商品图 ${index + 1}">`).join("")}
+          ${isMultiModuleFixed(module) ? "" : `<button type="button" data-multi-upload-product="${module.id}">+ 选择商品图</button>`}
+        </div>
+      </section>
+      <section class="multi-config-section">
+        <h4>参考图</h4>
+        <div class="multi-thumb-row">
+          ${module.referenceImages.map((image) => `<img src="${image.image}" alt="${image.title}">`).join("")}
+          <button type="button" data-multi-upload-reference="${module.id}">+ 添加参考图</button>
+        </div>
+      </section>
+      <label class="multi-config-section">
+        <h4>文本描述</h4>
+        <textarea data-multi-prompt="${module.id}" placeholder="非必填。不填写时，系统按模板商品位直接替换商品。">${module.prompt}</textarea>
+      </label>
+    ` : `<p class="multi-disabled-note">该模块已关闭，本次不生成、不校验、不计费。重新启用后可继续配置。</p>`}
+  `;
+}
+
+function selectMultiModule(moduleId) {
+  state.multiCreate.selectedModuleId = moduleId;
+  renderMultiImageCreation();
+}
+
+function toggleMultiModule(moduleId) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module) return;
+  module.enabled = !module.enabled;
+  state.multiCreate.selectedModuleId = module.id;
+  renderMultiImageCreation();
+}
+
+function fillMultiProductImages(moduleId = "") {
+  const targets = moduleId
+    ? state.multiCreate.modules.filter((module) => module.id === moduleId)
+    : getGenerativeMultiModules();
+  const mockImages = [
+    { image: "assets/product-cover-01.png", title: "商品图 1" },
+    { image: "assets/product-cover-02.png", title: "商品图 2" },
+    { image: "assets/product-cover-03.png", title: "商品图 3" }
+  ];
+  targets.forEach((module, index) => {
+    if (isMultiModuleFixed(module) || !module.enabled) return;
+    module.productImages = [mockImages[index % mockImages.length]];
+  });
+  renderMultiImageCreation();
+  showToast(moduleId ? "已选择商品图" : "已为启用模块匹配商品图");
+}
+
+function addMultiReferenceImage(moduleId) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module) return;
+  module.referenceImages.push({ image: "assets/creation-cover-610.jpg", title: "参考图" });
+  renderMultiConfigPanel();
+  showToast("已添加参考图");
+}
+
+function updateMultiPrompt(moduleId, value) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module) return;
+  module.prompt = value;
+}
+
+function openMultiGenerateConfirm() {
+  const enabledModules = getEnabledMultiModules();
+  if (!enabledModules.length) {
+    showToast("请至少启用一个模块");
+    return;
+  }
+  const missingModules = getMissingMultiModules();
+  if (missingModules.length) {
+    state.multiCreate.selectedModuleId = missingModules[0].id;
+    renderMultiImageCreation();
+    showToast(`还有 ${missingModules.length} 个启用模块缺商品图`);
+    return;
+  }
+  const generativeModules = getGenerativeMultiModules();
+  if (els.multiConfirmSummary) {
+    els.multiConfirmSummary.textContent = `本次生成 ${generativeModules.length} 个模块，跳过 ${state.multiCreate.modules.length - enabledModules.length} 个模块，预计消耗 ${generativeModules.length * 20} 融豆`;
+  }
+  if (els.multiConfirmList) {
+    els.multiConfirmList.innerHTML = state.multiCreate.modules.map((module) => {
+      const status = getMultiModuleStatus(module);
+      return `
+        <div class="multi-confirm-item ${module.enabled ? "" : "is-disabled"}">
+          <img src="${module.image}" alt="${module.title}">
+          <div>
+            <strong>${module.title}</strong>
+            <span>${module.group} · ${status.text}</span>
+          </div>
+        </div>
+      `;
+    }).join("");
+  }
+  openPrototypeModal(els.multiConfirmModal);
+}
+
+function confirmMultiGenerate() {
+  getGenerativeMultiModules().forEach((module) => {
+    module.generated = true;
+    module.resultImage = module.productImages[0]?.image || module.image;
+  });
+  closePrototypeModals();
+  renderMultiImageCreation();
+  showToast("套图生成任务已提交");
+}
+
 function goCreateWithTemplate(templateId) {
   const template = getTemplate(templateId);
   if (!template) return;
 
-  setWorkspacePage("creation-plaza");
-  clearMenuActive();
-  document.querySelector('[data-single-menu="创作广场"]').classList.add("active");
-  setCreationCategory(template.category);
-  els.creationPrompt.value = `已带入多图模板「${template.name}」（${templateComboLabel(template)}），多图创作补素材流程后续接入。`;
-  setCreationTemplate(template.name, "suite");
-  updateCreationMode();
-  closeDrawer();
-  closePrototypeModals();
-  showToast(`已带入「${template.name}」，多图创作流程后续接入`);
+  setupMultiImageCreation(template.id);
+  showToast(`已进入「${template.name}」多图创作`);
 }
 
 function openTemplatePublish(templateId) {
@@ -3181,9 +3546,7 @@ document.querySelector("[data-template-builder-preview]")?.addEventListener("cli
     items: state.builder.items.map((item) => ({ ...item })),
     updatedAt: "预览中"
   };
-  renderTemplateDetailModal(previewTemplate);
-  setTemplateDetailMode("view");
-  openPrototypeModal(els.templateDetailModal);
+  openTemplateLongPreview(previewTemplate);
 });
 
 document.querySelectorAll("[data-content-source]").forEach((button) => {
@@ -3298,10 +3661,19 @@ document.addEventListener("click", (event) => {
   const closeCustomParameterButton = event.target.closest("[data-close-custom-parameter]");
   const confirmCustomParameterButton = event.target.closest("[data-confirm-custom-parameter]");
   const templatePreviewButton = event.target.closest("[data-template-preview]");
+  const templateLongPreviewButton = event.target.closest("[data-template-long-preview]");
   const templateCreateButton = event.target.closest("[data-template-create], [data-template-drawer-create]");
   const templateEditButton = event.target.closest("[data-template-edit], [data-template-drawer-edit]");
   const templatePublishButton = event.target.closest("[data-template-publish], [data-template-drawer-publish]");
   const templateDeleteButton = event.target.closest("[data-template-delete]");
+  const multiBackButton = event.target.closest("[data-multi-back]");
+  const multiFillProductButton = event.target.closest("[data-multi-fill-product]");
+  const multiGenerateButton = event.target.closest("[data-multi-generate]");
+  const multiConfirmGenerateButton = event.target.closest("[data-multi-confirm-generate]");
+  const multiToggleButton = event.target.closest("[data-multi-toggle]");
+  const multiModuleCard = event.target.closest("[data-multi-module]");
+  const multiUploadProductButton = event.target.closest("[data-multi-upload-product]");
+  const multiUploadReferenceButton = event.target.closest("[data-multi-upload-reference]");
   const openContentButton = event.target.closest("[data-open-content-picker]");
   const contentOptionButton = event.target.closest("[data-content-option]");
   const builderMoveButton = event.target.closest("[data-builder-move]");
@@ -3331,6 +3703,48 @@ document.addEventListener("click", (event) => {
 
   if (closeDrawerImagePreviewButton) {
     closeDrawerImagePreview();
+    return;
+  }
+
+  if (multiBackButton) {
+    setWorkspacePage("template-center");
+    clearMenuActive();
+    document.querySelector('[data-single-menu="模板中心"]')?.classList.add("active");
+    return;
+  }
+
+  if (multiFillProductButton) {
+    fillMultiProductImages();
+    return;
+  }
+
+  if (multiGenerateButton) {
+    openMultiGenerateConfirm();
+    return;
+  }
+
+  if (multiConfirmGenerateButton) {
+    confirmMultiGenerate();
+    return;
+  }
+
+  if (multiToggleButton) {
+    toggleMultiModule(multiToggleButton.dataset.multiToggle);
+    return;
+  }
+
+  if (multiUploadProductButton) {
+    fillMultiProductImages(multiUploadProductButton.dataset.multiUploadProduct);
+    return;
+  }
+
+  if (multiUploadReferenceButton) {
+    addMultiReferenceImage(multiUploadReferenceButton.dataset.multiUploadReference);
+    return;
+  }
+
+  if (multiModuleCard) {
+    selectMultiModule(multiModuleCard.dataset.multiModule);
     return;
   }
 
@@ -3561,6 +3975,11 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (templateLongPreviewButton && state.activeTemplate) {
+    openTemplateLongPreview(state.activeTemplate);
+    return;
+  }
+
   if (templatePublishButton) {
     openTemplatePublish(templatePublishButton.dataset.templatePublish || templatePublishButton.dataset.templateDrawerPublish);
     return;
@@ -3644,6 +4063,12 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("input", (event) => {
+  const multiPrompt = event.target.closest("[data-multi-prompt]");
+  if (multiPrompt) {
+    updateMultiPrompt(multiPrompt.dataset.multiPrompt, multiPrompt.value);
+    return;
+  }
+
   if (!state.productEdit) return;
   const materialField = event.target.closest("[data-edit-material-field]");
   const colorName = event.target.closest("[data-edit-color-name]");
@@ -3682,6 +4107,17 @@ document.addEventListener("input", (event) => {
 });
 
 document.addEventListener("change", (event) => {
+  const multiResolution = event.target.closest("[data-multi-resolution]");
+  const multiModel = event.target.closest("[data-multi-model]");
+  const multiCount = event.target.closest("[data-multi-count]");
+
+  if (multiResolution || multiModel || multiCount) {
+    state.multiCreate.resolution = multiResolution?.value || state.multiCreate.resolution;
+    state.multiCreate.model = multiModel?.value || state.multiCreate.model;
+    state.multiCreate.count = multiCount?.value || state.multiCreate.count;
+    return;
+  }
+
   if (!state.productEdit) return;
   const sizeToggle = event.target.closest("[data-edit-size-toggle]");
   const parameterToggle = event.target.closest("[data-edit-parameter-toggle]");
