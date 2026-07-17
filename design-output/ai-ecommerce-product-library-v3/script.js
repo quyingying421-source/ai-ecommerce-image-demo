@@ -639,6 +639,8 @@ const state = {
   },
   multiCreate: {
     templateId: "",
+    resourceTemplate: null,
+    backPage: "template-center",
     selectedModuleId: "",
     modules: [],
     resolution: "2K",
@@ -718,6 +720,7 @@ els.templateDetailPreview = document.querySelector("[data-template-detail-previe
 els.templateDetailMeta = document.querySelector("[data-template-detail-meta]");
 els.templateDetailItems = document.querySelector("[data-template-detail-items]");
 els.templateDetailEdit = document.querySelector("[data-template-detail-edit]");
+els.multiBack = document.querySelector("[data-multi-back]");
 els.multiTemplateTitle = document.querySelector("[data-multi-template-title]");
 els.multiTemplateSubtitle = document.querySelector("[data-multi-template-subtitle]");
 els.multiTemplateName = document.querySelector("[data-multi-template-name]");
@@ -2454,11 +2457,12 @@ function buildMultiCreateModule(item, index) {
   };
 }
 
-function setupMultiImageCreation(templateId) {
-  const template = getTemplate(templateId);
+function setupMultiImageCreationWithTemplate(template, backPage = "template-center") {
   if (!template) return;
 
-  state.multiCreate.templateId = template.id;
+  state.multiCreate.templateId = template.id || "";
+  state.multiCreate.resourceTemplate = template.fromResource ? template : null;
+  state.multiCreate.backPage = backPage;
   state.multiCreate.selectedModuleId = "";
   state.multiCreate.generated = false;
   state.multiCreate.modules = template.items.map((item, index) => buildMultiCreateModule(item, index));
@@ -2473,7 +2477,13 @@ function setupMultiImageCreation(templateId) {
   closePrototypeModals();
 }
 
+function setupMultiImageCreation(templateId, backPage = "template-center") {
+  const template = getTemplate(templateId);
+  setupMultiImageCreationWithTemplate(template, backPage);
+}
+
 function getActiveMultiTemplate() {
+  if (state.multiCreate.resourceTemplate) return state.multiCreate.resourceTemplate;
   return getTemplate(state.multiCreate.templateId);
 }
 
@@ -2491,6 +2501,7 @@ function renderMultiImageCreation() {
   const readyCount = enabledModules.filter((module) => ["ready", "fixed", "done"].includes(getMultiModuleStatus(module).key)).length;
   const cost = generativeModules.length * 20;
 
+  if (els.multiBack) els.multiBack.textContent = state.multiCreate.backPage === "creation-plaza" ? "返回创作广场" : "返回模板中心";
   if (els.multiTemplateTitle) els.multiTemplateTitle.textContent = `${template.name} - 多图创作`;
   if (els.multiTemplateSubtitle) els.multiTemplateSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · 先看整套模板，再补充缺失素材`;
   if (els.multiTemplateName) els.multiTemplateName.textContent = template.name;
@@ -2668,8 +2679,48 @@ function goCreateWithTemplate(templateId) {
   const template = getTemplate(templateId);
   if (!template) return;
 
-  setupMultiImageCreation(template.id);
+  setupMultiImageCreation(template.id, "template-center");
   showToast(`已进入「${template.name}」多图创作`);
+}
+
+function buildResourceTemplate(card) {
+  const title = card.dataset.title || "创作广场模板";
+  const category = card.dataset.category || "未分类";
+  const source = card.dataset.source || "创作广场";
+  const prompt = card.dataset.prompt || "";
+  const coverImage = card.querySelector(".resource-cover img")?.getAttribute("src") || "assets/product-cover-01.png";
+  const isSuite = card.dataset.type === "套图模板";
+  const groups = isSuite ? ["主图", "详情图", "SKU图"] : ["主图", "详情图"];
+  const idPrefix = `resource-${title.replace(/\s+/g, "-")}`;
+
+  return {
+    id: idPrefix,
+    fromResource: true,
+    name: title,
+    description: prompt,
+    category,
+    brand: source,
+    scope: source === "官方" ? "已购模板" : "我的模板",
+    groups,
+    usage: 0,
+    updatedAt: "2026-07-17 15:00",
+    tags: groups,
+    items: groups.map((group, index) => ({
+      id: `${idPrefix}-${index}`,
+      title: `${title}${group}`,
+      group,
+      purpose: "参考生成",
+      source: "创作广场",
+      image: index === 0 ? coverImage : `assets/product-cover-0${Math.min(index + 1, 4)}.png`,
+      enabled: true
+    }))
+  };
+}
+
+function openResourceTemplateCreation(card) {
+  const template = buildResourceTemplate(card);
+  setupMultiImageCreationWithTemplate(template, "creation-plaza");
+  showToast(`已进入「${template.name}」模板创作详情`);
 }
 
 function openTemplatePublish(templateId) {
@@ -2786,21 +2837,18 @@ function createGenerationRecord() {
 }
 
 function useResource(card) {
+  if (card.dataset.type === "模板" || card.dataset.type === "套图模板") {
+    openResourceTemplateCreation(card);
+    return;
+  }
+
   setWorkspacePage("creation-plaza");
   clearMenuActive();
   document.querySelector('[data-single-menu="创作广场"]').classList.add("active");
   setCreationCategory(card.dataset.category);
 
-  if (card.dataset.type === "模板") {
-    els.creationPrompt.value = card.dataset.prompt;
-    setCreationTemplate(card.dataset.title, "template");
-  } else if (card.dataset.type === "套图模板") {
-    els.creationPrompt.value = card.dataset.prompt;
-    setCreationTemplate(card.dataset.title, "suite");
-  } else {
-    els.creationPrompt.value = card.dataset.prompt;
-    setCreationUpload("reference", true);
-  }
+  els.creationPrompt.value = card.dataset.prompt;
+  setCreationUpload("reference", true);
 
   updateCreationMode();
   showToast(`已使用资源：${card.dataset.title}`);
@@ -3707,9 +3755,10 @@ document.addEventListener("click", (event) => {
   }
 
   if (multiBackButton) {
-    setWorkspacePage("template-center");
+    const backPage = state.multiCreate.backPage === "creation-plaza" ? "creation-plaza" : "template-center";
+    setWorkspacePage(backPage);
     clearMenuActive();
-    document.querySelector('[data-single-menu="模板中心"]')?.classList.add("active");
+    document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : "模板中心"}"]`)?.classList.add("active");
     return;
   }
 
