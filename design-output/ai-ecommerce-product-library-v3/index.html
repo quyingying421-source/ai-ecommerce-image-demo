@@ -303,28 +303,45 @@
       </section>
 
       <section class="workspace-page" data-page="multi-image-creation">
-        <section class="multi-create-page">
-          <div class="multi-create-head">
-            <button class="back-link" type="button" data-multi-back>返回模板中心</button>
-            <div>
-              <h2 data-multi-template-title>多图创作详情</h2>
-              <p data-multi-template-subtitle>先确认套图结构，再补充缺失素材</p>
+        <section class="multi-create-page" data-multi-page data-multi-step="config">
+          <header class="multi-task-topbar">
+            <button class="multi-back-button" type="button" data-multi-back><span></span>返回</button>
+            <div class="multi-task-heading">
+              <span class="multi-task-kind">图片生成</span>
+              <div>
+                <h2 data-multi-template-title>多图创作详情</h2>
+                <p data-multi-template-subtitle>模板结构、商品图、文案策略与生成结果集中展示</p>
+              </div>
             </div>
-          </div>
+            <div class="multi-stepper" data-multi-stepper>
+              <button class="is-active" type="button" data-multi-step-button="config"><span>1</span>配置模板</button>
+              <button type="button" data-multi-step-button="result"><span>2</span>结果确认</button>
+            </div>
+            <div class="multi-task-timer">
+              <div class="timer-copy">
+                <span>项目总用时</span>
+                <small data-multi-autosave>自动保存</small>
+              </div>
+              <div class="timer-digits" data-multi-task-timer><b>00</b><i>:</i><b>00</b></div>
+            </div>
+          </header>
 
-          <div class="multi-create-layout">
+          <div class="multi-task-layout">
             <aside class="multi-global-panel">
               <section class="multi-card">
-                <h3>全局配置</h3>
+                <h3>任务素材</h3>
                 <div class="multi-linked-box">
-                  <span>已使用模板</span>
-                  <strong data-multi-template-name>-</strong>
+                  <button class="multi-template-mini" type="button" data-multi-template-preview>
+                    <img src="assets/creation-cover-608.jpg" alt="" data-multi-template-thumb>
+                  </button>
+                  <div>
+                    <span>已使用模板</span>
+                    <strong data-multi-template-name>-</strong>
+                  </div>
                 </div>
-                <button class="multi-product-btn" type="button" data-multi-fill-product>一键选择商品图</button>
                 <dl class="multi-summary-list">
                   <div><dt>启用模块</dt><dd data-multi-enabled-count>0 个</dd></div>
                   <div><dt>缺失商品图</dt><dd data-multi-missing-count>0 个</dd></div>
-                  <div><dt>预计消耗</dt><dd data-multi-cost>0 融豆</dd></div>
                 </dl>
               </section>
 
@@ -355,29 +372,67 @@
                   </select>
                 </label>
               </section>
-
-              <button class="btn primary multi-generate-btn" type="button" data-multi-generate>生成套图</button>
             </aside>
 
-            <main class="multi-preview-panel">
-              <div class="multi-section-head">
-                <div>
-                  <h3>套图预览</h3>
-                  <p>按模板顺序展示，点击图片配置当前模块</p>
+            <main class="multi-work-panel">
+              <section class="multi-step-panel" data-multi-config-step>
+                <div class="multi-section-head">
+                  <div>
+                    <h3>模块配置</h3>
+                    <p>按模板顺序配置素材、比例和文案策略</p>
+                  </div>
+                  <span data-multi-ready-label>0/0 已就绪</span>
                 </div>
-                <span data-multi-ready-label>0/0 已就绪</span>
-              </div>
-              <div class="multi-module-list" data-multi-module-list></div>
+                <div class="multi-config-workspace">
+                  <div class="multi-preview-panel">
+                    <div class="multi-module-list" data-multi-module-list></div>
+                  </div>
+                  <aside class="multi-config-panel">
+                    <div class="multi-config-empty" data-multi-config-empty>
+                      <h3>选择一个模块</h3>
+                      <p>点击中间模块后补充商品图、参考图和文案。</p>
+                    </div>
+                    <div class="multi-config-content" data-multi-config-content></div>
+                  </aside>
+                </div>
+              </section>
+
+              <section class="multi-step-panel multi-result-step" data-multi-result-step>
+                <div class="multi-section-head">
+                  <div>
+                    <h3>结果确认</h3>
+                    <p>每个模块默认选择第一张候选图，可切换入选图</p>
+                  </div>
+                  <span data-multi-result-status>等待生成</span>
+                </div>
+                <div class="multi-result-list" data-multi-result-list></div>
+              </section>
             </main>
 
-            <aside class="multi-config-panel">
-              <div class="multi-config-empty" data-multi-config-empty>
-                <h3>选择一个模块</h3>
-                <p>点击中间预览图后，在这里补充商品图、参考图和文本描述。</p>
+            <aside class="multi-long-preview-panel">
+              <div class="multi-long-head">
+                <div>
+                  <h3>长图预览</h3>
+                  <p data-multi-preview-note>按模板顺序拼接入选图</p>
+                </div>
+                <button type="button" data-multi-preview-download>下载</button>
               </div>
-              <div class="multi-config-content" data-multi-config-content></div>
+              <div class="multi-long-canvas" data-multi-long-preview></div>
             </aside>
           </div>
+
+          <footer class="multi-task-footer">
+            <div class="multi-footer-status" data-multi-footer-status>配置完成后可进入结果确认</div>
+            <div class="multi-footer-actions">
+              <button class="btn ghost" type="button" data-multi-back-step>返回上一步</button>
+              <button class="btn ghost" type="button" data-multi-go-records>返回创作记录</button>
+              <button class="btn ghost" type="button" data-multi-save-draft>保存草稿</button>
+              <button class="btn ghost" type="button" data-multi-regenerate-all>重新生成全部</button>
+              <button class="btn ghost" type="button" data-multi-download>批量下载</button>
+              <button class="btn primary" type="button" data-multi-generate>去生成</button>
+              <button class="btn primary" type="button" data-multi-save-result>保存结果</button>
+            </div>
+          </footer>
         </section>
       </section>
 

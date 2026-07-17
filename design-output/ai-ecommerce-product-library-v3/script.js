@@ -641,6 +641,11 @@ const state = {
     templateId: "",
     resourceTemplate: null,
     backPage: "template-center",
+    step: "config",
+    taskId: "",
+    taskStatus: "draft",
+    elapsed: 0,
+    timer: null,
     selectedModuleId: "",
     modules: [],
     resolution: "2K",
@@ -679,6 +684,7 @@ els.creationPrompt = document.querySelector("[data-creation-prompt]");
 els.creationMode = document.querySelector("[data-creation-mode]");
 els.creationCategories = Array.from(document.querySelectorAll("[data-creation-categories] button"));
 els.creationRecordList = document.querySelector("[data-creation-record-list]");
+els.creationTaskFlow = document.querySelector("[data-creation-task-flow]");
 els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
 els.creationTaskStatusButtons = Array.from(document.querySelectorAll("[data-creation-task-status]"));
 els.creationTaskTypeButtons = Array.from(document.querySelectorAll("[data-creation-task-type]"));
@@ -720,10 +726,13 @@ els.templateDetailPreview = document.querySelector("[data-template-detail-previe
 els.templateDetailMeta = document.querySelector("[data-template-detail-meta]");
 els.templateDetailItems = document.querySelector("[data-template-detail-items]");
 els.templateDetailEdit = document.querySelector("[data-template-detail-edit]");
+els.multiPage = document.querySelector("[data-multi-page]");
 els.multiBack = document.querySelector("[data-multi-back]");
+els.multiStepButtons = Array.from(document.querySelectorAll("[data-multi-step-button]"));
 els.multiTemplateTitle = document.querySelector("[data-multi-template-title]");
 els.multiTemplateSubtitle = document.querySelector("[data-multi-template-subtitle]");
 els.multiTemplateName = document.querySelector("[data-multi-template-name]");
+els.multiTemplateThumb = document.querySelector("[data-multi-template-thumb]");
 els.multiModuleList = document.querySelector("[data-multi-module-list]");
 els.multiConfigEmpty = document.querySelector("[data-multi-config-empty]");
 els.multiConfigContent = document.querySelector("[data-multi-config-content]");
@@ -731,6 +740,13 @@ els.multiEnabledCount = document.querySelector("[data-multi-enabled-count]");
 els.multiMissingCount = document.querySelector("[data-multi-missing-count]");
 els.multiCost = document.querySelector("[data-multi-cost]");
 els.multiReadyLabel = document.querySelector("[data-multi-ready-label]");
+els.multiResultStatus = document.querySelector("[data-multi-result-status]");
+els.multiResultList = document.querySelector("[data-multi-result-list]");
+els.multiLongPreview = document.querySelector("[data-multi-long-preview]");
+els.multiPreviewNote = document.querySelector("[data-multi-preview-note]");
+els.multiFooterStatus = document.querySelector("[data-multi-footer-status]");
+els.multiTaskTimer = document.querySelector("[data-multi-task-timer]");
+els.multiAutosave = document.querySelector("[data-multi-autosave]");
 els.multiConfirmModal = document.querySelector("[data-multi-confirm-modal]");
 els.multiConfirmSummary = document.querySelector("[data-multi-confirm-summary]");
 els.multiConfirmList = document.querySelector("[data-multi-confirm-list]");
@@ -1093,6 +1109,7 @@ function confirmContentSelection() {
       purpose: option.purpose,
       source: option.source,
       image: option.image,
+      ratio: inferTemplateItemRatio({ group: state.contentTargetGroup, purpose: option.purpose, source: option.source }),
       enabled: true
     });
   });
@@ -2187,6 +2204,7 @@ function setWorkspacePage(pageName) {
     page.classList.toggle("active", page.dataset.page === pageName);
   });
   els.body.classList.toggle("is-creation-detail", pageName === "creation-detail");
+  els.body.classList.toggle("is-multi-task", pageName === "multi-image-creation");
   closeCreateMenu();
   if (pageName !== "product-library" || els.drawer.dataset.drawerKind !== "product") {
     closeDrawer();
@@ -2440,7 +2458,96 @@ function getMissingMultiModules() {
   return getEnabledMultiModules().filter((module) => getMultiModuleStatus(module).key === "missing");
 }
 
+function inferTemplateItemRatio(item) {
+  if (item.ratio) return item.ratio;
+  if (item.originalRatio) return item.originalRatio;
+  if (item.purpose === "固定插入" || item.source === "文字素材") return "原图比例";
+  if (item.group === "SKU图") return "1:1";
+  if (item.group === "主图") return "3:4";
+  if (item.group === "详情图") return "3:4";
+  return "3:4";
+}
+
+function getMultiModuleRatioValue(module) {
+  if (isMultiModuleFixed(module)) return module.templateRatio || "原图比例";
+  if (module.ratioMode === "custom") return module.customRatio || "自定义";
+  if (module.ratioMode && module.ratioMode !== "follow") return module.ratioMode;
+  return module.templateRatio || "3:4";
+}
+
+function getMultiModuleRatioLabel(module) {
+  return isMultiModuleFixed(module) ? "原图比例" : getMultiModuleRatioValue(module);
+}
+
+function ratioOptionsMarkup(module) {
+  const value = module.ratioMode || "follow";
+  return `
+    <option value="follow" ${value === "follow" ? "selected" : ""}>跟随模板 ${module.templateRatio}</option>
+    <option value="1:1" ${value === "1:1" ? "selected" : ""}>1:1</option>
+    <option value="3:4" ${value === "3:4" ? "selected" : ""}>3:4</option>
+    <option value="4:3" ${value === "4:3" ? "selected" : ""}>4:3</option>
+    <option value="9:16" ${value === "9:16" ? "selected" : ""}>9:16</option>
+    <option value="custom" ${value === "custom" ? "selected" : ""}>自定义</option>
+  `;
+}
+
+function formatMultiElapsed(seconds) {
+  const mins = String(Math.floor(seconds / 60)).padStart(2, "0");
+  const secs = String(seconds % 60).padStart(2, "0");
+  return `<b>${mins}</b><i>:</i><b>${secs}</b>`;
+}
+
+function renderMultiTimer() {
+  if (els.multiTaskTimer) els.multiTaskTimer.innerHTML = formatMultiElapsed(state.multiCreate.elapsed);
+}
+
+function startMultiTimer(reset = false) {
+  if (reset) state.multiCreate.elapsed = 0;
+  window.clearInterval(state.multiCreate.timer);
+  renderMultiTimer();
+  state.multiCreate.timer = window.setInterval(() => {
+    state.multiCreate.elapsed += 1;
+    renderMultiTimer();
+  }, 1000);
+}
+
+function setMultiStep(step) {
+  state.multiCreate.step = step;
+  if (els.multiPage) els.multiPage.dataset.multiStep = step;
+  els.multiStepButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.multiStepButton === step);
+  });
+  renderMultiImageCreation();
+}
+
+function parseMultiGenerateCount() {
+  const count = Number.parseInt(state.multiCreate.count, 10);
+  return Number.isFinite(count) ? Math.max(1, Math.min(count, 4)) : 2;
+}
+
+function getMultiCandidateImage(module, index) {
+  const images = [
+    module.productImages[0]?.image,
+    module.image,
+    "assets/creation-cover-610.jpg",
+    "assets/creation-cover-616.jpg",
+    "assets/product-cover-02.png",
+    "assets/product-cover-04.png"
+  ].filter(Boolean);
+  return images[index % images.length];
+}
+
+function getModuleResultStatus(module) {
+  if (!module.enabled) return { key: "closed", text: "已关闭" };
+  if (isMultiModuleFixed(module)) return { key: "fixed", text: "固定图片" };
+  if (module.generationStatus === "failed") return { key: "failed", text: "失败" };
+  if (module.generationStatus === "done") return { key: "done", text: "已完成" };
+  if (module.generationStatus === "running") return { key: "running", text: "生成中" };
+  return { key: "queued", text: "排队中" };
+}
+
 function buildMultiCreateModule(item, index) {
+  const templateRatio = inferTemplateItemRatio(item);
   return {
     id: item.id || `multi-${index}`,
     title: item.title || `${item.group}模块 ${index + 1}`,
@@ -2449,6 +2556,13 @@ function buildMultiCreateModule(item, index) {
     source: item.source || "模板",
     image: item.image,
     enabled: isTemplateItemEnabled(item),
+    templateRatio,
+    ratioMode: item.ratioMode || "follow",
+    customRatio: item.customRatio || "",
+    textMode: isMultiModuleFixed(item) ? "跟随模板文案" : "生成后编辑",
+    generationStatus: "draft",
+    candidates: [],
+    selectedCandidateId: "",
     productImages: [],
     referenceImages: item.source === "历史创作" ? [{ image: item.image, title: item.title || "参考图" }] : [],
     prompt: "",
@@ -2463,11 +2577,15 @@ function setupMultiImageCreationWithTemplate(template, backPage = "template-cent
   state.multiCreate.templateId = template.id || "";
   state.multiCreate.resourceTemplate = template.fromResource ? template : null;
   state.multiCreate.backPage = backPage;
+  state.multiCreate.step = "config";
+  state.multiCreate.taskId = "";
+  state.multiCreate.taskStatus = "draft";
   state.multiCreate.selectedModuleId = "";
   state.multiCreate.generated = false;
   state.multiCreate.modules = template.items.map((item, index) => buildMultiCreateModule(item, index));
   const firstEnabled = state.multiCreate.modules.find((module) => module.enabled) || state.multiCreate.modules[0];
   state.multiCreate.selectedModuleId = firstEnabled?.id || "";
+  startMultiTimer(true);
 
   clearMenuActive();
   document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
@@ -2500,15 +2618,33 @@ function renderMultiImageCreation() {
   const missingModules = getMissingMultiModules();
   const readyCount = enabledModules.filter((module) => ["ready", "fixed", "done"].includes(getMultiModuleStatus(module).key)).length;
   const cost = generativeModules.length * 20;
+  const doneCount = enabledModules.filter((module) => ["done", "fixed", "closed"].includes(getModuleResultStatus(module).key)).length;
 
-  if (els.multiBack) els.multiBack.textContent = state.multiCreate.backPage === "creation-plaza" ? "返回创作广场" : "返回模板中心";
+  if (els.multiPage) els.multiPage.dataset.multiStep = state.multiCreate.step;
+  els.multiStepButtons.forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.multiStepButton === state.multiCreate.step);
+  });
+  if (els.multiBack) {
+    const backText = state.multiCreate.backPage === "creation-plaza" ? "返回创作广场" : state.multiCreate.backPage === "creation-records" ? "返回创作记录" : "返回模板中心";
+    els.multiBack.innerHTML = `<span></span>${backText}`;
+  }
   if (els.multiTemplateTitle) els.multiTemplateTitle.textContent = `${template.name} - 多图创作`;
   if (els.multiTemplateSubtitle) els.multiTemplateSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · 先看整套模板，再补充缺失素材`;
   if (els.multiTemplateName) els.multiTemplateName.textContent = template.name;
+  if (els.multiTemplateThumb) els.multiTemplateThumb.src = template.items[0]?.image || "assets/product-cover-01.png";
   if (els.multiEnabledCount) els.multiEnabledCount.textContent = `${enabledModules.length} 个`;
   if (els.multiMissingCount) els.multiMissingCount.textContent = `${missingModules.length} 个`;
   if (els.multiCost) els.multiCost.textContent = `${cost} 融豆`;
   if (els.multiReadyLabel) els.multiReadyLabel.textContent = `${readyCount}/${enabledModules.length} 已就绪`;
+  if (els.multiResultStatus) els.multiResultStatus.textContent = state.multiCreate.taskStatus === "running" ? `${doneCount}/${enabledModules.length} 已完成` : state.multiCreate.taskStatus === "done" ? "全部完成" : "等待生成";
+  if (els.multiFooterStatus) {
+    els.multiFooterStatus.textContent = state.multiCreate.step === "config"
+      ? `预计生成 ${generativeModules.length} 个模块`
+      : state.multiCreate.taskStatus === "done"
+        ? "已完成生成，可选择入选图并保存结果"
+        : "后台生成中，可返回创作记录后继续查看";
+  }
+  if (els.multiAutosave) els.multiAutosave.textContent = state.multiCreate.taskStatus === "running" ? "已自动保存" : "自动保存";
 
   els.multiModuleList.innerHTML = state.multiCreate.modules.map((module, index) => {
     const status = getMultiModuleStatus(module);
@@ -2521,12 +2657,12 @@ function renderMultiImageCreation() {
         ${module.enabled ? `
           <div class="multi-module-cover">
             <img src="${module.generated && module.resultImage ? module.resultImage : module.image}" alt="${module.title}">
-            <span class="multi-module-type">${module.group}</span>
+            <span class="multi-module-type">${module.group} · ${getMultiModuleRatioLabel(module)}</span>
             <em class="multi-status ${status.key}">${status.text}</em>
           </div>
           <div class="multi-module-copy">
             <strong>${module.title}</strong>
-            <span>${isMultiModuleFixed(module) ? "无需商品图" : `商品图 ${productCount}/${getMultiModuleRequiredCount(module)}`} · ${module.purpose}</span>
+            <span>${isMultiModuleFixed(module) ? "无需商品图" : `商品图 ${productCount}/${getMultiModuleRequiredCount(module)}`} · ${module.purpose} · 输出 ${getMultiModuleRatioLabel(module)}</span>
           </div>
         ` : `
           <div class="multi-module-closed">
@@ -2539,6 +2675,8 @@ function renderMultiImageCreation() {
   }).join("");
 
   renderMultiConfigPanel();
+  renderMultiResultList();
+  renderMultiLongPreview();
 }
 
 function renderMultiConfigPanel() {
@@ -2565,6 +2703,19 @@ function renderMultiConfigPanel() {
     </div>
     ${module.enabled ? `
       <section class="multi-config-section">
+        <h4>输出比例</h4>
+        ${isMultiModuleFixed(module) ? `
+          <p>固定图片 / 文字图片保持原图比例，不参与生成比例配置。</p>
+          <div class="multi-ratio-static">原图比例</div>
+        ` : `
+          <select class="multi-ratio-select" data-multi-ratio="${module.id}">
+            ${ratioOptionsMarkup(module)}
+          </select>
+          ${module.ratioMode === "custom" ? `<input class="multi-ratio-custom" data-multi-custom-ratio="${module.id}" value="${module.customRatio}" placeholder="例如 2:3 / 750:1000">` : ""}
+          ${module.ratioMode && module.ratioMode !== "follow" ? `<p class="multi-ratio-warning">已改为 ${getMultiModuleRatioValue(module)}，可能与模板原版构图不同。</p>` : `<p>默认按模板原图比例生成：${module.templateRatio}</p>`}
+        `}
+      </section>
+      <section class="multi-config-section">
         <h4>商品图</h4>
         <p>${isMultiModuleFixed(module) ? "固定图片模块无需上传商品图。" : `需 ${getMultiModuleRequiredCount(module)} 张商品图。`}</p>
         <div class="multi-thumb-row">
@@ -2583,8 +2734,83 @@ function renderMultiConfigPanel() {
         <h4>文本描述</h4>
         <textarea data-multi-prompt="${module.id}" placeholder="非必填。不填写时，系统按模板商品位直接替换商品。">${module.prompt}</textarea>
       </label>
+      <section class="multi-config-section">
+        <h4>文案策略</h4>
+        <div class="multi-text-mode-grid">
+          ${["不加文字", "跟随模板文案", "替换文案", "生成后编辑", "AI融合文案"].map((mode) => `
+            <button class="${module.textMode === mode ? "is-active" : ""}" type="button" data-multi-text-mode="${module.id}" data-mode="${mode}">${mode}</button>
+          `).join("")}
+        </div>
+      </section>
     ` : `<p class="multi-disabled-note">该模块已关闭，本次不生成、不校验、不计费。重新启用后可继续配置。</p>`}
   `;
+}
+
+function renderMultiResultList() {
+  if (!els.multiResultList) return;
+  const enabledModules = getEnabledMultiModules();
+  if (!enabledModules.length) {
+    els.multiResultList.innerHTML = `<div class="multi-result-placeholder">暂无启用模块</div>`;
+    return;
+  }
+  els.multiResultList.innerHTML = enabledModules.map((module) => {
+    const status = getModuleResultStatus(module);
+    const candidates = module.candidates || [];
+    return `
+      <section class="multi-result-module">
+        <div class="multi-result-module-head">
+          <div>
+            <h4>${module.title}</h4>
+            <p>${module.group} · 输出 ${getMultiModuleRatioLabel(module)} · ${module.textMode}</p>
+          </div>
+          <span class="multi-status ${status.key}">${status.text}</span>
+        </div>
+        ${candidates.length ? `
+          <div class="multi-candidate-grid">
+            ${candidates.map((candidate, index) => `
+              <button class="multi-candidate-card ${candidate.id === module.selectedCandidateId ? "is-selected" : ""}" type="button" data-multi-candidate="${module.id}" data-candidate-id="${candidate.id}">
+                ${candidate.id === module.selectedCandidateId ? `<em class="multi-candidate-check">✓</em>` : ""}
+                <img src="${candidate.image}" alt="${module.title}候选 ${index + 1}">
+                <span>候选 ${index + 1}</span>
+              </button>
+            `).join("")}
+          </div>
+        ` : `<div class="multi-result-placeholder">${status.text}</div>`}
+        <div class="multi-result-actions">
+          <button type="button" data-multi-regenerate-module="${module.id}">重新生成</button>
+          <button type="button" data-multi-ai-copy="${module.id}">AI改文案</button>
+          <button type="button" data-multi-canvas-edit="${module.id}">画布编辑</button>
+        </div>
+      </section>
+    `;
+  }).join("");
+}
+
+function getSelectedModuleImage(module) {
+  const selected = module.candidates?.find((candidate) => candidate.id === module.selectedCandidateId);
+  if (selected) return selected.image;
+  if (isMultiModuleFixed(module)) return module.image;
+  return "";
+}
+
+function renderMultiLongPreview() {
+  if (!els.multiLongPreview) return;
+  const modules = getEnabledMultiModules();
+  els.multiLongPreview.innerHTML = modules.map((module) => {
+    const image = getSelectedModuleImage(module);
+    if (!image) {
+      return `<div class="multi-long-item empty">${module.group} · 等待入选图</div>`;
+    }
+    return `
+      <div class="multi-long-item">
+        <span class="multi-long-label">${module.group} · ${getMultiModuleRatioLabel(module)}</span>
+        <img src="${image}" alt="${module.title}">
+      </div>
+    `;
+  }).join("");
+  if (els.multiPreviewNote) {
+    els.multiPreviewNote.textContent = state.multiCreate.step === "result" ? "实时拼接已入选结果" : "按模板顺序展示结构";
+  }
 }
 
 function selectMultiModule(moduleId) {
@@ -2600,7 +2826,7 @@ function toggleMultiModule(moduleId) {
   renderMultiImageCreation();
 }
 
-function fillMultiProductImages(moduleId = "") {
+function fillMultiProductImages(moduleId = "", silent = false) {
   const targets = moduleId
     ? state.multiCreate.modules.filter((module) => module.id === moduleId)
     : getGenerativeMultiModules();
@@ -2614,7 +2840,7 @@ function fillMultiProductImages(moduleId = "") {
     module.productImages = [mockImages[index % mockImages.length]];
   });
   renderMultiImageCreation();
-  showToast(moduleId ? "已选择商品图" : "已为启用模块匹配商品图");
+  if (!silent) showToast(moduleId ? "已选择商品图" : "已为启用模块匹配商品图");
 }
 
 function addMultiReferenceImage(moduleId) {
@@ -2631,7 +2857,57 @@ function updateMultiPrompt(moduleId, value) {
   module.prompt = value;
 }
 
-function openMultiGenerateConfirm() {
+function updateMultiRatio(moduleId, value) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module || isMultiModuleFixed(module)) return;
+  module.ratioMode = value;
+  if (value !== "custom") module.customRatio = "";
+  renderMultiImageCreation();
+  if (value !== "follow") {
+    showToast(`已改为 ${getMultiModuleRatioValue(module)}，可能与模板原版构图不同`);
+  }
+}
+
+function updateMultiCustomRatio(moduleId, value) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module || isMultiModuleFixed(module)) return;
+  module.ratioMode = "custom";
+  module.customRatio = value.trim();
+}
+
+function updateMultiTextMode(moduleId, mode) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module) return;
+  module.textMode = mode;
+  renderMultiConfigPanel();
+}
+
+function createModuleCandidates(module) {
+  const count = parseMultiGenerateCount();
+  return Array.from({ length: count }, (_, index) => ({
+    id: `${module.id}-candidate-${index + 1}`,
+    image: getMultiCandidateImage(module, index),
+    title: `候选 ${index + 1}`
+  }));
+}
+
+function completeMultiModule(moduleId) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module || !module.enabled) return;
+  module.generationStatus = "done";
+  module.candidates = createModuleCandidates(module);
+  module.selectedCandidateId = module.candidates[0]?.id || "";
+  module.generated = true;
+  module.resultImage = module.candidates[0]?.image || module.image;
+  const pending = getGenerativeMultiModules().filter((entry) => entry.generationStatus !== "done");
+  if (!pending.length) {
+    state.multiCreate.taskStatus = "done";
+    if (els.multiAutosave) els.multiAutosave.textContent = "已自动保存";
+  }
+  renderMultiImageCreation();
+}
+
+function startMultiGeneration({ reset = true } = {}) {
   const enabledModules = getEnabledMultiModules();
   if (!enabledModules.length) {
     showToast("请至少启用一个模块");
@@ -2640,39 +2916,158 @@ function openMultiGenerateConfirm() {
   const missingModules = getMissingMultiModules();
   if (missingModules.length) {
     state.multiCreate.selectedModuleId = missingModules[0].id;
-    renderMultiImageCreation();
+    setMultiStep("config");
     showToast(`还有 ${missingModules.length} 个启用模块缺商品图`);
     return;
   }
-  const generativeModules = getGenerativeMultiModules();
-  if (els.multiConfirmSummary) {
-    els.multiConfirmSummary.textContent = `本次生成 ${generativeModules.length} 个模块，跳过 ${state.multiCreate.modules.length - enabledModules.length} 个模块，预计消耗 ${generativeModules.length * 20} 融豆`;
+
+  state.multiCreate.taskId = state.multiCreate.taskId || `multi-${Date.now()}`;
+  state.multiCreate.taskStatus = "running";
+  state.multiCreate.generated = true;
+  if (reset) {
+    getEnabledMultiModules().forEach((module) => {
+      module.candidates = [];
+      module.selectedCandidateId = "";
+      module.generationStatus = isMultiModuleFixed(module) ? "done" : "queued";
+      if (isMultiModuleFixed(module)) {
+        module.candidates = [{ id: `${module.id}-fixed`, image: module.image, title: "固定图片" }];
+        module.selectedCandidateId = `${module.id}-fixed`;
+      }
+    });
   }
-  if (els.multiConfirmList) {
-    els.multiConfirmList.innerHTML = state.multiCreate.modules.map((module) => {
-      const status = getMultiModuleStatus(module);
-      return `
-        <div class="multi-confirm-item ${module.enabled ? "" : "is-disabled"}">
-          <img src="${module.image}" alt="${module.title}">
-          <div>
-            <strong>${module.title}</strong>
-            <span>${module.group} · ${status.text}</span>
-          </div>
+  createOrUpdateMultiTaskRecord();
+  setMultiStep("result");
+  showToast("已进入结果确认，任务将在后台生成");
+  getGenerativeMultiModules().forEach((module, index) => {
+    module.generationStatus = index === 0 ? "running" : "queued";
+    window.setTimeout(() => {
+      module.generationStatus = "running";
+      renderMultiImageCreation();
+    }, 500 + index * 900);
+    window.setTimeout(() => {
+      completeMultiModule(module.id);
+      createOrUpdateMultiTaskRecord();
+    }, 1300 + index * 1200);
+  });
+  renderMultiImageCreation();
+}
+
+function selectMultiCandidate(moduleId, candidateId) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module) return;
+  module.selectedCandidateId = candidateId;
+  const selected = module.candidates.find((candidate) => candidate.id === candidateId);
+  module.resultImage = selected?.image || module.resultImage;
+  renderMultiImageCreation();
+}
+
+function regenerateMultiModule(moduleId) {
+  const module = state.multiCreate.modules.find((entry) => entry.id === moduleId);
+  if (!module || isMultiModuleFixed(module)) {
+    showToast("固定图片不参与重新生成");
+    return;
+  }
+  module.generationStatus = "running";
+  module.candidates = [];
+  module.selectedCandidateId = "";
+  state.multiCreate.taskStatus = "running";
+  renderMultiImageCreation();
+  window.setTimeout(() => {
+    completeMultiModule(module.id);
+    showToast("模块已重新生成");
+  }, 1200);
+}
+
+function createOrUpdateMultiTaskRecord() {
+  if (!els.creationTaskFlow || !state.multiCreate.taskId) return;
+  const template = getActiveMultiTemplate();
+  const enabledModules = getEnabledMultiModules();
+  const doneCount = enabledModules.filter((module) => ["done", "fixed"].includes(getModuleResultStatus(module).key)).length;
+  const status = state.multiCreate.taskStatus === "done" ? "done" : "running";
+  let card = els.creationTaskFlow.querySelector(`[data-multi-task-id="${state.multiCreate.taskId}"]`);
+  const title = `${template?.name || "模板"}多图创作`;
+  const thumbs = enabledModules.slice(0, 3).map((module) => `<img src="${getSelectedModuleImage(module) || module.image}" alt="">`).join("");
+  const html = `
+    <div class="creation-task-thumb suite">
+      ${thumbs}
+      <span class="creation-task-type">套图</span>
+    </div>
+    <div class="creation-task-main">
+      <div class="creation-task-title-row">
+        <h2>${title}</h2>
+        <span class="creation-task-status ${status === "done" ? "done" : "running"}">${status === "done" ? "已完成" : "生成中"}</span>
+      </div>
+      <div class="creation-task-meta">
+        <span>${enabledModules.length} 个模块</span>
+        <span>已完成 ${doneCount}/${enabledModules.length}</span>
+        <span>刚刚</span>
+      </div>
+      <div class="creation-task-tags">
+        <span data-tag-source="product_name">${template?.name || "模板创作"}</span>
+        <span data-tag-source="product_category">${template?.category || "未分类"}</span>
+        <span data-tag-source="output_ratio">按模块比例</span>
+      </div>
+      <div class="creation-task-progress">
+        <span>${status === "done" ? "候选图已生成，可继续确认结果" : "后台生成中，可返回任务继续查看"}</span>
+        <div class="creation-task-progress-line">
+          <i style="width: ${enabledModules.length ? Math.round((doneCount / enabledModules.length) * 100) : 0}%;"></i>
         </div>
-      `;
-    }).join("");
+      </div>
+    </div>
+    <div class="creation-task-action">
+      <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
+    </div>
+  `;
+  if (!card) {
+    card = document.createElement("article");
+    card.className = "creation-task-card";
+    card.dataset.creationTaskCard = "";
+    card.dataset.multiTaskId = state.multiCreate.taskId;
+    card.dataset.type = "套图创作";
+    card.dataset.product = template?.name || "模板创作";
+    els.creationTaskFlow.prepend(card);
+    els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
   }
-  openPrototypeModal(els.multiConfirmModal);
+  card.dataset.status = status;
+  card.dataset.title = title;
+  card.innerHTML = html;
+}
+
+function openMultiTaskFromRecord(taskCard) {
+  const isCurrentTask = taskCard?.dataset.multiTaskId && taskCard.dataset.multiTaskId === state.multiCreate.taskId;
+  if (!isCurrentTask) {
+    setupMultiImageCreation("tpl002", "creation-records");
+    fillMultiProductImages("", true);
+  }
+  state.multiCreate.backPage = "creation-records";
+  if (!state.multiCreate.generated) {
+    getEnabledMultiModules().forEach((module, index) => {
+      if (isMultiModuleFixed(module)) {
+        module.generationStatus = "done";
+        module.candidates = [{ id: `${module.id}-fixed`, image: module.image, title: "固定图片" }];
+      } else {
+        module.generationStatus = taskCard?.dataset.status === "done" || index < 2 ? "done" : "running";
+        module.candidates = module.generationStatus === "done" ? createModuleCandidates(module) : [];
+      }
+      module.selectedCandidateId = module.candidates[0]?.id || "";
+      module.generated = Boolean(module.candidates.length);
+    });
+    state.multiCreate.generated = true;
+  }
+  state.multiCreate.taskStatus = taskCard?.dataset.status === "done" ? "done" : "running";
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+  setWorkspacePage("multi-image-creation");
+  setMultiStep("result");
+}
+
+function openMultiGenerateConfirm() {
+  startMultiGeneration();
 }
 
 function confirmMultiGenerate() {
-  getGenerativeMultiModules().forEach((module) => {
-    module.generated = true;
-    module.resultImage = module.productImages[0]?.image || module.image;
-  });
   closePrototypeModals();
-  renderMultiImageCreation();
-  showToast("套图生成任务已提交");
+  startMultiGeneration();
 }
 
 function goCreateWithTemplate(templateId) {
@@ -2712,6 +3107,7 @@ function buildResourceTemplate(card) {
       purpose: "参考生成",
       source: "创作广场",
       image: index === 0 ? coverImage : `assets/product-cover-0${Math.min(index + 1, 4)}.png`,
+      ratio: inferTemplateItemRatio({ group, purpose: "参考生成", source: "创作广场" }),
       enabled: true
     }))
   };
@@ -3722,6 +4118,19 @@ document.addEventListener("click", (event) => {
   const multiModuleCard = event.target.closest("[data-multi-module]");
   const multiUploadProductButton = event.target.closest("[data-multi-upload-product]");
   const multiUploadReferenceButton = event.target.closest("[data-multi-upload-reference]");
+  const multiTemplatePreviewButton = event.target.closest("[data-multi-template-preview]");
+  const multiStepButton = event.target.closest("[data-multi-step-button]");
+  const multiBackStepButton = event.target.closest("[data-multi-back-step]");
+  const multiGoRecordsButton = event.target.closest("[data-multi-go-records]");
+  const multiSaveDraftButton = event.target.closest("[data-multi-save-draft]");
+  const multiRegenerateAllButton = event.target.closest("[data-multi-regenerate-all]");
+  const multiSaveResultButton = event.target.closest("[data-multi-save-result]");
+  const multiDownloadButton = event.target.closest("[data-multi-download], [data-multi-preview-download]");
+  const multiCandidateButton = event.target.closest("[data-multi-candidate]");
+  const multiRegenerateModuleButton = event.target.closest("[data-multi-regenerate-module]");
+  const multiAiCopyButton = event.target.closest("[data-multi-ai-copy]");
+  const multiCanvasEditButton = event.target.closest("[data-multi-canvas-edit]");
+  const multiTextModeButton = event.target.closest("[data-multi-text-mode]");
   const openContentButton = event.target.closest("[data-open-content-picker]");
   const contentOptionButton = event.target.closest("[data-content-option]");
   const builderMoveButton = event.target.closest("[data-builder-move]");
@@ -3754,11 +4163,89 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (multiTemplatePreviewButton) {
+    openTemplateLongPreview(getActiveMultiTemplate());
+    return;
+  }
+
+  if (multiStepButton) {
+    const targetStep = multiStepButton.dataset.multiStepButton;
+    if (targetStep === "result" && !state.multiCreate.generated) {
+      showToast("请先点击去生成");
+      return;
+    }
+    setMultiStep(targetStep);
+    return;
+  }
+
   if (multiBackButton) {
-    const backPage = state.multiCreate.backPage === "creation-plaza" ? "creation-plaza" : "template-center";
+    const backPage = ["creation-plaza", "creation-records"].includes(state.multiCreate.backPage) ? state.multiCreate.backPage : "template-center";
+    if (state.multiCreate.taskStatus === "running") {
+      showToast("任务已在后台生成，可在创作记录中继续查看");
+    }
     setWorkspacePage(backPage);
     clearMenuActive();
-    document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : "模板中心"}"]`)?.classList.add("active");
+    document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : backPage === "creation-records" ? "创作记录" : "模板中心"}"]`)?.classList.add("active");
+    return;
+  }
+
+  if (multiBackStepButton) {
+    setMultiStep("config");
+    return;
+  }
+
+  if (multiGoRecordsButton) {
+    openCreationRecordsPage();
+    return;
+  }
+
+  if (multiSaveDraftButton) {
+    showToast("草稿已保存");
+    return;
+  }
+
+  if (multiRegenerateAllButton) {
+    startMultiGeneration();
+    return;
+  }
+
+  if (multiSaveResultButton) {
+    if (state.multiCreate.taskStatus !== "done") {
+      showToast("还有模块未完成生成");
+      return;
+    }
+    createOrUpdateMultiTaskRecord();
+    showToast("结果已保存");
+    return;
+  }
+
+  if (multiDownloadButton) {
+    showToast("已模拟下载当前入选结果");
+    return;
+  }
+
+  if (multiCandidateButton) {
+    selectMultiCandidate(multiCandidateButton.dataset.multiCandidate, multiCandidateButton.dataset.candidateId);
+    return;
+  }
+
+  if (multiRegenerateModuleButton) {
+    regenerateMultiModule(multiRegenerateModuleButton.dataset.multiRegenerateModule);
+    return;
+  }
+
+  if (multiAiCopyButton) {
+    showToast("已打开 AI 改文案模拟流程");
+    return;
+  }
+
+  if (multiCanvasEditButton) {
+    showToast("已模拟进入画布编辑");
+    return;
+  }
+
+  if (multiTextModeButton) {
+    updateMultiTextMode(multiTextModeButton.dataset.multiTextMode, multiTextModeButton.dataset.mode);
     return;
   }
 
@@ -3799,6 +4286,10 @@ document.addEventListener("click", (event) => {
 
   if (openCreationDetailButton) {
     const taskCard = openCreationDetailButton.closest("[data-creation-task-card]");
+    if (taskCard?.dataset.type === "套图创作") {
+      openMultiTaskFromRecord(taskCard);
+      return;
+    }
     openCreationDetail({
       fromHistory: true,
       taskTitle: taskCard?.dataset.title || "",
@@ -4113,8 +4604,13 @@ document.addEventListener("click", (event) => {
 
 document.addEventListener("input", (event) => {
   const multiPrompt = event.target.closest("[data-multi-prompt]");
+  const multiCustomRatio = event.target.closest("[data-multi-custom-ratio]");
   if (multiPrompt) {
     updateMultiPrompt(multiPrompt.dataset.multiPrompt, multiPrompt.value);
+    return;
+  }
+  if (multiCustomRatio) {
+    updateMultiCustomRatio(multiCustomRatio.dataset.multiCustomRatio, multiCustomRatio.value);
     return;
   }
 
@@ -4159,6 +4655,12 @@ document.addEventListener("change", (event) => {
   const multiResolution = event.target.closest("[data-multi-resolution]");
   const multiModel = event.target.closest("[data-multi-model]");
   const multiCount = event.target.closest("[data-multi-count]");
+  const multiRatio = event.target.closest("[data-multi-ratio]");
+
+  if (multiRatio) {
+    updateMultiRatio(multiRatio.dataset.multiRatio, multiRatio.value);
+    return;
+  }
 
   if (multiResolution || multiModel || multiCount) {
     state.multiCreate.resolution = multiResolution?.value || state.multiCreate.resolution;
