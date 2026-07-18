@@ -569,6 +569,17 @@ const materialLibrary = [
   }
 ];
 
+const materialCategoryGroups = {
+  品牌资产: ["品牌元素"],
+  说明模块: ["尺码表", "资质认证", "品控说明", "物流/退换说明"],
+  营销组件: ["文字模块", "营销角标"],
+  创作素材: ["图片模块", "背景素材"]
+};
+
+function materialPrimaryCategory(type) {
+  return Object.entries(materialCategoryGroups).find(([, types]) => types.includes(type))?.[0] || "创作素材";
+}
+
 const productSizePresets = ["XS", "S", "M", "L", "XL", "XXL", "3XL", "4XL", "5XL"];
 const productParameterPresets = [
   { name: "衣长", unit: "cm" },
@@ -590,7 +601,8 @@ const state = {
   filteredModels: modelLibrary,
   materials: materialLibrary,
   filteredMaterials: materialLibrary,
-  materialTab: "全部",
+  materialPrimary: "品牌资产",
+  materialSecondary: "全部",
   activeMaterial: materialLibrary[0],
   modelGenderFilter: "全部",
   modelStyleFilters: [],
@@ -618,6 +630,8 @@ const state = {
   publishTemplate: null,
   publishMaterial: null,
   previewResourceCard: null,
+  purchaseResourceCard: null,
+  previewMaterial: null,
   view: "card",
   activeDate: false,
   activeProduct: products[0],
@@ -630,6 +644,7 @@ const state = {
     productUploaded: false,
     referenceUploaded: false,
     modelUploaded: false,
+    modelName: "",
     template: "",
     templateKind: "",
     ratio: "3:4",
@@ -698,8 +713,12 @@ els.detailResolution = document.querySelector("[data-detail-resolution]");
 els.detailTaskList = document.querySelector("[data-detail-task-list]");
 els.templateModal = document.querySelector("[data-template-modal]");
 els.paramModal = document.querySelector("[data-param-modal]");
+els.productSelectModal = document.querySelector("[data-product-select-modal]");
+els.referenceSelectModal = document.querySelector("[data-reference-select-modal]");
+els.modelSelectModal = document.querySelector("[data-model-select-modal]");
 els.recordModal = document.querySelector("[data-record-modal]");
 els.resourcePreviewModal = document.querySelector("[data-resource-preview-modal]");
+els.resourcePurchaseModal = document.querySelector("[data-resource-purchase-modal]");
 els.drawerImagePreview = document.querySelector("[data-drawer-image-preview]");
 els.drawerImagePreviewImg = document.querySelector("[data-drawer-image-preview-img]");
 els.drawerLongPreview = document.querySelector("[data-drawer-long-preview]");
@@ -765,9 +784,13 @@ els.publishPrice = document.querySelector("[data-publish-price]");
 els.publishDesc = document.querySelector("[data-publish-desc]");
 els.publishPreview = document.querySelector("[data-publish-preview]");
 els.materialSearch = document.querySelector("[data-material-search]");
-els.materialTypeFilter = document.querySelector("[data-material-type-filter]");
 els.materialCategoryFilter = document.querySelector("[data-material-category-filter]");
+els.materialProductFilter = document.querySelector("[data-material-product-filter]");
+els.materialSourceFilter = document.querySelector("[data-material-source-filter]");
 els.materialStatusFilter = document.querySelector("[data-material-status-filter]");
+els.materialCount = document.querySelector("[data-material-count]");
+els.materialPrimaryTabs = document.querySelector("[data-material-primary-tabs]");
+els.materialSecondaryTabs = document.querySelector("[data-material-secondary-tabs]");
 els.materialGrid = document.querySelector("[data-material-grid]");
 els.materialEmptyState = document.querySelector("[data-material-empty-state]");
 els.materialNoResultState = document.querySelector("[data-material-no-result-state]");
@@ -1205,43 +1228,56 @@ function saveTemplateBuilder() {
   showToast("模板已保存");
 }
 
+function renderMaterialFilterTabs() {
+  document.querySelectorAll("[data-material-primary]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.materialPrimary === state.materialPrimary);
+  });
+
+  if (!els.materialSecondaryTabs) return;
+  const secondaryTypes = ["全部", ...(materialCategoryGroups[state.materialPrimary] || [])];
+  els.materialSecondaryTabs.innerHTML = secondaryTypes.map((type) => `
+    <button class="${type === state.materialSecondary ? "is-active" : ""}" type="button" data-material-secondary="${type}">${type}</button>
+  `).join("");
+}
+
+function setMaterialPrimary(primary) {
+  if (!materialCategoryGroups[primary]) return;
+  state.materialPrimary = primary;
+  state.materialSecondary = "全部";
+  filterMaterials();
+}
+
+function setMaterialSecondary(secondary) {
+  const allowed = ["全部", ...(materialCategoryGroups[state.materialPrimary] || [])];
+  if (!allowed.includes(secondary)) return;
+  state.materialSecondary = secondary;
+  filterMaterials();
+}
+
 function renderMaterialCards(list) {
   if (!els.materialGrid) return;
+  if (els.materialCount) els.materialCount.textContent = `共 ${list.length} 个素材`;
 
   els.materialGrid.innerHTML = list.map((material) => `
     <article class="material-card" data-material-id="${material.id}">
-      <div class="material-cover ${material.tone}">
+      <button class="material-cover ${material.tone}" type="button" data-material-preview="${material.id}" aria-label="查看${material.name}">
         <img src="${material.image}" alt="${material.name}">
-        <span class="material-type-badge">${material.type}</span>
-      </div>
+      </button>
       <div class="material-card-body">
         <div class="material-title-row">
           <h3>${material.name}</h3>
-          <em class="template-status ${templateStatusClass(material.status)}">${material.status}</em>
-        </div>
-        <div class="material-meta">
-          <span>品类：<strong>${material.category}</strong></span>
-          <span>关联：<strong>${material.relatedProduct}</strong></span>
-          <span>来源：<strong>${material.source}</strong></span>
-          <span>使用：<strong>${formatUsage(material.usage)}次</strong></span>
-          <span>更新：<strong>${material.updatedAt}</strong></span>
-        </div>
-        <div class="material-card-actions">
-          <button class="primary-action" type="button" data-material-use="${material.id}">使用</button>
-          <button type="button" data-material-preview="${material.id}">预览</button>
           <button type="button" data-material-edit="${material.id}">编辑</button>
-          <button type="button" data-material-copy="${material.id}">复制</button>
-          <button type="button" data-material-publish="${material.id}">上架到创作广场</button>
-          <button class="danger-action" type="button" data-material-delete="${material.id}">删除</button>
         </div>
       </div>
     </article>
   `).join("");
 
   const hasKeyword = Boolean(els.materialSearch?.value.trim());
-  const hasFilter = state.materialTab !== "全部" ||
-    els.materialTypeFilter?.value !== "全部类型" ||
+  const hasFilter = state.materialPrimary !== "品牌资产" ||
+    state.materialSecondary !== "全部" ||
     els.materialCategoryFilter?.value !== "全部品类" ||
+    els.materialProductFilter?.value !== "全部商品" ||
+    els.materialSourceFilter?.value !== "全部来源" ||
     els.materialStatusFilter?.value !== "全部状态";
   els.materialGrid.classList.toggle("is-hidden", list.length === 0);
   els.materialEmptyState?.classList.toggle("is-visible", materialLibrary.length === 0);
@@ -1250,34 +1286,56 @@ function renderMaterialCards(list) {
 
 function filterMaterials() {
   if (!els.materialGrid) return;
-  const keyword = els.materialSearch.value.trim().toLowerCase();
-  const type = els.materialTypeFilter.value;
-  const category = els.materialCategoryFilter.value;
-  const status = els.materialStatusFilter.value;
+  renderMaterialFilterTabs();
+  const keyword = els.materialSearch?.value.trim().toLowerCase() || "";
+  const category = els.materialCategoryFilter?.value || "全部品类";
+  const product = els.materialProductFilter?.value || "全部商品";
+  const source = els.materialSourceFilter?.value || "全部来源";
+  const status = els.materialStatusFilter?.value || "全部状态";
 
   state.filteredMaterials = materialLibrary.filter((material) => {
     const haystack = [material.name, material.type, material.category, material.relatedProduct, material.source, material.status, material.description, material.scene, ...material.tags].join(" ").toLowerCase();
     const matchKeyword = !keyword || haystack.includes(keyword);
-    const matchTab = state.materialTab === "全部" || material.type === state.materialTab;
-    const matchType = type === "全部类型" || material.type === type;
+    const matchPrimary = materialPrimaryCategory(material.type) === state.materialPrimary;
+    const matchSecondary = state.materialSecondary === "全部" || material.type === state.materialSecondary;
     const matchCategory = category === "全部品类" || material.category === category;
+    const matchProduct = product === "全部商品" || (product === "通用素材" ? material.relatedProduct === "全部商品" : material.relatedProduct === product);
+    const matchSource = source === "全部来源" || material.source === source;
     const matchStatus = status === "全部状态" || material.status === status;
-    return matchKeyword && matchTab && matchType && matchCategory && matchStatus;
+    return matchKeyword && matchPrimary && matchSecondary && matchCategory && matchProduct && matchSource && matchStatus;
   });
 
   renderMaterialCards(state.filteredMaterials);
 }
 
-function setMaterialTab(tab) {
-  state.materialTab = tab;
-  document.querySelectorAll("[data-material-tab]").forEach((button) => {
-    button.classList.toggle("is-active", button.dataset.materialTab === tab);
-  });
-  filterMaterials();
-}
-
 function getMaterial(materialId) {
   return materialLibrary.find((item) => item.id === materialId);
+}
+
+function setPreviewMetaLabels({ price = "价格", fit = "适用品类" } = {}) {
+  const priceNode = document.querySelector("[data-preview-price]");
+  const fitNode = document.querySelector("[data-preview-fit]");
+  if (priceNode?.previousElementSibling) priceNode.previousElementSibling.textContent = price;
+  if (fitNode?.previousElementSibling) fitNode.previousElementSibling.textContent = fit;
+}
+
+function openMaterialPreviewModal(materialId) {
+  const material = getMaterial(materialId);
+  if (!material) return;
+
+  state.previewResourceCard = null;
+  state.previewMaterial = material;
+  setPreviewMetaLabels({ price: "状态", fit: "关联商品" });
+  document.querySelector("[data-preview-title]").textContent = material.name;
+  document.querySelector("[data-preview-image]").src = material.image;
+  document.querySelector("[data-preview-category]").textContent = material.category;
+  document.querySelector("[data-preview-type]").textContent = material.type;
+  document.querySelector("[data-preview-source]").textContent = material.source;
+  document.querySelector("[data-preview-price]").textContent = material.status;
+  document.querySelector("[data-preview-usage]").textContent = `${formatUsage(material.usage)}次`;
+  document.querySelector("[data-preview-fit]").textContent = material.relatedProduct;
+  document.querySelector("[data-preview-use]").textContent = "使用素材";
+  openPrototypeModal(els.resourcePreviewModal);
 }
 
 function renderMaterialDrawer(material) {
@@ -1371,7 +1429,12 @@ function editMaterial(materialId) {
   if (!material) return;
 
   const editorTypes = ["品牌元素", "文字模块", "营销角标", "背景素材", "图片模块"];
-  showToast(editorTypes.includes(material.type) ? "已进入在线编辑器（原型模拟）" : "已进入素材编辑状态（原型模拟）");
+  if (editorTypes.includes(material.type)) {
+    openBrandMaterialEditor();
+    showToast(`正在编辑：${material.name}`);
+    return;
+  }
+  showToast("已进入素材编辑状态（原型模拟）");
 }
 
 function copyMaterial(materialId) {
@@ -2205,6 +2268,7 @@ function setWorkspacePage(pageName) {
   });
   els.body.classList.toggle("is-creation-detail", pageName === "creation-detail");
   els.body.classList.toggle("is-multi-task", pageName === "multi-image-creation");
+  els.body.classList.toggle("is-brand-editor", pageName === "brand-material-editor");
   closeCreateMenu();
   if (pageName !== "product-library" || els.drawer.dataset.drawerKind !== "product") {
     closeDrawer();
@@ -2216,6 +2280,64 @@ function openCreationRecordsPage() {
   clearMenuActive();
   document.querySelector('[data-single-menu="创作记录"]')?.classList.add("active");
   filterCreationTasks();
+}
+
+function openBrandMaterialLibrary() {
+  setWorkspacePage("brand-material-library");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="品牌素材库"]')?.classList.add("active");
+}
+
+function openBrandMaterialEditor() {
+  setWorkspacePage("brand-material-editor");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="品牌素材库"]')?.classList.add("active");
+  setBrandEditorTool("add");
+}
+
+function setBrandEditorTool(tool) {
+  document.querySelectorAll("[data-brand-editor-tool]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.brandEditorTool === tool);
+  });
+  document.querySelectorAll("[data-brand-tool-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.brandToolPanel === tool);
+  });
+  const propMap = {
+    add: "canvas",
+    text: "text",
+    element: "element",
+    layer: "layer",
+    import: "canvas"
+  };
+  const propPanel = propMap[tool] || "canvas";
+  document.querySelectorAll("[data-brand-prop-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.brandPropPanel === propPanel);
+  });
+}
+
+function filterBrandAssetCards(type) {
+  document.querySelectorAll("[data-brand-material-tab]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.brandMaterialTab === type);
+  });
+  filterBrandMaterialsByControls();
+}
+
+function filterBrandMaterialsByControls() {
+  const keyword = document.querySelector("[data-brand-material-search]")?.value.trim().toLowerCase() || "";
+  const type = document.querySelector("[data-brand-material-type]")?.value || "全部类型";
+  const source = document.querySelector("[data-brand-material-source]")?.value || "全部来源";
+  const status = document.querySelector("[data-brand-material-status]")?.value || "全部状态";
+  const activeTab = document.querySelector("[data-brand-material-tab].is-active")?.dataset.brandMaterialTab || "全部";
+
+  document.querySelectorAll("[data-brand-asset-type]").forEach((card) => {
+    const text = card.textContent.toLowerCase();
+    const matchKeyword = !keyword || text.includes(keyword);
+    const matchType = type === "全部类型" || text.includes(type.toLowerCase());
+    const matchSource = source === "全部来源" || text.includes(source.toLowerCase());
+    const matchStatus = status === "全部状态" || text.includes(status.toLowerCase());
+    const matchTab = activeTab === "全部" || card.dataset.brandAssetType === activeTab;
+    card.classList.toggle("is-hidden", !(matchKeyword && matchType && matchSource && matchStatus && matchTab));
+  });
 }
 
 function filterCreationTasks() {
@@ -2294,7 +2416,7 @@ function setCreationTemplate(name, kind) {
   state.creation.template = name;
   state.creation.templateKind = kind;
   if (els.templateLabel) els.templateLabel.textContent = name || "";
-  document.querySelector("[data-template-open]").classList.toggle("is-selected", Boolean(name));
+  document.querySelector("[data-template-open]")?.classList.toggle("is-selected", Boolean(name));
   document.querySelectorAll("[data-template-choice]").forEach((button) => {
     button.classList.toggle("is-selected", button.dataset.templateChoice === name);
   });
@@ -3252,6 +3374,8 @@ function useResource(card) {
 
 function openResourcePreview(card) {
   state.previewResourceCard = card;
+  state.previewMaterial = null;
+  setPreviewMetaLabels({ price: "价格", fit: "适用品类" });
   const image = card.querySelector(".resource-cover img");
   document.querySelector("[data-preview-title]").textContent = card.dataset.title;
   document.querySelector("[data-preview-image]").src = image?.getAttribute("src") || "";
@@ -3261,7 +3385,22 @@ function openResourcePreview(card) {
   document.querySelector("[data-preview-price]").textContent = card.dataset.price || "-";
   document.querySelector("[data-preview-usage]").textContent = card.dataset.usage || "-";
   document.querySelector("[data-preview-fit]").textContent = card.dataset.fit || card.dataset.category;
+  document.querySelector("[data-preview-use]").textContent = "使用";
   openPrototypeModal(els.resourcePreviewModal);
+}
+
+function openResourcePurchase(card) {
+  state.purchaseResourceCard = card;
+  const title = card.dataset.title || "该资源";
+  const price = card.dataset.price || "10 融豆";
+  const isFree = price === "免费";
+  document.querySelector("[data-purchase-title]").textContent = isFree ? "确认使用资源" : "确认购买资源";
+  document.querySelector("[data-purchase-name]").textContent = `「${title}」`;
+  document.querySelector("[data-purchase-price]").textContent = price;
+  document.querySelector("[data-purchase-message]").innerHTML = isFree
+    ? "该资源免费，确认后即可使用。"
+    : `本次购买将消耗 <strong data-purchase-price>${price}</strong>，购买后即可使用该资源。`;
+  openPrototypeModal(els.resourcePurchaseModal);
 }
 
 function renderModelCard(model, index) {
@@ -3656,6 +3795,10 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
       setWorkspacePage("material-library");
       return;
     }
+    if (button.dataset.singleMenu === "品牌素材库") {
+      setWorkspacePage("brand-material-library");
+      return;
+    }
     if (button.dataset.singleMenu === "商品库") {
       setWorkspacePage("product-library");
       return;
@@ -3665,7 +3808,7 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
       filterCreationTasks();
       return;
     }
-    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、模板中心、模特库、素材库、商品库和创作记录`);
+    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、模板中心、模特库、素材库、品牌素材库、商品库和创作记录`);
   });
 });
 
@@ -3681,13 +3824,22 @@ els.creationPrompt.addEventListener("input", updateCreationMode);
 document.querySelectorAll("[data-creation-upload]").forEach((button) => {
   button.addEventListener("click", () => {
     const type = button.dataset.creationUpload;
+    const modalMap = {
+      product: els.productSelectModal,
+      reference: els.referenceSelectModal,
+      model: els.modelSelectModal
+    };
+    if (modalMap[type]) {
+      openPrototypeModal(modalMap[type]);
+      return;
+    }
     const nextValue = !state.creation[`${type}Uploaded`];
     setCreationUpload(type, nextValue);
     showToast(nextValue ? "已模拟上传" : "已移除上传内容");
   });
 });
 
-document.querySelector("[data-template-open]").addEventListener("click", () => {
+document.querySelector("[data-template-open]")?.addEventListener("click", () => {
   openPrototypeModal(els.templateModal);
 });
 
@@ -3707,6 +3859,46 @@ document.querySelector("[data-template-clear]").addEventListener("click", () => 
 
 document.querySelectorAll("[data-param-open]").forEach((button) => {
   button.addEventListener("click", () => openPrototypeModal(els.paramModal));
+});
+
+document.querySelectorAll(".creation-select-filters button, .creation-reference-tabs button, .creation-model-subfilters button").forEach((button) => {
+  button.addEventListener("click", () => {
+    const group = button.parentElement;
+    group?.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === button));
+  });
+});
+
+document.querySelectorAll("[data-creation-select-product]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setCreationUpload("product", true);
+    closePrototypeModals();
+    showToast("已选择商品图");
+  });
+});
+
+document.querySelector("[data-reference-simulate-upload]")?.addEventListener("click", () => {
+  setCreationUpload("reference", true);
+  closePrototypeModals();
+  showToast("已添加参考图");
+});
+
+document.querySelectorAll("[data-creation-model-option]").forEach((button) => {
+  button.addEventListener("click", () => {
+    document.querySelectorAll("[data-creation-model-option]").forEach((item) => item.classList.toggle("is-selected", item === button));
+    state.creation.modelName = button.dataset.modelName || "";
+    const summary = document.querySelector("[data-creation-model-summary]");
+    if (summary) summary.textContent = state.creation.modelName ? "已选 1/1" : "已选 0/1";
+  });
+});
+
+document.querySelector("[data-creation-model-confirm]")?.addEventListener("click", () => {
+  if (!state.creation.modelName) {
+    showToast("请先选择模特");
+    return;
+  }
+  setCreationUpload("model", true);
+  closePrototypeModals();
+  showToast(`已选择模特：${state.creation.modelName}`);
 });
 
 document.querySelector("[data-record-open]")?.addEventListener("click", () => {
@@ -3914,7 +4106,7 @@ document.querySelectorAll("[data-resource-filter] button").forEach((button) => {
 });
 
 document.querySelectorAll("[data-resource-use]").forEach((button) => {
-  button.addEventListener("click", () => useResource(button.closest("[data-resource-card]")));
+  button.addEventListener("click", () => openResourcePurchase(button.closest("[data-resource-card]")));
 });
 
 document.querySelectorAll("[data-resource-preview]").forEach((button) => {
@@ -3924,9 +4116,19 @@ document.querySelectorAll("[data-resource-preview]").forEach((button) => {
 });
 
 document.querySelector("[data-preview-use]")?.addEventListener("click", () => {
-  if (!state.previewResourceCard) return;
-  useResource(state.previewResourceCard);
+  if (state.previewMaterial) {
+    useMaterial(state.previewMaterial.id);
+  } else if (state.previewResourceCard) {
+    useResource(state.previewResourceCard);
+  }
   closePrototypeModals();
+});
+
+document.querySelector("[data-purchase-confirm]")?.addEventListener("click", () => {
+  const card = state.purchaseResourceCard;
+  closePrototypeModals();
+  state.purchaseResourceCard = null;
+  showToast(card ? `购买成功，已获得「${card.dataset.title}」` : "购买成功");
 });
 
 document.querySelectorAll("[data-template-scope]").forEach((button) => {
@@ -4051,13 +4253,14 @@ document.querySelector("[data-template-modal-delete]")?.addEventListener("click"
   showToast("模板已删除");
 });
 
-document.querySelectorAll("[data-material-tab]").forEach((button) => {
-  button.addEventListener("click", () => setMaterialTab(button.dataset.materialTab));
-});
-
-[els.materialSearch, els.materialTypeFilter, els.materialCategoryFilter, els.materialStatusFilter].forEach((control) => {
+[els.materialSearch, els.materialCategoryFilter, els.materialProductFilter, els.materialSourceFilter, els.materialStatusFilter].forEach((control) => {
   control?.addEventListener("input", filterMaterials);
   control?.addEventListener("change", filterMaterials);
+});
+
+document.querySelectorAll("[data-brand-material-search], [data-brand-material-type], [data-brand-material-source], [data-brand-material-status]").forEach((control) => {
+  control.addEventListener("input", filterBrandMaterialsByControls);
+  control.addEventListener("change", filterBrandMaterialsByControls);
 });
 
 document.querySelectorAll("[data-material-create-trigger], [data-material-create-trigger-empty]").forEach((button) => {
@@ -4071,7 +4274,12 @@ document.querySelectorAll("[data-new-material]").forEach((button) => {
   button.addEventListener("click", () => {
     els.materialCreateMenu?.classList.remove("is-open");
     const editorTypes = ["品牌元素", "文字模块", "图片模块", "营销角标", "背景素材"];
-    showToast(editorTypes.includes(button.dataset.newMaterial) ? "已进入在线编辑器（原型模拟）" : "已进入素材编辑状态（原型模拟）");
+    if (editorTypes.includes(button.dataset.newMaterial)) {
+      openBrandMaterialEditor();
+      showToast("已进入品牌画板编辑器");
+      return;
+    }
+    showToast("已进入素材编辑状态（原型模拟）");
   });
 });
 
@@ -4147,10 +4355,80 @@ document.addEventListener("click", (event) => {
   const materialCopyButton = event.target.closest("[data-material-copy]");
   const materialPublishButton = event.target.closest("[data-material-publish], [data-material-drawer-publish]");
   const materialDeleteButton = event.target.closest("[data-material-delete]");
+  const materialPrimaryButton = event.target.closest("[data-material-primary]");
+  const materialSecondaryButton = event.target.closest("[data-material-secondary]");
+  const openBrandEditorButton = event.target.closest("[data-open-brand-editor]");
+  const backBrandLibraryButton = event.target.closest("[data-back-brand-library]");
+  const brandEditorToolButton = event.target.closest("[data-brand-editor-tool]");
+  const brandPanelToggleButton = event.target.closest("[data-brand-panel-toggle]");
+  const brandMaterialTabButton = event.target.closest("[data-brand-material-tab]");
+  const saveBrandMaterialButton = event.target.closest("[data-save-brand-material]");
+  const brandCopyButton = event.target.closest("[data-brand-copy]");
+  const brandUseButton = event.target.closest("[data-brand-use]");
+  const brandImportButton = event.target.closest("[data-brand-material-import]");
   const openCreationDetailButton = event.target.closest("[data-open-creation-detail]");
   const resultActionButton = event.target.closest("[data-result-action]");
   const historyRegenerateButton = event.target.closest("[data-history-regenerate]");
   const detailRegenerateButton = event.target.closest(".detail-result-actions [data-detail-regenerate]");
+
+  if (materialPrimaryButton) {
+    setMaterialPrimary(materialPrimaryButton.dataset.materialPrimary);
+    return;
+  }
+
+  if (materialSecondaryButton) {
+    setMaterialSecondary(materialSecondaryButton.dataset.materialSecondary);
+    return;
+  }
+
+  if (openBrandEditorButton) {
+    openBrandMaterialEditor();
+    showToast("已进入品牌画板编辑器");
+    return;
+  }
+
+  if (backBrandLibraryButton) {
+    openBrandMaterialLibrary();
+    return;
+  }
+
+  if (brandEditorToolButton) {
+    setBrandEditorTool(brandEditorToolButton.dataset.brandEditorTool);
+    return;
+  }
+
+  if (brandPanelToggleButton) {
+    const page = brandPanelToggleButton.closest(".brand-editor-page");
+    const collapsed = page?.classList.toggle("is-panel-collapsed");
+    brandPanelToggleButton.setAttribute("aria-label", collapsed ? "展开左侧面板" : "收起左侧面板");
+    return;
+  }
+
+  if (brandMaterialTabButton) {
+    filterBrandAssetCards(brandMaterialTabButton.dataset.brandMaterialTab);
+    return;
+  }
+
+  if (saveBrandMaterialButton) {
+    openBrandMaterialLibrary();
+    showToast("品牌素材已保存到品牌素材库");
+    return;
+  }
+
+  if (brandCopyButton) {
+    showToast("已复制品牌素材副本");
+    return;
+  }
+
+  if (brandUseButton) {
+    showToast("已打开使用记录（原型模拟）");
+    return;
+  }
+
+  if (brandImportButton) {
+    showToast("批量导入品牌素材（原型模拟）");
+    return;
+  }
 
   if (addProductButton) {
     openCreateProductDrawer();
@@ -4164,7 +4442,8 @@ document.addEventListener("click", (event) => {
   }
 
   if (multiTemplatePreviewButton) {
-    openTemplateLongPreview(getActiveMultiTemplate());
+    const template = getActiveMultiTemplate();
+    openDrawerImagePreview(template?.items?.[0]?.image || els.multiTemplateThumb?.src);
     return;
   }
 
@@ -4536,7 +4815,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (materialPreviewButton) {
-    openMaterialDrawer(materialPreviewButton.dataset.materialPreview);
+    openMaterialPreviewModal(materialPreviewButton.dataset.materialPreview);
     return;
   }
 
