@@ -632,6 +632,35 @@ const state = {
   previewResourceCard: null,
   purchaseResourceCard: null,
   previewMaterial: null,
+  brandEditor: {
+    seq: 1,
+    selectedId: "seed-watermark",
+    zoom: 0.8,
+    minZoom: 0.25,
+    maxZoom: 2.5,
+    canvas: {
+      width: 900,
+      height: 500,
+      background: "transparent"
+    },
+    objects: [
+      {
+        id: "seed-watermark",
+        type: "text",
+        name: "冷感空调裤",
+        x: 160,
+        y: 138,
+        width: 375,
+        height: 112,
+        fontSize: 38,
+        opacity: 100,
+        rotation: 0,
+        lockRatio: true,
+        flipX: false,
+        flipY: false
+      }
+    ]
+  },
   view: "card",
   activeDate: false,
   activeProduct: products[0],
@@ -1257,16 +1286,19 @@ function setMaterialSecondary(secondary) {
 function renderMaterialCards(list) {
   if (!els.materialGrid) return;
   if (els.materialCount) els.materialCount.textContent = `共 ${list.length} 个素材`;
+  const visibleMaterials = list.slice(0, 8);
 
-  els.materialGrid.innerHTML = list.map((material) => `
+  els.materialGrid.innerHTML = visibleMaterials.map((material) => `
     <article class="material-card" data-material-id="${material.id}">
       <button class="material-cover ${material.tone}" type="button" data-material-preview="${material.id}" aria-label="查看${material.name}">
         <img src="${material.image}" alt="${material.name}">
       </button>
       <div class="material-card-body">
-        <div class="material-title-row">
-          <h3>${material.name}</h3>
-          <button type="button" data-material-edit="${material.id}">编辑</button>
+        <h3>${material.name}</h3>
+        <div class="material-card-line">
+          <span>${material.type}</span>
+          <i></i>
+          <span>${material.category}</span>
         </div>
       </div>
     </article>
@@ -2293,6 +2325,7 @@ function openBrandMaterialEditor() {
   clearMenuActive();
   document.querySelector('[data-single-menu="品牌素材库"]')?.classList.add("active");
   setBrandEditorTool("add");
+  renderBrandCanvas();
 }
 
 function setBrandEditorTool(tool) {
@@ -2313,6 +2346,334 @@ function setBrandEditorTool(tool) {
   document.querySelectorAll("[data-brand-prop-panel]").forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.brandPropPanel === propPanel);
   });
+  syncBrandEditorProps(propPanel);
+}
+
+function escapeBrandText(value) {
+  return String(value).replace(/[&<>"']/g, (char) => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    "\"": "&quot;",
+    "'": "&#39;"
+  }[char]));
+}
+
+function getSelectedBrandObject() {
+  return state.brandEditor.objects.find((item) => item.id === state.brandEditor.selectedId) || null;
+}
+
+function getBrandObjectPropPanel(object, fallback = "element") {
+  if (!object) return fallback;
+  return object.type === "text" ? "text" : fallback;
+}
+
+function setBrandPropPanel(panelName) {
+  document.querySelectorAll("[data-brand-prop-panel]").forEach((panel) => {
+    panel.classList.toggle("active", panel.dataset.brandPropPanel === panelName);
+  });
+  syncBrandEditorProps(panelName);
+}
+
+function brandObjectHandles() {
+  return '<i class="handle tl"></i><i class="handle tr"></i><i class="handle bl"></i><i class="handle br"></i>';
+}
+
+function getBrandElementVisual(name) {
+  const map = {
+    星环: '<i class="planet"></i><span>星环</span>',
+    流光: '<i class="meteor"></i><span>流光</span>',
+    绿植: '<i class="leaf"></i><span>绿植</span>',
+    新春字: '<i class="pin"></i><span>新春字</span>',
+    气泡: '<i class="planet"></i><span>气泡</span>',
+    闪光: '<i class="spark-shape"></i><span>闪光</span>',
+    开心: '<i>🙂</i><span>开心</span>',
+    爱心: '<i>☺</i><span>爱心</span>',
+    欢呼: '<i>😊</i><span>欢呼</span>',
+    十字光: '<i class="spark-shape"></i><span>十字光</span>',
+    耀斑: '<i class="spark-shape"></i><span>耀斑</span>',
+    极光: '<i class="meteor"></i><span>极光</span>'
+  };
+  return map[name] || `<span>${escapeBrandText(name)}</span>`;
+}
+
+function renderBrandObject(object) {
+  const selected = object.id === state.brandEditor.selectedId ? " is-selected" : "";
+  const flipX = object.flipX ? -1 : 1;
+  const flipY = object.flipY ? -1 : 1;
+  const style = [
+    `left:${object.x}px`,
+    `top:${object.y}px`,
+    `width:${object.width}px`,
+    `height:${object.height}px`,
+    `opacity:${(Number(object.opacity) || 100) / 100}`,
+    `transform:rotate(${Number(object.rotation) || 0}deg) scale(${flipX}, ${flipY})`
+  ].join(";");
+
+  if (object.type === "text") {
+    return `
+      <div class="brand-canvas-object brand-canvas-text${selected}" data-brand-object="${object.id}" style="${style};font-size:${object.fontSize || 34}px">
+        ${escapeBrandText(object.name)}
+        ${brandObjectHandles()}
+      </div>
+    `;
+  }
+
+  if (object.type === "shape") {
+    const shapeClass = object.shape === "圆形" ? " circle" : object.shape === "星形" ? " star" : "";
+    return `
+      <div class="brand-canvas-object brand-canvas-shape${shapeClass}${selected}" data-brand-object="${object.id}" style="${style}">
+        ${brandObjectHandles()}
+      </div>
+    `;
+  }
+
+  if (object.type === "image") {
+    return `
+      <div class="brand-canvas-object brand-canvas-image${selected}" data-brand-object="${object.id}" style="${style}">
+        <div class="brand-object-element"><span>${escapeBrandText(object.name)}</span></div>
+        ${brandObjectHandles()}
+      </div>
+    `;
+  }
+
+  return `
+    <div class="brand-canvas-object brand-canvas-image${selected}" data-brand-object="${object.id}" style="${style}">
+      <div class="brand-object-element">${getBrandElementVisual(object.name)}</div>
+      ${brandObjectHandles()}
+    </div>
+  `;
+}
+
+function renderBrandCanvas() {
+  const artboard = document.querySelector("[data-brand-artboard]");
+  if (!artboard) return;
+  const { width, height, background } = state.brandEditor.canvas;
+  artboard.style.width = `${width}px`;
+  artboard.style.height = `${height}px`;
+  artboard.classList.toggle("canvas-bg-color", background === "color");
+  artboard.classList.toggle("canvas-bg-image", background === "image");
+  artboard.classList.toggle("canvas-bg-transparent", background === "transparent");
+  artboard.innerHTML = `${state.brandEditor.objects.map(renderBrandObject).join("")}<div class="brand-demo-label">-5°<small>冰感凉爽</small></div>`;
+  syncBrandCanvasZoom();
+  renderBrandLayers();
+  syncBrandEditorProps();
+}
+
+function clampBrandCanvasZoom(zoom) {
+  return Math.min(state.brandEditor.maxZoom, Math.max(state.brandEditor.minZoom, zoom));
+}
+
+function syncBrandCanvasZoom() {
+  const artboard = document.querySelector("[data-brand-artboard]");
+  const frame = document.querySelector("[data-brand-artboard-frame]");
+  const label = document.querySelector("[data-brand-zoom-label]");
+  if (!artboard || !frame) return;
+  const zoom = clampBrandCanvasZoom(state.brandEditor.zoom);
+  state.brandEditor.zoom = zoom;
+  frame.style.width = `${state.brandEditor.canvas.width * zoom}px`;
+  frame.style.height = `${state.brandEditor.canvas.height * zoom}px`;
+  artboard.style.transform = `scale(${zoom})`;
+  if (label) label.textContent = `${Math.round(zoom * 100)}%`;
+}
+
+function setBrandCanvasZoom(nextZoom, focusPoint) {
+  const stage = document.querySelector("[data-brand-canvas-stage]");
+  const previousZoom = state.brandEditor.zoom;
+  const zoom = clampBrandCanvasZoom(nextZoom);
+  if (Math.abs(zoom - previousZoom) < 0.001) return;
+
+  let pointerX = 0;
+  let pointerY = 0;
+  if (stage && focusPoint) {
+    const rect = stage.getBoundingClientRect();
+    pointerX = focusPoint.clientX - rect.left;
+    pointerY = focusPoint.clientY - rect.top;
+  }
+
+  state.brandEditor.zoom = zoom;
+  syncBrandCanvasZoom();
+
+  if (stage && focusPoint) {
+    const ratio = zoom / previousZoom;
+    stage.scrollLeft = (stage.scrollLeft + pointerX) * ratio - pointerX;
+    stage.scrollTop = (stage.scrollTop + pointerY) * ratio - pointerY;
+  }
+}
+
+function fitBrandCanvasToStage() {
+  const stage = document.querySelector("[data-brand-canvas-stage]");
+  if (!stage) return;
+  const availableWidth = Math.max(stage.clientWidth - 120, 180);
+  const availableHeight = Math.max(stage.clientHeight - 160, 180);
+  const fitZoom = Math.min(
+    availableWidth / state.brandEditor.canvas.width,
+    availableHeight / state.brandEditor.canvas.height,
+    1
+  );
+  setBrandCanvasZoom(fitZoom);
+  stage.scrollTo({ left: 0, top: 0 });
+}
+
+function renderBrandLayers() {
+  const list = document.querySelector(".layer-stack-list");
+  if (!list) return;
+  const items = [...state.brandEditor.objects].reverse();
+  list.innerHTML = items.map((object) => `
+    <button class="${object.id === state.brandEditor.selectedId ? "active" : ""}" type="button" data-brand-layer-object="${object.id}">
+      <i class="layer-thumb ${object.type === "text" ? "text" : "image"}">${object.type === "text" ? "T" : ""}</i>
+      <strong>${escapeBrandText(object.name)}</strong>
+      <span class="layer-action ${object.lockRatio ? "lock" : "unlock"}" title="${object.lockRatio ? "锁定" : "解锁"}" data-brand-layer-action="lock" data-brand-layer-target="${object.id}"></span>
+      <span class="layer-action up" title="上移" data-brand-layer-action="up" data-brand-layer-target="${object.id}"></span>
+      <span class="layer-action down" title="下移" data-brand-layer-action="down" data-brand-layer-target="${object.id}"></span>
+      <span class="layer-action remove" title="删除" data-brand-layer-action="remove" data-brand-layer-target="${object.id}"></span>
+    </button>
+  `).join("");
+}
+
+function syncBrandEditorProps(preferredPanel) {
+  const object = getSelectedBrandObject();
+  const panelName = preferredPanel || document.querySelector("[data-brand-prop-panel].active")?.dataset.brandPropPanel || "canvas";
+  document.querySelectorAll("[data-brand-canvas-width]").forEach((input) => input.value = state.brandEditor.canvas.width);
+  document.querySelectorAll("[data-brand-canvas-height]").forEach((input) => input.value = state.brandEditor.canvas.height);
+  document.querySelectorAll("[data-brand-canvas-bg]").forEach((button) => {
+    button.classList.toggle("is-active", button.dataset.brandCanvasBg === state.brandEditor.canvas.background);
+  });
+  if (!object || panelName === "canvas") return;
+
+  document.querySelectorAll("[data-brand-object-width]").forEach((input) => input.value = Math.round(object.width));
+  document.querySelectorAll("[data-brand-object-height]").forEach((input) => input.value = Math.round(object.height));
+  document.querySelectorAll("[data-brand-object-x]").forEach((input) => input.value = Math.round(object.x));
+  document.querySelectorAll("[data-brand-object-y]").forEach((input) => input.value = Math.round(object.y));
+  document.querySelectorAll("[data-brand-object-rotation]").forEach((input) => input.value = Math.round(object.rotation || 0));
+  document.querySelectorAll("[data-brand-object-opacity]").forEach((input) => input.value = Math.round(object.opacity || 100));
+  document.querySelectorAll("[data-brand-lock-ratio]").forEach((input) => input.checked = Boolean(object.lockRatio));
+  document.querySelectorAll("[data-brand-text-size]").forEach((input) => input.value = Math.round(object.fontSize || 34));
+  document.querySelectorAll("[data-brand-rotation-label]").forEach((label) => label.textContent = `${Math.round(object.rotation || 0)}°`);
+  document.querySelectorAll("[data-brand-opacity-label]").forEach((label) => label.textContent = `${Math.round(object.opacity || 100)}%`);
+}
+
+function selectBrandObject(objectId, preferredPanel) {
+  if (!state.brandEditor.objects.some((item) => item.id === objectId)) return;
+  state.brandEditor.selectedId = objectId;
+  renderBrandCanvas();
+  const selected = getSelectedBrandObject();
+  setBrandPropPanel(preferredPanel || getBrandObjectPropPanel(selected));
+}
+
+function addBrandObject(partial, preferredPanel) {
+  const id = `brand-object-${state.brandEditor.seq++}`;
+  const next = {
+    id,
+    type: "element",
+    name: "素材",
+    x: 220 + (state.brandEditor.seq % 4) * 28,
+    y: 150 + (state.brandEditor.seq % 3) * 24,
+    width: 180,
+    height: 120,
+    opacity: 100,
+    rotation: 0,
+    lockRatio: true,
+    flipX: false,
+    flipY: false,
+    ...partial
+  };
+  next.aspectRatio = next.width / Math.max(next.height, 1);
+  state.brandEditor.objects.push(next);
+  state.brandEditor.selectedId = id;
+  renderBrandCanvas();
+  setBrandPropPanel(preferredPanel || getBrandObjectPropPanel(next));
+  showToast(`${next.name}已添加到画布`);
+}
+
+function removeBrandObject(objectId = state.brandEditor.selectedId) {
+  const index = state.brandEditor.objects.findIndex((item) => item.id === objectId);
+  if (index < 0) return;
+  const removedObject = state.brandEditor.objects[index];
+  state.brandEditor.objects.splice(index, 1);
+  state.brandEditor.selectedId = state.brandEditor.objects[Math.min(index, state.brandEditor.objects.length - 1)]?.id || null;
+  renderBrandCanvas();
+  if (!state.brandEditor.selectedId) setBrandPropPanel("canvas");
+  showToast(`${removedObject.type === "text" ? "文字" : "素材"}已删除`);
+}
+
+function moveBrandLayer(objectId, direction) {
+  const index = state.brandEditor.objects.findIndex((item) => item.id === objectId);
+  const target = direction === "up" ? index + 1 : index - 1;
+  if (index < 0 || target < 0 || target >= state.brandEditor.objects.length) return;
+  const [object] = state.brandEditor.objects.splice(index, 1);
+  state.brandEditor.objects.splice(target, 0, object);
+  state.brandEditor.selectedId = objectId;
+  renderBrandCanvas();
+}
+
+function updateSelectedBrandObject(field, rawValue) {
+  const object = getSelectedBrandObject();
+  if (!object) return;
+  const value = Number(rawValue);
+  if (!Number.isFinite(value)) return;
+
+  if (field === "width" || field === "height") {
+    const nextValue = Math.max(24, value);
+    object[field] = nextValue;
+    if (object.lockRatio) {
+      const ratio = object.aspectRatio || object.width / Math.max(object.height, 1) || 1;
+      if (field === "width") object.height = Math.max(24, Math.round(nextValue / ratio));
+      if (field === "height") object.width = Math.max(24, Math.round(nextValue * ratio));
+    } else {
+      object.aspectRatio = object.width / Math.max(object.height, 1);
+    }
+  } else if (field === "opacity") {
+    object.opacity = Math.max(0, Math.min(100, value));
+  } else if (field === "rotation") {
+    object.rotation = Math.max(0, Math.min(360, value));
+  } else if (field === "fontSize") {
+    object.fontSize = Math.max(12, Math.min(160, value));
+  } else if (field === "x" || field === "y") {
+    object[field] = Math.max(0, value);
+  }
+  renderBrandCanvas();
+}
+
+function handleBrandEditorInput(target) {
+  if (target.matches("[data-brand-object-width]")) return updateSelectedBrandObject("width", target.value), true;
+  if (target.matches("[data-brand-object-height]")) return updateSelectedBrandObject("height", target.value), true;
+  if (target.matches("[data-brand-object-x]")) return updateSelectedBrandObject("x", target.value), true;
+  if (target.matches("[data-brand-object-y]")) return updateSelectedBrandObject("y", target.value), true;
+  if (target.matches("[data-brand-object-rotation]")) return updateSelectedBrandObject("rotation", target.value), true;
+  if (target.matches("[data-brand-object-opacity]")) return updateSelectedBrandObject("opacity", target.value), true;
+  if (target.matches("[data-brand-text-size]")) return updateSelectedBrandObject("fontSize", target.value), true;
+  if (target.matches("[data-brand-lock-ratio]")) {
+    const object = getSelectedBrandObject();
+    if (object) {
+      object.lockRatio = target.checked;
+      object.aspectRatio = object.width / Math.max(object.height, 1);
+      renderBrandCanvas();
+    }
+    return true;
+  }
+  return false;
+}
+
+function applyBrandCanvasSize(width, height) {
+  state.brandEditor.canvas.width = Math.max(240, Number(width) || 900);
+  state.brandEditor.canvas.height = Math.max(240, Number(height) || 500);
+  renderBrandCanvas();
+}
+
+function handleBrandImport(action) {
+  if (action === "image") {
+    const help = document.querySelector("[data-brand-import-help]");
+    if (help) help.textContent = "已选择：brand-demo-import.png";
+    addBrandObject({ type: "image", name: "导入图片", width: 210, height: 156 }, "element");
+    return;
+  }
+  if (action === "import-json") {
+    addBrandObject({ type: "text", name: "JSON导入标题", width: 240, height: 64, fontSize: 28 }, "text");
+    showToast("已模拟导入 JSON");
+    return;
+  }
+  showToast(action === "export-json" ? "已模拟导出 JSON" : "已模拟导出 PNG 图片");
 }
 
 function filterBrandAssetCards(type) {
@@ -2333,8 +2694,8 @@ function filterBrandMaterialsByControls() {
     const text = card.textContent.toLowerCase();
     const matchKeyword = !keyword || text.includes(keyword);
     const matchType = type === "全部类型" || text.includes(type.toLowerCase());
-    const matchSource = source === "全部来源" || text.includes(source.toLowerCase());
-    const matchStatus = status === "全部状态" || text.includes(status.toLowerCase());
+    const matchSource = source === "全部来源" || card.dataset.brandAssetSource === source;
+    const matchStatus = status === "全部状态" || card.dataset.brandAssetStatus === status;
     const matchTab = activeTab === "全部" || card.dataset.brandAssetType === activeTab;
     card.classList.toggle("is-hidden", !(matchKeyword && matchType && matchSource && matchStatus && matchTab));
   });
@@ -4290,6 +4651,10 @@ els.viewButtons.forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
 });
 
+document.addEventListener("input", (event) => {
+  handleBrandEditorInput(event.target);
+});
+
 document.addEventListener("click", (event) => {
   const addProductButton = event.target.closest("[data-add-product]");
   const detailButton = event.target.closest("[data-detail]");
@@ -4366,6 +4731,23 @@ document.addEventListener("click", (event) => {
   const brandCopyButton = event.target.closest("[data-brand-copy]");
   const brandUseButton = event.target.closest("[data-brand-use]");
   const brandImportButton = event.target.closest("[data-brand-material-import]");
+  const brandAddButton = event.target.closest("[data-brand-add]");
+  const brandTextButton = event.target.closest("[data-brand-text]");
+  const brandShapeButton = event.target.closest("[data-brand-shape]");
+  const brandElementButton = event.target.closest("[data-brand-element]");
+  const brandCanvasObject = event.target.closest("[data-brand-object]");
+  const brandLayerActionButton = event.target.closest("[data-brand-layer-action]");
+  const brandLayerObjectButton = event.target.closest("[data-brand-layer-object]");
+  const brandCanvasPresetButton = event.target.closest("[data-brand-canvas-preset]");
+  const brandCanvasApplyButton = event.target.closest("[data-brand-canvas-apply]");
+  const brandCanvasBgButton = event.target.closest("[data-brand-canvas-bg]");
+  const brandZoomOutButton = event.target.closest("[data-brand-zoom-out]");
+  const brandZoomInButton = event.target.closest("[data-brand-zoom-in]");
+  const brandZoomFitButton = event.target.closest("[data-brand-zoom-fit]");
+  const brandImportActionButton = event.target.closest("[data-brand-import-action]");
+  const brandFlipButton = event.target.closest("[data-brand-flip]");
+  const brandDeleteObjectButton = event.target.closest("[data-brand-delete-object]");
+  const brandGenericPropButton = event.target.closest(".brand-editor-props button");
   const openCreationDetailButton = event.target.closest("[data-open-creation-detail]");
   const resultActionButton = event.target.closest("[data-result-action]");
   const historyRegenerateButton = event.target.closest("[data-history-regenerate]");
@@ -4427,6 +4809,120 @@ document.addEventListener("click", (event) => {
 
   if (brandImportButton) {
     showToast("批量导入品牌素材（原型模拟）");
+    return;
+  }
+
+  if (brandAddButton) {
+    addBrandObject({ type: "image", name: brandAddButton.dataset.brandAdd, width: 210, height: 150 }, "element");
+    return;
+  }
+
+  if (brandTextButton) {
+    const label = brandTextButton.dataset.brandText;
+    addBrandObject({ type: "text", name: label, width: label.length > 4 ? 220 : 160, height: 62, fontSize: label === "正文" ? 22 : 32 }, "text");
+    return;
+  }
+
+  if (brandShapeButton) {
+    const shape = brandShapeButton.dataset.brandShape;
+    addBrandObject({ type: "shape", name: shape, shape, width: 128, height: 128 }, "element");
+    return;
+  }
+
+  if (brandElementButton) {
+    addBrandObject({ type: "element", name: brandElementButton.dataset.brandElement, width: 170, height: 150 }, "element");
+    return;
+  }
+
+  if (brandLayerActionButton) {
+    const targetId = brandLayerActionButton.dataset.brandLayerTarget;
+    const action = brandLayerActionButton.dataset.brandLayerAction;
+    const object = state.brandEditor.objects.find((item) => item.id === targetId);
+    if (!object) return;
+    if (action === "remove") removeBrandObject(targetId);
+    if (action === "up" || action === "down") moveBrandLayer(targetId, action);
+    if (action === "lock") {
+      object.lockRatio = !object.lockRatio;
+      object.aspectRatio = object.width / Math.max(object.height, 1);
+      state.brandEditor.selectedId = targetId;
+      renderBrandCanvas();
+    }
+    return;
+  }
+
+  if (brandLayerObjectButton) {
+    selectBrandObject(brandLayerObjectButton.dataset.brandLayerObject, "layer");
+    return;
+  }
+
+  if (brandCanvasObject) {
+    selectBrandObject(brandCanvasObject.dataset.brandObject);
+    return;
+  }
+
+  if (brandCanvasPresetButton) {
+    const [width, height] = brandCanvasPresetButton.dataset.brandCanvasPreset.split("x").map(Number);
+    applyBrandCanvasSize(width, height);
+    showToast(`画布尺寸已切换为 ${width}×${height}`);
+    return;
+  }
+
+  if (brandCanvasApplyButton) {
+    applyBrandCanvasSize(
+      document.querySelector("[data-brand-canvas-width]")?.value,
+      document.querySelector("[data-brand-canvas-height]")?.value
+    );
+    showToast("画布尺寸已应用");
+    return;
+  }
+
+  if (brandCanvasBgButton) {
+    state.brandEditor.canvas.background = brandCanvasBgButton.dataset.brandCanvasBg;
+    renderBrandCanvas();
+    showToast("画布背景已切换");
+    return;
+  }
+
+  if (brandZoomOutButton) {
+    setBrandCanvasZoom(state.brandEditor.zoom - 0.1);
+    return;
+  }
+
+  if (brandZoomInButton) {
+    setBrandCanvasZoom(state.brandEditor.zoom + 0.1);
+    return;
+  }
+
+  if (brandZoomFitButton) {
+    fitBrandCanvasToStage();
+    return;
+  }
+
+  if (brandImportActionButton) {
+    handleBrandImport(brandImportActionButton.dataset.brandImportAction);
+    return;
+  }
+
+  if (brandFlipButton) {
+    const object = getSelectedBrandObject();
+    if (!object) return;
+    if (brandFlipButton.dataset.brandFlip === "x") object.flipX = !object.flipX;
+    if (brandFlipButton.dataset.brandFlip === "y") object.flipY = !object.flipY;
+    renderBrandCanvas();
+    showToast("已模拟翻转元素");
+    return;
+  }
+
+  if (brandDeleteObjectButton) {
+    removeBrandObject();
+    return;
+  }
+
+  if (brandGenericPropButton) {
+    const group = brandGenericPropButton.closest(".brand-segment, .text-style-buttons, .text-align-buttons, .text-spacing-controls, .brand-action-grid, .text-effect-grid, .text-effect-select");
+    group?.querySelectorAll("button").forEach((button) => button.classList.remove("is-active"));
+    brandGenericPropButton.classList.add("is-active");
+    showToast("属性参数已模拟应用");
     return;
   }
 
@@ -4931,6 +5427,12 @@ document.addEventListener("input", (event) => {
 });
 
 document.addEventListener("change", (event) => {
+  if (handleBrandEditorInput(event.target)) return;
+  if (event.target.closest(".brand-editor-props select")) {
+    showToast("下拉参数已模拟更新");
+    return;
+  }
+
   const multiResolution = event.target.closest("[data-multi-resolution]");
   const multiModel = event.target.closest("[data-multi-model]");
   const multiCount = event.target.closest("[data-multi-count]");
@@ -4972,6 +5474,16 @@ document.addEventListener("dragstart", (event) => {
   event.dataTransfer.setData("text/plain", item.dataset.builderItem);
   event.dataTransfer.effectAllowed = "move";
 });
+
+document.querySelector("[data-brand-canvas-stage]")?.addEventListener("wheel", (event) => {
+  if (!event.ctrlKey && !event.metaKey) return;
+  event.preventDefault();
+  const zoomFactor = Math.exp(-event.deltaY * 0.012);
+  setBrandCanvasZoom(state.brandEditor.zoom * zoomFactor, {
+    clientX: event.clientX,
+    clientY: event.clientY
+  });
+}, { passive: false });
 
 document.addEventListener("dragover", (event) => {
   if (event.target.closest("[data-builder-group-section]") || event.target.closest("[data-builder-item]")) {
@@ -5042,6 +5554,7 @@ updateCreationMode();
 filterTemplates();
 filterMaterials();
 filterModels();
+renderBrandCanvas();
 window.setTimeout(() => {
   els.loadingState.classList.remove("is-visible");
   renderProducts(state.filtered);

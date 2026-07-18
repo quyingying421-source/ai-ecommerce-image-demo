@@ -557,7 +557,10 @@
               <p data-material-count>共 0 个素材</p>
             </div>
             <div class="material-create-wrap">
-              <button class="btn primary material-create-btn" type="button" data-material-create-trigger>新建素材</button>
+              <button class="btn primary material-create-btn" type="button" data-material-create-trigger>
+                <span class="model-create-entry-icon"></span>
+                新建素材
+              </button>
               <div class="material-create-menu" data-material-create-menu>
                 <button type="button" data-new-material="品牌元素">新建品牌元素</button>
                 <button type="button" data-new-material="尺码表">新建尺码表</button>
@@ -582,10 +585,6 @@
           <div class="material-secondary-tabs" data-material-secondary-tabs></div>
 
           <div class="material-toolbar">
-            <div class="search-field material-search">
-              <span class="search-icon"></span>
-              <input type="search" placeholder="搜索素材名称 / 标签 / 关联商品" data-material-search />
-            </div>
             <select data-material-category-filter>
               <option value="全部品类">全部品类</option>
               <option value="文胸">文胸</option>
@@ -620,6 +619,10 @@
               <option value="审核中">审核中</option>
               <option value="已上架">已上架</option>
             </select>
+            <div class="search-field material-search">
+              <span class="search-icon"></span>
+              <input type="search" placeholder="搜索素材" data-material-search />
+            </div>
           </div>
 
           <div class="material-grid" data-material-grid></div>
@@ -675,10 +678,6 @@
 
           <section class="brand-material-card">
             <div class="brand-material-toolbar">
-              <div class="search-field brand-material-search">
-                <span class="search-icon"></span>
-                <input type="search" placeholder="搜索素材名称 / 类型 / 类目" data-brand-material-search />
-              </div>
               <select data-brand-material-type>
                 <option>全部类型</option>
                 <option>Logo</option>
@@ -703,6 +702,10 @@
                 <option>已启用</option>
                 <option>已停用</option>
               </select>
+              <div class="search-field brand-material-search">
+                <span class="search-icon"></span>
+                <input type="search" placeholder="搜索素材" data-brand-material-search />
+              </div>
             </div>
 
             <div class="brand-material-tabs" data-brand-material-tabs>
@@ -713,163 +716,73 @@
             </div>
 
             <div class="brand-material-grid" data-brand-material-grid>
-              <article class="brand-asset-card" data-brand-asset-type="两用型素材">
+              <article class="brand-asset-card" data-brand-asset-type="两用型素材" data-brand-asset-source="自建" data-brand-asset-status="已启用">
                 <div class="brand-asset-cover cover-cold">
                   <div class="asset-snow">❄</div>
                   <strong>冷感空调裤</strong>
                   <span>天然天丝　亲肤凉感</span>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>冷感主图水印组合</h3>
-                    <span class="asset-status ready">已启用</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>文字样式</span><span>水印</span><span>900×500</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：自建</span>
-                    <span>调用：286 次</span>
-                    <span>更新：2026-07-17 10:38</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>编辑画板</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>冷感主图水印组合</h3>
+                  <span class="brand-asset-category">文字样式 / 水印</span>
                 </div>
               </article>
 
-              <article class="brand-asset-card" data-brand-asset-type="叠加型元素">
+              <article class="brand-asset-card" data-brand-asset-type="叠加型元素" data-brand-asset-source="自建" data-brand-asset-status="已启用">
                 <div class="brand-asset-cover cover-promo">
                   <b>4条装</b>
                   <span>莫代尔 高腰系列</span>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>四条装促销角标</h3>
-                    <span class="asset-status ready">已启用</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>促销角标</span><span>透明背景</span><span>800×800</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：自建</span>
-                    <span>调用：1,024 次</span>
-                    <span>更新：2026-07-16 18:20</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>编辑画板</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>四条装促销角标</h3>
+                  <span class="brand-asset-category">促销角标</span>
                 </div>
               </article>
 
-              <article class="brand-asset-card" data-brand-asset-type="叠加型元素">
+              <article class="brand-asset-card" data-brand-asset-type="叠加型元素" data-brand-asset-source="自建" data-brand-asset-status="草稿">
                 <div class="brand-asset-cover cover-labels">
                   <span>100%纯棉</span>
                   <span>安全面料</span>
                   <span>亲肤透气</span>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>童装合规标签组</h3>
-                    <span class="asset-status draft">草稿</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>合规标签</span><span>图文组合</span><span>640×800</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：自建</span>
-                    <span>调用：64 次</span>
-                    <span>更新：2026-07-15 15:42</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>继续编辑</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>童装合规标签组</h3>
+                  <span class="brand-asset-category">合规标签</span>
                 </div>
               </article>
 
-              <article class="brand-asset-card" data-brand-asset-type="拼接型模块">
+              <article class="brand-asset-card" data-brand-asset-type="拼接型模块" data-brand-asset-source="系统预置" data-brand-asset-status="已启用">
                 <div class="brand-asset-cover cover-section">
                   <small>SUMMER OOTD</small>
                   <strong>云朵感轻盈呼吸</strong>
                   <p>腰腹轻压 / 柔软贴合 / 清爽伴随</p>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>详情衔接标题模块</h3>
-                    <span class="asset-status ready">已启用</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>详情衔接标题</span><span>拼接模块</span><span>750×320</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：系统预置</span>
-                    <span>调用：398 次</span>
-                    <span>更新：2026-07-14 20:10</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>编辑副本</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>详情衔接标题模块</h3>
+                  <span class="brand-asset-category">详情衔接标题</span>
                 </div>
               </article>
 
-              <article class="brand-asset-card" data-brand-asset-type="拼接型模块">
+              <article class="brand-asset-card" data-brand-asset-type="拼接型模块" data-brand-asset-source="自建" data-brand-asset-status="已启用">
                 <div class="brand-asset-cover cover-story">
                   <strong>BELLE</strong>
                   <span>品牌介绍图</span>
                   <p>柔软、亲肤、每日贴身舒适</p>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>BELLE 品牌介绍图</h3>
-                    <span class="asset-status ready">已启用</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>品牌介绍图</span><span>详情模块</span><span>750×1000</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：自建</span>
-                    <span>调用：512 次</span>
-                    <span>更新：2026-07-13 12:22</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>编辑画板</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>BELLE 品牌介绍图</h3>
+                  <span class="brand-asset-category">品牌介绍图</span>
                 </div>
               </article>
 
-              <article class="brand-asset-card" data-brand-asset-type="两用型素材">
+              <article class="brand-asset-card" data-brand-asset-type="两用型素材" data-brand-asset-source="自建" data-brand-asset-status="已停用">
                 <div class="brand-asset-cover cover-logo">
                   <strong>C</strong>
                   <span>七彩摇篮</span>
                 </div>
                 <div class="brand-asset-body">
-                  <div class="brand-asset-title">
-                    <h3>童装 Logo 标准组合</h3>
-                    <span class="asset-status disabled">已停用</span>
-                  </div>
-                  <div class="brand-asset-tags">
-                    <span>Logo</span><span>水印</span><span>1200×600</span>
-                  </div>
-                  <div class="brand-asset-meta">
-                    <span>来源：自建</span>
-                    <span>调用：842 次</span>
-                    <span>更新：2026-07-11 17:40</span>
-                  </div>
-                  <div class="brand-asset-actions">
-                    <button type="button" data-open-brand-editor>编辑画板</button>
-                    <button type="button" data-brand-copy>复制</button>
-                    <button type="button" data-brand-use>使用记录</button>
-                  </div>
+                  <h3>童装 Logo 标准组合</h3>
+                  <span class="brand-asset-category">Logo / 水印</span>
                 </div>
               </article>
             </div>
@@ -880,7 +793,7 @@
       <section class="workspace-page" data-page="brand-material-editor">
         <section class="brand-editor-page">
           <div class="brand-editor-top">
-            <button class="btn ghost brand-back-btn" type="button" data-back-brand-library><span class="back-arrow-icon"></span>返回品牌素材库</button>
+            <button class="btn ghost brand-back-btn" type="button" data-back-brand-library><span class="back-arrow-icon"></span>返回</button>
             <div class="brand-editor-title">
               <strong>冷感主图水印组合</strong>
               <span>文字样式 / 水印 · 900×500</span>
@@ -906,22 +819,22 @@
               <h2>添加</h2>
               <h3>图片</h3>
               <div class="brand-tool-grid">
-                <button type="button">本地上传</button>
-                <button type="button">我的素材</button>
-                <button type="button">商品图</button>
-                <button type="button">去背导入</button>
+                <button type="button" data-brand-add="本地上传">本地上传</button>
+                <button type="button" data-brand-add="我的素材">我的素材</button>
+                <button type="button" data-brand-add="商品图">商品图</button>
+                <button type="button" data-brand-add="去背导入">去背导入</button>
               </div>
               <h3>文字</h3>
               <div class="brand-text-presets">
-                <button type="button">标题</button>
-                <button type="button">副标题</button>
-                <button type="button">正文</button>
+                <button type="button" data-brand-text="标题">标题</button>
+                <button type="button" data-brand-text="副标题">副标题</button>
+                <button type="button" data-brand-text="正文">正文</button>
               </div>
               <h3>形状</h3>
               <div class="brand-shape-grid">
-                <button type="button"><i class="shape rect"></i>方形</button>
-                <button type="button"><i class="shape circle"></i>圆形</button>
-                <button type="button"><i class="shape star"></i>星形</button>
+                <button type="button" data-brand-shape="方形"><i class="shape rect"></i>方形</button>
+                <button type="button" data-brand-shape="圆形"><i class="shape circle"></i>圆形</button>
+                <button type="button" data-brand-shape="星形"><i class="shape star"></i>星形</button>
               </div>
             </div>
 
@@ -933,10 +846,10 @@
               </div>
               <div class="text-panel-subtitle">点击添加文本</div>
               <div class="text-add-grid">
-                <button type="button"><strong>标题</strong></button>
-                <button type="button"><strong>副标题</strong></button>
-                <button type="button"><span>正文</span></button>
-                <button class="ai-text" type="button"><i>AI</i>AI花字</button>
+                <button type="button" data-brand-text="标题"><strong>标题</strong></button>
+                <button type="button" data-brand-text="副标题"><strong>副标题</strong></button>
+                <button type="button" data-brand-text="正文"><span>正文</span></button>
+                <button class="ai-text" type="button" data-brand-text="AI花字"><i>AI</i>AI花字</button>
               </div>
               <div class="brand-editor-chips text-category-chips">
                 <button class="is-active" type="button">全部</button>
@@ -951,25 +864,25 @@
               <div class="text-material-section">
                 <div class="text-section-head"><h3>最新素材</h3><button type="button">全部</button></div>
                 <div class="text-material-grid">
-                  <button type="button"><span class="text-thumb light">♬ 好物推荐</span></button>
-                  <button type="button"><span class="text-thumb pixel">好运 +1</span></button>
-                  <button type="button"><span class="text-thumb gold">霸气标签</span></button>
+                  <button type="button" data-brand-text="好物推荐"><span class="text-thumb light">♬ 好物推荐</span></button>
+                  <button type="button" data-brand-text="好运 +1"><span class="text-thumb pixel">好运 +1</span></button>
+                  <button type="button" data-brand-text="霸气标签"><span class="text-thumb gold">霸气标签</span></button>
                 </div>
               </div>
               <div class="text-material-section">
                 <div class="text-section-head"><h3>基础样式</h3><button type="button">全部</button></div>
                 <div class="text-material-grid">
-                  <button type="button"><span class="text-thumb outlined">文字样式</span></button>
-                  <button type="button"><span class="text-thumb yellow">文字样式</span></button>
-                  <button type="button"><span class="text-thumb marker">文字 样式</span></button>
+                  <button type="button" data-brand-text="文字样式"><span class="text-thumb outlined">文字样式</span></button>
+                  <button type="button" data-brand-text="文字样式"><span class="text-thumb yellow">文字样式</span></button>
+                  <button type="button" data-brand-text="文字 样式"><span class="text-thumb marker">文字 样式</span></button>
                 </div>
               </div>
               <div class="text-material-section">
                 <div class="text-section-head"><h3>商品卖点</h3><button type="button">全部</button></div>
                 <div class="text-material-grid">
-                  <button type="button"><span class="text-thumb checklist">商品卖点<br>商品卖点</span></button>
-                  <button type="button"><span class="text-thumb pill">商品卖点</span></button>
-                  <button type="button"><span class="text-thumb label">商品卖点</span></button>
+                  <button type="button" data-brand-text="商品卖点"><span class="text-thumb checklist">商品卖点<br>商品卖点</span></button>
+                  <button type="button" data-brand-text="商品卖点"><span class="text-thumb pill">商品卖点</span></button>
+                  <button type="button" data-brand-text="商品卖点"><span class="text-thumb label">商品卖点</span></button>
                 </div>
               </div>
             </div>
@@ -999,33 +912,33 @@
               <div class="element-section">
                 <div class="text-section-head"><h3>推荐素材</h3><button type="button">全部</button></div>
                 <div class="element-card-grid">
-                  <button class="element-card blue" type="button"><i class="planet"></i><span>星环</span><em>示例</em></button>
-                  <button class="element-card pink" type="button"><i class="meteor"></i><span>流光</span><em>示例</em></button>
-                  <button class="element-card green" type="button"><i class="leaf"></i><span>绿植</span><em>示例</em></button>
+                  <button class="element-card blue" type="button" data-brand-element="星环"><i class="planet"></i><span>星环</span><em>示例</em></button>
+                  <button class="element-card pink" type="button" data-brand-element="流光"><i class="meteor"></i><span>流光</span><em>示例</em></button>
+                  <button class="element-card green" type="button" data-brand-element="绿植"><i class="leaf"></i><span>绿植</span><em>示例</em></button>
                 </div>
               </div>
               <div class="element-section">
                 <div class="text-section-head"><h3>最新素材</h3><button type="button">全部</button></div>
                 <div class="element-card-grid">
-                  <button class="element-card red" type="button"><i class="pin"></i><span>新春字</span></button>
-                  <button class="element-card purple" type="button"><i class="planet"></i><span>气泡</span><em>示例</em></button>
-                  <button class="element-card yellow" type="button"><i class="spark-shape"></i><span>闪光</span></button>
+                  <button class="element-card red" type="button" data-brand-element="新春字"><i class="pin"></i><span>新春字</span></button>
+                  <button class="element-card purple" type="button" data-brand-element="气泡"><i class="planet"></i><span>气泡</span><em>示例</em></button>
+                  <button class="element-card yellow" type="button" data-brand-element="闪光"><i class="spark-shape"></i><span>闪光</span></button>
                 </div>
               </div>
               <div class="element-section">
                 <div class="text-section-head"><h3>emoji表情</h3><button type="button">全部</button></div>
                 <div class="element-card-grid">
-                  <button class="element-card emoji yellow-bg" type="button"><i>🙂</i><span>开心</span></button>
-                  <button class="element-card emoji red-bg" type="button"><i>☺</i><span>爱心</span></button>
-                  <button class="element-card emoji orange-bg" type="button"><i>😊</i><span>欢呼</span></button>
+                  <button class="element-card emoji yellow-bg" type="button" data-brand-element="开心"><i>🙂</i><span>开心</span></button>
+                  <button class="element-card emoji red-bg" type="button" data-brand-element="爱心"><i>☺</i><span>爱心</span></button>
+                  <button class="element-card emoji orange-bg" type="button" data-brand-element="欢呼"><i>😊</i><span>欢呼</span></button>
                 </div>
               </div>
               <div class="element-section">
                 <div class="text-section-head"><h3>光效</h3><button type="button">全部</button></div>
                 <div class="element-card-grid">
-                  <button class="element-card violet" type="button"><i class="spark-shape"></i><span>十字光</span></button>
-                  <button class="element-card yellow" type="button"><i class="spark-shape"></i><span>耀斑</span></button>
-                  <button class="element-card cyan" type="button"><i class="meteor"></i><span>极光</span></button>
+                  <button class="element-card violet" type="button" data-brand-element="十字光"><i class="spark-shape"></i><span>十字光</span></button>
+                  <button class="element-card yellow" type="button" data-brand-element="耀斑"><i class="spark-shape"></i><span>耀斑</span></button>
+                  <button class="element-card cyan" type="button" data-brand-element="极光"><i class="meteor"></i><span>极光</span></button>
                 </div>
               </div>
             </div>
@@ -1043,12 +956,12 @@
             <div class="brand-tool-panel" data-brand-tool-panel="import">
               <h2>导入</h2>
               <h3>导入图片文字</h3>
-              <button class="import-primary-btn" type="button">选择图片</button>
-              <p class="import-help">未选择任何文件</p>
+              <button class="import-primary-btn" type="button" data-brand-import-action="image">选择图片</button>
+              <p class="import-help" data-brand-import-help>未选择任何文件</p>
               <h3>导入 / 导出</h3>
-              <button class="import-primary-btn" type="button">导出 JSON</button>
-              <button class="import-secondary-btn" type="button">导入 JSON</button>
-              <button class="import-success-btn" type="button">导出图片 PNG</button>
+              <button class="import-primary-btn" type="button" data-brand-import-action="export-json">导出 JSON</button>
+              <button class="import-secondary-btn" type="button" data-brand-import-action="import-json">导入 JSON</button>
+              <button class="import-success-btn" type="button" data-brand-import-action="export-png">导出图片 PNG</button>
             </div>
           </aside>
 
@@ -1059,24 +972,26 @@
               <button class="align-icon align-left" type="button" aria-label="左对齐"><span></span></button>
               <button class="align-icon align-center" type="button" aria-label="居中对齐"><span></span></button>
               <button class="align-icon align-right" type="button" aria-label="右对齐"><span></span></button>
-              <button type="button">-</button>
-              <strong>80%</strong>
-              <button type="button">+</button>
-              <button type="button">适应</button>
+              <button type="button" data-brand-zoom-out aria-label="缩小画布">-</button>
+              <strong data-brand-zoom-label>80%</strong>
+              <button type="button" data-brand-zoom-in aria-label="放大画布">+</button>
+              <button type="button" data-brand-zoom-fit>适应</button>
             </div>
 
-            <div class="brand-canvas-stage">
-              <article class="brand-artboard">
-                <div class="brand-selected-object">
-                  <div class="selected-icon">❄</div>
-                  <div>
-                    <h2>冷感空调裤</h2>
-                    <p>天然天丝　亲肤凉感</p>
+            <div class="brand-canvas-stage" data-brand-canvas-stage>
+              <div class="brand-artboard-frame" data-brand-artboard-frame>
+                <article class="brand-artboard" data-brand-artboard>
+                  <div class="brand-selected-object" data-brand-object="seed-watermark">
+                    <div class="selected-icon">❄</div>
+                    <div>
+                      <h2>冷感空调裤</h2>
+                      <p>天然天丝　亲肤凉感</p>
+                    </div>
+                    <i class="handle tl"></i><i class="handle tr"></i><i class="handle bl"></i><i class="handle br"></i>
                   </div>
-                  <i class="handle tl"></i><i class="handle tr"></i><i class="handle bl"></i><i class="handle br"></i>
-                </div>
-                <div class="brand-demo-label">-5°<small>冰感凉爽</small></div>
-              </article>
+                  <div class="brand-demo-label">-5°<small>冰感凉爽</small></div>
+                </article>
+              </div>
             </div>
           </main>
 
@@ -1092,19 +1007,19 @@
               <section>
                 <h3>画布尺寸</h3>
                 <div class="brand-size-presets">
-                  <button type="button">正方形 800×800</button>
-                  <button type="button">竖版 750×1000</button>
-                  <button type="button">详情 640×800</button>
-                  <button type="button">Banner 900×500</button>
+                  <button type="button" data-brand-canvas-preset="800x800">正方形 800×800</button>
+                  <button type="button" data-brand-canvas-preset="750x1000">竖版 750×1000</button>
+                  <button type="button" data-brand-canvas-preset="640x800">详情 640×800</button>
+                  <button type="button" data-brand-canvas-preset="900x500">Banner 900×500</button>
                 </div>
-                <div class="brand-size-row"><input value="900" /><span>×</span><input value="500" /><button type="button">应用</button></div>
+                <div class="brand-size-row"><input value="900" data-brand-canvas-width /><span>×</span><input value="500" data-brand-canvas-height /><button type="button" data-brand-canvas-apply>应用</button></div>
               </section>
               <section>
                 <h3>画布背景</h3>
                 <div class="brand-segment">
-                  <button class="is-active" type="button">透明</button>
-                  <button type="button">颜色</button>
-                  <button type="button">图片</button>
+                  <button class="is-active" type="button" data-brand-canvas-bg="transparent">透明</button>
+                  <button type="button" data-brand-canvas-bg="color">颜色</button>
+                  <button type="button" data-brand-canvas-bg="image">图片</button>
                 </div>
                 <button class="canvas-file-btn" type="button">选择文件</button>
                 <label>填充方式<select><option>覆盖（cover）</option><option>完整显示（contain）</option><option>拉伸</option></select></label>
@@ -1131,7 +1046,7 @@
                     <button type="button" aria-label="锁定"><span class="prop-icon lock"></span></button>
                     <button type="button" aria-label="图层"><span class="prop-icon layer"></span></button>
                     <button type="button" aria-label="复制"><span class="prop-icon copy"></span></button>
-                    <button type="button" aria-label="删除"><span class="prop-icon trash"></span></button>
+                    <button type="button" aria-label="删除文字" title="删除文字" data-brand-delete-object><span class="prop-icon trash"></span></button>
                   </div>
                 </div>
               </div>
@@ -1142,7 +1057,7 @@
                 </label>
                 <div class="text-prop-row two-cols">
                   <span>字号</span>
-                  <input value="118" />
+                  <input value="38" data-brand-text-size />
                   <button class="text-color-swatch" type="button" aria-label="文字颜色"></button>
                 </div>
                 <div class="text-prop-row">
@@ -1193,9 +1108,9 @@
                 <div class="text-prop-line"><span>背景</span><button type="button">＋</button></div>
               </section>
               <section class="text-prop-section">
-                <label>透明度 <input type="range" min="0" max="100" value="100" /></label>
-                <div class="brand-size-row two"><input value="697" /><input value="166" /></div>
-                <div class="brand-size-row two"><input value="272" /><input value="1124" /></div>
+                <label>透明度 <input type="range" min="0" max="100" value="100" data-brand-object-opacity /></label>
+                <div class="brand-size-row two"><input value="375" data-brand-object-width /><input value="112" data-brand-object-height /></div>
+                <div class="brand-size-row two"><input value="160" data-brand-object-x /><input value="138" data-brand-object-y /></div>
                 <div class="text-align-buttons bottom-align">
                   <button class="align-icon align-left" type="button" aria-label="左对齐"><span></span></button>
                   <button class="align-icon align-center" type="button" aria-label="居中对齐"><span></span></button>
@@ -1204,7 +1119,7 @@
                   <button type="button" aria-label="垂直居中">╂</button>
                   <button type="button" aria-label="底部对齐">┴</button>
                 </div>
-                <div class="brand-size-row two"><input value="0°" /><button type="button">翻转</button></div>
+                <div class="brand-size-row two"><input value="0" data-brand-object-rotation /><button type="button" data-brand-flip="x">翻转</button></div>
               </section>
             </div>
 
@@ -1212,20 +1127,20 @@
               <h2>图片属性</h2>
               <section>
                 <h3>宽 / 高（px）</h3>
-                <div class="brand-size-row two"><input value="210" /><input value="210" /></div>
-                <label class="check-row"><input type="checkbox" checked />锁定宽高比</label>
-                <label>旋转角度 0° <input type="range" min="0" max="360" value="0" /></label>
-                <label>不透明度 <input type="range" value="100" /></label>
+                <div class="brand-size-row two"><input value="210" data-brand-object-width /><input value="210" data-brand-object-height /></div>
+                <label class="check-row"><input type="checkbox" checked data-brand-lock-ratio />锁定宽高比</label>
+                <label>旋转角度 <span data-brand-rotation-label>0°</span> <input type="range" min="0" max="360" value="0" data-brand-object-rotation /></label>
+                <label>不透明度 <span data-brand-opacity-label>100%</span> <input type="range" value="100" data-brand-object-opacity /></label>
               </section>
               <section>
                 <h3>翻转</h3>
                 <div class="brand-action-grid">
-                  <button type="button">水平翻转</button>
-                  <button type="button">垂直翻转</button>
+                  <button type="button" data-brand-flip="x">水平翻转</button>
+                  <button type="button" data-brand-flip="y">垂直翻转</button>
                 </div>
               </section>
               <section>
-                <button class="delete-element-btn" type="button">删除元素</button>
+                <button class="delete-element-btn" type="button" data-brand-delete-object>删除元素</button>
               </section>
             </div>
 
@@ -1233,20 +1148,20 @@
               <h2>图片属性</h2>
               <section>
                 <h3>宽 / 高（px）</h3>
-                <div class="brand-size-row two"><input value="92" /><input value="109" /></div>
-                <label class="check-row"><input type="checkbox" checked />锁定宽高比</label>
-                <label>旋转角度 0° <input type="range" min="0" max="360" value="0" /></label>
-                <label>不透明度 <input type="range" value="100" /></label>
+                <div class="brand-size-row two"><input value="92" data-brand-object-width /><input value="109" data-brand-object-height /></div>
+                <label class="check-row"><input type="checkbox" checked data-brand-lock-ratio />锁定宽高比</label>
+                <label>旋转角度 <span data-brand-rotation-label>0°</span> <input type="range" min="0" max="360" value="0" data-brand-object-rotation /></label>
+                <label>不透明度 <span data-brand-opacity-label>100%</span> <input type="range" value="100" data-brand-object-opacity /></label>
               </section>
               <section>
                 <h3>翻转</h3>
                 <div class="brand-action-grid">
-                  <button type="button">水平翻转</button>
-                  <button type="button">垂直翻转</button>
+                  <button type="button" data-brand-flip="x">水平翻转</button>
+                  <button type="button" data-brand-flip="y">垂直翻转</button>
                 </div>
               </section>
               <section>
-                <button class="delete-element-btn" type="button">删除元素</button>
+                <button class="delete-element-btn" type="button" data-brand-delete-object>删除元素</button>
               </section>
             </div>
           </aside>
