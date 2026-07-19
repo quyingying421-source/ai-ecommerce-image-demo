@@ -21,18 +21,18 @@
     <aside class="sidebar" aria-label="平台导航">
       <nav class="nav" id="nav">
         <button class="nav-group expanded" type="button" data-nav-group="ecommerce"><span class="nav-icon"></span>AI电商智能体<span class="nav-arrow"></span></button>
-        <button class="nav-leaf plain" type="button" data-single-menu="创作广场"><span class="nav-icon"></span>创作广场</button>
+        <button class="nav-leaf plain active" type="button" data-single-menu="创作广场"><span class="nav-icon"></span>创作广场</button>
         <button class="nav-leaf plain" type="button" data-single-menu="模板中心"><span class="nav-icon"></span>模板中心</button>
         <button class="nav-leaf plain" type="button" data-single-menu="模特库"><span class="nav-icon"></span>模特库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="素材库"><span class="nav-icon"></span>素材库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="品牌素材库"><span class="nav-icon"></span>品牌素材库</button>
-        <button class="nav-leaf plain active" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="创作记录"><span class="nav-icon"></span>创作记录</button>
         </nav>
       </aside>
 
     <main class="main workspace">
-      <section class="workspace-page" data-page="creation-plaza">
+      <section class="workspace-page active" data-page="creation-plaza">
         <section class="creation-plaza-surface">
           <div class="creation-topline">
             <div class="creation-slogan-wrap">
@@ -63,10 +63,17 @@
                   <span data-ratio-label>3:4</span>
                   <i></i>
                   <span data-resolution-label>2K</span>
+                  <i></i>
+                  <span data-generation-model-label>专业版</span>
                 </button>
               </div>
               <div class="composer-actions">
-                <button class="btn primary creation-generate" type="button" data-creation-generate>生成图片</button>
+                <button class="btn primary creation-generate" type="button" data-creation-generate>
+                  <img class="creation-send-icon" src="assets/creation-send-icon.png" alt="">
+                  <span>生成图片</span>
+                  <strong data-creation-cost>0</strong>
+                  <img class="creation-rongdou-icon" src="assets/creation-rongdou-icon.png" alt="">
+                </button>
               </div>
             </div>
             </div>
@@ -167,27 +174,49 @@
 
               <section class="detail-param-card">
                 <h3>素材</h3>
-                <div class="detail-material-grid">
-                  <button type="button" data-detail-upload="product">
-                    <span class="creation-tool-icon product"></span>
-                    <strong>商品图</strong>
-                    <small data-detail-material-product>未上传</small>
-                  </button>
-                  <button type="button" data-detail-upload="reference">
-                    <span class="creation-tool-icon reference"></span>
-                    <strong>参考图</strong>
-                    <small data-detail-material-reference>未上传</small>
-                  </button>
-                  <button type="button" data-detail-upload="model">
-                    <span class="creation-tool-icon model"></span>
-                    <strong>模特</strong>
-                    <small data-detail-material-model>未选择</small>
-                  </button>
-                  <button type="button" data-detail-upload="template">
-                    <span class="creation-tool-icon template"></span>
-                    <strong>模板</strong>
-                    <small data-detail-material-template>未选择</small>
-                  </button>
+                <div class="detail-material-stack">
+                  <article class="detail-material-card" data-detail-material-card="product">
+                    <div class="detail-material-card-head">
+                      <h4>商品图</h4>
+                      <button class="detail-material-remove" type="button" data-detail-remove="product" aria-label="删除商品图">×</button>
+                    </div>
+                    <button class="detail-material-trigger" type="button" data-detail-upload="product">
+                      <span class="detail-material-empty"><i>＋</i><strong>上传商品图</strong></span>
+                      <span class="detail-material-filled">
+                        <img src="assets/product-cover-03.png" alt="商品图预览">
+                        <span><strong>商品图 4 张</strong><small>已选择商品素材</small></span>
+                      </span>
+                    </button>
+                    <p>从商品素材库选择商品图，系统会复用商品视角与卖点。</p>
+                  </article>
+                  <article class="detail-material-card" data-detail-material-card="reference">
+                    <div class="detail-material-card-head">
+                      <h4>参考图</h4>
+                      <button class="detail-material-remove" type="button" data-detail-remove="reference" aria-label="删除参考图">×</button>
+                    </div>
+                    <button class="detail-material-trigger" type="button" data-detail-upload="reference">
+                      <span class="detail-material-empty"><i>＋</i><strong>上传参考图</strong></span>
+                      <span class="detail-material-filled">
+                        <img src="assets/creation-cover-608.jpg" alt="参考图预览">
+                        <span><strong>参考图 1 张</strong><small>已选择参考素材</small></span>
+                      </span>
+                    </button>
+                    <p>上传参考图后，系统会参考画面构图、光线和氛围。</p>
+                  </article>
+                  <article class="detail-material-card" data-detail-material-card="model">
+                    <div class="detail-material-card-head">
+                      <h4>模特</h4>
+                      <button class="detail-material-remove" type="button" data-detail-remove="model" aria-label="删除模特">×</button>
+                    </div>
+                    <button class="detail-material-trigger" type="button" data-detail-upload="model">
+                      <span class="detail-material-empty"><i>＋</i><strong>选择模特</strong></span>
+                      <span class="detail-material-filled">
+                        <img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-cover-black-dress.png" alt="模特预览">
+                        <span><strong data-detail-model-name>已选择模特</strong><small>用于商品图生成</small></span>
+                      </span>
+                    </button>
+                    <p>从模特库选择适合商品图片的模特。</p>
+                  </article>
                 </div>
               </section>
 
@@ -259,12 +288,15 @@
                 <article class="detail-task-card done">
                   <div class="detail-task-card-head">
                     <div>
+                      <strong>文胸自由生图</strong>
                       <span class="record-status done">已完成</span>
-                      <strong>浅色卧室文胸模特图</strong>
                     </div>
-                    <small>2026-07-12 18:20 · 8 融豆</small>
+                    <small>2026-07-12 18:20</small>
                   </div>
-                  <p>浅色卧室场景，自然光，突出蕾丝杯面和舒适承托。</p>
+                  <div class="detail-task-prompt-row">
+                    <p data-detail-prompt-text>浅色卧室场景，自然光，突出蕾丝杯面和舒适承托。</p>
+                    <button class="detail-copy-prompt" type="button" data-copy-detail-prompt>复制</button>
+                  </div>
                   <div class="detail-result-grid">
                     <img src="assets/product-cover-03.png" alt="">
                     <img src="assets/product-cover-04.png" alt="">
@@ -283,12 +315,15 @@
                 <article class="detail-task-card failed">
                   <div class="detail-task-card-head">
                     <div>
-                      <span class="record-status failed">失败</span>
                       <strong>参考图复刻主图</strong>
+                      <span class="record-status failed">失败</span>
                     </div>
-                    <small>2026-07-11 11:36 · 10 融豆</small>
+                    <small>2026-07-11 11:36</small>
                   </div>
-                  <p>失败原因：参考图主体遮挡过多，建议更换参考图后重新生成。</p>
+                  <div class="detail-task-prompt-row">
+                    <p data-detail-prompt-text>失败原因：参考图主体遮挡过多，建议更换参考图后重新生成。</p>
+                    <button class="detail-copy-prompt" type="button" data-copy-detail-prompt>复制</button>
+                  </div>
                   <div class="detail-result-actions">
                     <button type="button" data-history-regenerate>重新生成</button>
                   </div>
@@ -1168,7 +1203,7 @@
         </section>
       </section>
 
-      <section class="workspace-page active" data-page="product-library">
+      <section class="workspace-page" data-page="product-library">
         <section class="product-library-card">
           <h1 class="product-library-title">商品库</h1>
           <section class="stats-grid" aria-label="商品统计">
@@ -1624,15 +1659,33 @@
         </div>
         <div class="creation-select-body">
           <div class="creation-reference-tabs">
-            <button class="is-active" type="button">本地上传</button>
-            <button type="button">从素材库选择</button>
-            <button type="button">从创作记录选择</button>
+            <button class="is-active" type="button" data-reference-tab="local">本地上传</button>
+            <button type="button" data-reference-tab="library">从素材库选择</button>
+            <button type="button" data-reference-tab="records">从创作记录选择</button>
           </div>
-          <div class="creation-reference-dropzone">
-            <div class="creation-reference-icon"></div>
+          <div class="creation-reference-panel is-active" data-reference-panel="local">
+            <div class="creation-reference-dropzone">
+            <img class="creation-reference-icon" src="assets/creation-reference-upload-icon.png" alt="">
             <h3>上传本地参考图</h3>
             <p>支持 JPG、PNG，建议上传与目标商品图构图接近的图片。</p>
             <button class="btn primary" type="button" data-reference-simulate-upload>选择本地图片</button>
+            </div>
+          </div>
+          <div class="creation-reference-panel" data-reference-panel="library" aria-hidden="true">
+            <div class="creation-reference-cover-grid">
+              <button type="button" data-reference-choice="assets/creation-cover-608.jpg"><img src="assets/creation-cover-608.jpg" alt="参考图"></button>
+              <button type="button" data-reference-choice="assets/creation-cover-610.jpg"><img src="assets/creation-cover-610.jpg" alt="参考图"></button>
+              <button type="button" data-reference-choice="assets/creation-cover-616.jpg"><img src="assets/creation-cover-616.jpg" alt="参考图"></button>
+              <button type="button" data-reference-choice="assets/creation-cover-606.jpg"><img src="assets/creation-cover-606.jpg" alt="参考图"></button>
+            </div>
+          </div>
+          <div class="creation-reference-panel" data-reference-panel="records" aria-hidden="true">
+            <div class="creation-reference-cover-grid">
+              <button type="button" data-reference-choice="assets/product-cover-03.png"><img src="assets/product-cover-03.png" alt="创作记录图片"></button>
+              <button type="button" data-reference-choice="assets/product-cover-04.png"><img src="assets/product-cover-04.png" alt="创作记录图片"></button>
+              <button type="button" data-reference-choice="assets/product-cover-01.png"><img src="assets/product-cover-01.png" alt="创作记录图片"></button>
+              <button type="button" data-reference-choice="assets/product-cover-02.png"><img src="assets/product-cover-02.png" alt="创作记录图片"></button>
+            </div>
           </div>
         </div>
       </div>
