@@ -682,6 +682,19 @@ const state = {
     recordSeq: 0,
     detailSeq: 0
   },
+  outpaint: {
+    sourceImage: "assets/outpaint-main-product.jpg",
+    sourceWidth: 2048,
+    sourceHeight: 2048,
+    ratio: "3:4",
+    scale: 1,
+    width: 2048,
+    height: 2730,
+    generated: false,
+    canvasScale: 1,
+    canvasX: 0,
+    canvasY: 0
+  },
   multiCreate: {
     templateId: "",
     resourceTemplate: null,
@@ -725,6 +738,23 @@ const els = {
 };
 
 els.pages = Array.from(document.querySelectorAll("[data-page]"));
+const outpaintEls = {
+  editor: document.querySelector("[data-outpaint-editor]"),
+  canvasShell: document.querySelector("[data-outpaint-canvas-shell]"),
+  boardStrip: document.querySelector("[data-outpaint-board-strip]"),
+  artboardWrap: document.querySelector("[data-outpaint-artboard-wrap]"),
+  artboard: document.querySelector("[data-outpaint-artboard]"),
+  sourcePhoto: document.querySelector("[data-outpaint-source-photo]"),
+  resultSlot: document.querySelector("[data-outpaint-result-slot]"),
+  panel: document.querySelector("[data-outpaint-panel]"),
+  selectionSize: document.querySelector("[data-outpaint-selection-size]"),
+  scale: document.querySelector("[data-outpaint-scale]"),
+  ratioList: document.querySelector("[data-outpaint-ratio-list]"),
+  generate: document.querySelector("[data-outpaint-generate]"),
+  file: document.querySelector("[data-outpaint-file]"),
+  zoom: document.querySelector("[data-outpaint-zoom]"),
+  resultMenu: document.querySelector("[data-outpaint-result-menu]")
+};
 els.creationPrompt = document.querySelector("[data-creation-prompt]");
 els.creationMode = document.querySelector("[data-creation-mode]");
 els.creationCategories = Array.from(document.querySelectorAll("[data-creation-categories] button"));
@@ -752,6 +782,7 @@ els.resourcePreviewModal = document.querySelector("[data-resource-preview-modal]
 els.resourcePurchaseModal = document.querySelector("[data-resource-purchase-modal]");
 els.drawerImagePreview = document.querySelector("[data-drawer-image-preview]");
 els.drawerImagePreviewImg = document.querySelector("[data-drawer-image-preview-img]");
+els.brandPreviewContent = document.querySelector("[data-brand-preview-content]");
 els.drawerLongPreview = document.querySelector("[data-drawer-long-preview]");
 els.drawerPreviewCaption = document.querySelector("[data-drawer-preview-caption]");
 els.ratioLabel = document.querySelector("[data-ratio-label]");
@@ -833,6 +864,9 @@ els.modelGrid = document.querySelector("[data-model-grid]");
 els.modelCount = document.querySelector("[data-model-count]");
 els.modelEmpty = document.querySelector("[data-model-empty]");
 els.modelSearch = document.querySelector("[data-model-search]");
+els.brandMaterialCount = document.querySelector("[data-brand-material-count]");
+els.brandUploadInput = document.querySelector("[data-brand-upload-input]");
+els.brandUploadLabel = document.querySelector("[data-brand-upload-label]");
 els.modelCreateModal = document.querySelector("[data-model-create-modal]");
 els.modelDetailModal = document.querySelector("[data-model-detail-modal]");
 els.customParamModal = document.querySelector("[data-custom-param-modal]");
@@ -2094,7 +2128,8 @@ function openDrawerImagePreview(src, options = {}) {
   if (!src || !els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreviewImg.src = src;
   els.drawerImagePreview.classList.toggle("is-model-preview", Boolean(options.modelPreview));
-  els.drawerImagePreview.classList.remove("is-template-long-preview");
+  els.drawerImagePreview.classList.remove("is-template-long-preview", "is-brand-preview");
+  if (els.brandPreviewContent) els.brandPreviewContent.innerHTML = "";
   if (els.drawerLongPreview) els.drawerLongPreview.innerHTML = "";
   if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = "";
   els.drawerImagePreview.classList.add("is-open");
@@ -2104,9 +2139,10 @@ function openDrawerImagePreview(src, options = {}) {
 function openTemplateLongPreview(template) {
   if (!template || !els.drawerImagePreview || !els.drawerLongPreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreviewImg.removeAttribute("src");
+  if (els.brandPreviewContent) els.brandPreviewContent.innerHTML = "";
   els.drawerLongPreview.innerHTML = renderLongPreview(getEnabledTemplateItems(template.items), { emptyText: "暂无启用内容" });
   if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = template.name;
-  els.drawerImagePreview.classList.remove("is-model-preview");
+  els.drawerImagePreview.classList.remove("is-model-preview", "is-brand-preview");
   els.drawerImagePreview.classList.add("is-template-long-preview", "is-open");
   els.drawerImagePreview.setAttribute("aria-hidden", "false");
 }
@@ -2115,11 +2151,29 @@ function closeDrawerImagePreview() {
   if (!els.drawerImagePreview || !els.drawerImagePreviewImg) return;
   els.drawerImagePreview.classList.remove("is-open");
   els.drawerImagePreview.classList.remove("is-model-preview");
-  els.drawerImagePreview.classList.remove("is-template-long-preview");
+  els.drawerImagePreview.classList.remove("is-template-long-preview", "is-brand-preview");
   els.drawerImagePreview.setAttribute("aria-hidden", "true");
   els.drawerImagePreviewImg.removeAttribute("src");
   if (els.drawerLongPreview) els.drawerLongPreview.innerHTML = "";
   if (els.drawerPreviewCaption) els.drawerPreviewCaption.textContent = "";
+  if (els.brandPreviewContent) els.brandPreviewContent.innerHTML = "";
+}
+
+function openBrandAssetPreview(card) {
+  const cover = card?.querySelector("[data-brand-asset-preview]");
+  if (!cover || !els.drawerImagePreview || !els.brandPreviewContent) return;
+
+  const preview = cover.cloneNode(true);
+  preview.removeAttribute("data-brand-asset-preview");
+  preview.querySelector(".brand-asset-hover-actions")?.remove();
+  els.brandPreviewContent.innerHTML = "";
+  els.brandPreviewContent.appendChild(preview);
+  els.drawerImagePreviewImg?.removeAttribute("src");
+  els.drawerLongPreview && (els.drawerLongPreview.innerHTML = "");
+  els.drawerPreviewCaption && (els.drawerPreviewCaption.textContent = "");
+  els.drawerImagePreview.classList.remove("is-model-preview", "is-template-long-preview");
+  els.drawerImagePreview.classList.add("is-brand-preview", "is-open");
+  els.drawerImagePreview.setAttribute("aria-hidden", "false");
 }
 
 function moveSelectedSize(sizeId, direction) {
@@ -2306,10 +2360,223 @@ function setWorkspacePage(pageName) {
   els.body.classList.toggle("is-creation-detail", pageName === "creation-detail");
   els.body.classList.toggle("is-multi-task", pageName === "multi-image-creation");
   els.body.classList.toggle("is-brand-editor", pageName === "brand-material-editor");
+  els.body.classList.toggle("is-outpaint-editor", pageName === "outpaint-editor");
   closeCreateMenu();
   if (pageName !== "product-library" || els.drawer.dataset.drawerKind !== "product") {
     closeDrawer();
   }
+}
+
+const outpaintDragState = {
+  active: false,
+  pointerId: null,
+  startX: 0,
+  startY: 0,
+  originX: 0,
+  originY: 0
+};
+
+function outpaintClamp(value) {
+  return Math.max(512, Math.min(4096, Math.round(Number(value) || 1200)));
+}
+
+function outpaintExceedsLimit(size) {
+  return size.width > 4096 || size.height > 4096;
+}
+
+function outpaintPresetSize(ratio, scale) {
+  const source = state.outpaint;
+  if (ratio === "original" || ratio === "1:1") {
+    return { width: Math.round(source.sourceWidth * scale), height: Math.round(source.sourceHeight * scale) };
+  }
+  const [rw, rh] = ratio.split(":").map(Number);
+  if (rw <= rh) {
+    const width = Math.floor(source.sourceWidth * scale);
+    return { width, height: Math.floor(width * rh / rw) };
+  }
+  const height = Math.floor(source.sourceHeight * scale);
+  return { width: Math.floor(height * rw / rh), height };
+}
+
+function renderOutpaintTransform() {
+  if (!outpaintEls.boardStrip) return;
+  outpaintEls.boardStrip.style.transform = `translate(${state.outpaint.canvasX}px, ${state.outpaint.canvasY}px) scale(${state.outpaint.canvasScale})`;
+  if (outpaintEls.zoom) outpaintEls.zoom.textContent = `${Math.round(state.outpaint.canvasScale * 100)}%`;
+}
+
+function zoomOutpaint(delta, clientX, clientY) {
+  if (!outpaintEls.canvasShell) return;
+  const rect = outpaintEls.canvasShell.getBoundingClientRect();
+  const previous = state.outpaint.canvasScale;
+  const next = Math.max(.45, Math.min(2.4, previous + delta));
+  if (next === previous) return;
+  const originX = clientX - rect.left;
+  const originY = clientY - rect.top;
+  const ratio = next / previous;
+  state.outpaint.canvasX = originX - (originX - state.outpaint.canvasX) * ratio;
+  state.outpaint.canvasY = originY - (originY - state.outpaint.canvasY) * ratio;
+  state.outpaint.canvasScale = next;
+  renderOutpaintTransform();
+}
+
+function panOutpaint(deltaX, deltaY) {
+  state.outpaint.canvasX += deltaX;
+  state.outpaint.canvasY += deltaY;
+  renderOutpaintTransform();
+}
+
+function renderOutpaint() {
+  if (!outpaintEls.editor) return;
+  const current = state.outpaint;
+  current.width = outpaintClamp(current.width);
+  current.height = outpaintClamp(current.height);
+  const ratio = current.width / current.height;
+  outpaintEls.editor.style.setProperty("--outpaint-source-image", `url("${current.sourceImage}")`);
+  outpaintEls.editor.style.setProperty("--outpaint-ratio", `${current.width} / ${current.height}`);
+  outpaintEls.editor.style.setProperty("--outpaint-source-size", `${Math.min(94, Math.max(32, current.sourceWidth / current.width * 100))}%`);
+  outpaintEls.artboardWrap?.style.setProperty("--outpaint-ratio", `${current.width} / ${current.height}`);
+  outpaintEls.artboardWrap?.classList.toggle("wide", ratio > 1.35);
+  outpaintEls.artboardWrap?.classList.toggle("tall", ratio < .72);
+  if (outpaintEls.selectionSize) outpaintEls.selectionSize.textContent = `${current.width} × ${current.height}`;
+  outpaintEls.ratioList?.querySelectorAll("[data-outpaint-ratio]").forEach((button) => {
+    button.classList.toggle("active", button.dataset.outpaintRatio === current.ratio);
+  });
+  renderOutpaintTransform();
+}
+
+function resetOutpaintResult() {
+  state.outpaint.generated = false;
+  outpaintEls.artboard?.classList.remove("generated", "processing");
+  outpaintEls.artboard?.classList.add("pending");
+  if (outpaintEls.resultSlot) outpaintEls.resultSlot.innerHTML = "";
+  if (outpaintEls.generate) {
+    outpaintEls.generate.disabled = false;
+    outpaintEls.generate.innerHTML = "生成 <span>8</span>";
+  }
+  outpaintEls.resultMenu?.classList.remove("show");
+}
+
+function updateOutpaintRatio(ratio) {
+  const nextScale = Number(outpaintEls.scale?.value || 1);
+  const next = outpaintPresetSize(ratio, nextScale);
+  if (outpaintExceedsLimit(next)) {
+    if (outpaintEls.scale) outpaintEls.scale.value = String(state.outpaint.scale);
+    showToast("最终尺寸超出扩图限制");
+    return;
+  }
+  state.outpaint.ratio = ratio;
+  state.outpaint.scale = nextScale;
+  state.outpaint.width = next.width;
+  state.outpaint.height = next.height;
+  resetOutpaintResult();
+  renderOutpaint();
+}
+
+function createOutpaintResult() {
+  if (!outpaintEls.resultSlot) return;
+  outpaintEls.resultSlot.innerHTML = `
+    <div class="integrated-outpaint-artboard-wrap integrated-outpaint-result-wrap">
+      <div class="integrated-outpaint-selection-label">扩图结果</div>
+      <div class="integrated-outpaint-selection-size">${state.outpaint.width} × ${state.outpaint.height}</div>
+      <div class="integrated-outpaint-artboard generated" data-outpaint-result-artboard>
+        <div class="integrated-outpaint-expanded-bg"></div>
+        <div class="integrated-outpaint-source-photo"></div>
+        <span class="integrated-outpaint-handle lt"></span><span class="integrated-outpaint-handle rt"></span>
+        <span class="integrated-outpaint-handle lb"></span><span class="integrated-outpaint-handle rb"></span>
+        <span class="integrated-outpaint-handle tm"></span><span class="integrated-outpaint-handle bm"></span>
+        <span class="integrated-outpaint-handle lm"></span><span class="integrated-outpaint-handle rm"></span>
+      </div>
+    </div>
+  `;
+  const resultWrap = outpaintEls.resultSlot.querySelector(".integrated-outpaint-result-wrap");
+  resultWrap?.style.setProperty("--outpaint-ratio", `${state.outpaint.width} / ${state.outpaint.height}`);
+  const ratio = state.outpaint.width / state.outpaint.height;
+  resultWrap?.classList.toggle("wide", ratio > 1.35);
+  resultWrap?.classList.toggle("tall", ratio < .72);
+}
+
+function appendOutpaintTaskRecord() {
+  const flow = document.querySelector("[data-creation-task-flow]");
+  if (!flow) return;
+  const title = `${state.creation.category}商品图扩图`;
+  const record = document.createElement("article");
+  record.className = "creation-task-card";
+  record.dataset.creationTaskCard = "";
+  record.dataset.status = "done";
+  record.dataset.type = "扩图";
+  record.dataset.title = title;
+  record.dataset.product = state.creation.category;
+  record.innerHTML = `
+    <div class="creation-task-thumb outpaint">
+      <div class="outpaint-before"><img src="${state.outpaint.sourceImage}" alt=""></div>
+      <div class="outpaint-after"><img src="${state.outpaint.sourceImage}" alt=""></div>
+      <span class="creation-task-type">扩图</span>
+    </div>
+    <div class="creation-task-main">
+      <div class="creation-task-title-row"><h2>${title}</h2><span class="creation-task-status done">已完成</span></div>
+      <div class="creation-task-meta"><span>1 张图</span><span>${state.outpaint.width} × ${state.outpaint.height}</span><span>刚刚</span></div>
+      <div class="creation-task-tags"><span>扩图</span><span>${state.creation.category}</span><span>${state.outpaint.ratio}</span></div>
+    </div>
+    <div class="creation-task-action"><button class="btn primary" type="button" data-open-outpaint>继续扩图</button></div>
+  `;
+  flow.prepend(record);
+}
+
+function generateOutpaint() {
+  if (outpaintEls.generate?.disabled) return;
+  outpaintEls.resultMenu?.classList.remove("show");
+  outpaintEls.generate.disabled = true;
+  outpaintEls.generate.textContent = "生成中";
+  outpaintEls.artboard?.classList.remove("generated", "pending");
+  outpaintEls.artboard?.classList.add("processing");
+  window.setTimeout(() => {
+    state.outpaint.generated = true;
+    outpaintEls.artboard?.classList.remove("processing", "pending");
+    outpaintEls.artboard?.classList.add("generated");
+    createOutpaintResult();
+    outpaintEls.generate.disabled = false;
+    outpaintEls.generate.innerHTML = "重新生成 <span>8</span>";
+    appendOutpaintTaskRecord();
+    showToast("扩图完成，已生成新图片并写入创作记录");
+  }, 1200);
+}
+
+function placeOutpaintResultMenu(event) {
+  if (!state.outpaint.generated || !outpaintEls.resultMenu || !outpaintEls.canvasShell) return;
+  event.preventDefault();
+  const rect = outpaintEls.canvasShell.getBoundingClientRect();
+  const width = 190;
+  const height = 190;
+  const x = Math.min(event.clientX - rect.left, rect.width - width - 16);
+  const y = Math.min(event.clientY - rect.top, rect.height - height - 16);
+  outpaintEls.resultMenu.style.left = `${Math.max(16, x)}px`;
+  outpaintEls.resultMenu.style.top = `${Math.max(16, y)}px`;
+  outpaintEls.resultMenu.classList.add("show");
+}
+
+function openOutpaintEditor(sourceImage = state.outpaint.sourceImage) {
+  state.outpaint.sourceImage = sourceImage || "assets/outpaint-main-product.jpg";
+  state.outpaint.sourceWidth = 2048;
+  state.outpaint.sourceHeight = 2048;
+  state.outpaint.ratio = "3:4";
+  state.outpaint.scale = 1;
+  state.outpaint.width = 2048;
+  state.outpaint.height = 2730;
+  state.outpaint.canvasScale = 1;
+  state.outpaint.canvasX = 0;
+  state.outpaint.canvasY = 0;
+  setWorkspacePage("outpaint-editor");
+  clearMenuActive();
+  resetOutpaintResult();
+  outpaintEls.panel?.classList.add("show");
+  document.querySelector("[data-outpaint-open-panel]")?.classList.add("active");
+  renderOutpaint();
+}
+
+function closeOutpaintEditor() {
+  setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
 }
 
 function openCreationRecordsPage() {
@@ -2689,21 +2956,53 @@ function filterBrandAssetCards(type) {
 }
 
 function filterBrandMaterialsByControls() {
-  const keyword = document.querySelector("[data-brand-material-search]")?.value.trim().toLowerCase() || "";
-  const type = document.querySelector("[data-brand-material-type]")?.value || "全部类型";
-  const source = document.querySelector("[data-brand-material-source]")?.value || "全部来源";
-  const status = document.querySelector("[data-brand-material-status]")?.value || "全部状态";
-  const activeTab = document.querySelector("[data-brand-material-tab].is-active")?.dataset.brandMaterialTab || "全部";
+  const activeType = document.querySelector("[data-brand-material-tab].is-active")?.dataset.brandMaterialTab || "全部";
+
+  if (els.brandUploadLabel) {
+    els.brandUploadLabel.textContent = activeType === "全部" ? "上传素材" : `上传 ${activeType}`;
+  }
 
   document.querySelectorAll("[data-brand-asset-type]").forEach((card) => {
-    const text = card.textContent.toLowerCase();
-    const matchKeyword = !keyword || text.includes(keyword);
-    const matchType = type === "全部类型" || text.includes(type.toLowerCase());
-    const matchSource = source === "全部来源" || card.dataset.brandAssetSource === source;
-    const matchStatus = status === "全部状态" || card.dataset.brandAssetStatus === status;
-    const matchTab = activeTab === "全部" || card.dataset.brandAssetType === activeTab;
-    card.classList.toggle("is-hidden", !(matchKeyword && matchType && matchSource && matchStatus && matchTab));
+    const category = card.querySelector(".brand-asset-category")?.textContent.toLowerCase() || "";
+    const matchesType = activeType === "全部" || category.includes(activeType.toLowerCase());
+    card.classList.toggle("is-hidden", !matchesType);
   });
+
+  if (els.brandMaterialCount) {
+    els.brandMaterialCount.textContent = `共 ${document.querySelectorAll("[data-brand-asset-type]").length} 个素材`;
+  }
+}
+
+function addLocalBrandMaterial(file) {
+  const grid = document.querySelector("[data-brand-material-grid]");
+  if (!grid || !file) return;
+
+  const activeType = document.querySelector("[data-brand-material-tab].is-active")?.dataset.brandMaterialTab || "全部";
+  const category = activeType === "全部" ? "品牌素材" : activeType;
+  const title = file.name.replace(/\.[^/.]+$/, "") || "本地上传素材";
+  const imageUrl = URL.createObjectURL(file);
+  const card = document.createElement("article");
+  card.className = "brand-asset-card";
+  card.dataset.brandAssetType = category;
+  card.dataset.brandAssetSource = "本地上传";
+  card.dataset.brandAssetStatus = "已启用";
+  card.innerHTML = `
+    <div class="brand-asset-cover has-image" data-brand-asset-preview>
+      <span class="brand-source-badge">本地</span>
+      <img src="${imageUrl}" alt="${title}">
+      <div class="brand-asset-hover-actions">
+        <button type="button" data-brand-asset-publish title="发布到 AI 图片广场" aria-label="发布到 AI 图片广场"><img src="assets/brand-action-publish.png" alt=""></button>
+        <button type="button" data-brand-asset-delete title="删除" aria-label="删除"><img src="assets/brand-action-delete.png" alt=""></button>
+      </div>
+    </div>
+    <div class="brand-asset-body">
+      <h3>${title}</h3>
+      <span class="brand-asset-category">${category}</span>
+    </div>
+  `;
+  grid.appendChild(card);
+  filterBrandMaterialsByControls();
+  showToast("素材已上传到品牌素材库");
 }
 
 function filterCreationTasks() {
@@ -2810,6 +3109,8 @@ function renderDetailMaterialCards() {
 function syncDetailParamsFromCreation(promptOverride = "") {
   if (!els.detailPrompt) return;
   els.detailPrompt.value = promptOverride || els.creationPrompt.value.trim() || "浅色卧室场景，自然光，文胸模特图，突出商品材质和版型。";
+  const detailCost = document.querySelector("[data-detail-cost]");
+  if (detailCost) detailCost.textContent = getCreationCost(getCreationMode());
   if (els.detailRatio) els.detailRatio.value = state.creation.ratio;
   if (els.detailResolution) els.detailResolution.value = state.creation.resolution;
   renderDetailMaterialCards();
@@ -2819,30 +3120,42 @@ function getDetailPrompt() {
   return els.detailPrompt?.value.trim() || els.creationPrompt.value.trim() || "按当前参数生成电商商品图。";
 }
 
-function detailResultActionsMarkup() {
+function detailImageActionsMarkup() {
   return `
-    <button type="button" data-result-action="大图">大图</button>
-    <button type="button" data-result-action="下载">下载</button>
-    <button type="button" data-result-action="保存到素材库">保存到素材库</button>
-    <button type="button" data-result-action="扩图">扩图</button>
-    <button type="button" data-detail-regenerate>重新生成</button>
-    <button type="button" data-result-action="上架到 AI 图片广场">上架到 AI 图片广场</button>
+    <div class="detail-result-hover-actions">
+      <button type="button" data-detail-image-action="下载" title="下载" aria-label="下载"><img src="assets/download-icon.png" alt=""></button>
+      <button class="save" type="button" data-detail-image-action="保存" title="保存到素材库" aria-label="保存到素材库"><span></span></button>
+      <button type="button" data-detail-image-action="扩图" title="扩图" aria-label="扩图"><img src="assets/outpaint-icon.png" alt=""></button>
+      <button type="button" data-detail-image-action="上架" title="上架到图片广场" aria-label="上架到图片广场"><img src="assets/upload-icon.png" alt=""></button>
+    </div>
   `;
 }
 
 function detailImagesMarkup() {
+  const selectedCount = Math.min(4, Math.max(1, parseInt(document.querySelector("[data-detail-count]")?.value, 10) || 4));
   return [
     "assets/product-cover-03.png",
     "assets/product-cover-04.png",
     "assets/product-cover-01.png",
     "assets/product-cover-02.png"
-  ].map((image) => `<img src="${image}" alt="">`).join("");
+  ].slice(0, selectedCount).map((image) => `
+    <figure class="detail-result-item">
+      <button class="detail-result-preview" type="button" data-detail-image-preview="${image}" aria-label="全屏预览图片"><img src="${image}" alt=""></button>
+      ${detailImageActionsMarkup()}
+    </figure>
+  `).join("");
+}
+
+function submitDetailRegeneration() {
+  if (els.detailRatio) state.creation.ratio = els.detailRatio.value;
+  if (els.detailResolution) state.creation.resolution = els.detailResolution.value;
+  appendDetailTask({ prompt: getDetailPrompt() });
+  showToast("已提交重新生成任务");
 }
 
 function updateDetailTaskCard(card, status) {
   const statusNode = card.querySelector("[data-detail-card-status]");
   const resultNode = card.querySelector("[data-detail-card-result]");
-  const actionsNode = card.querySelector("[data-detail-card-actions]");
   const map = {
     queued: "排队中",
     running: "生成中",
@@ -2855,11 +3168,9 @@ function updateDetailTaskCard(card, status) {
   if (status === "done") {
     resultNode.className = "detail-result-grid";
     resultNode.innerHTML = detailImagesMarkup();
-    actionsNode.innerHTML = detailResultActionsMarkup();
   } else {
     resultNode.className = "detail-result-grid pending";
     resultNode.innerHTML = "";
-    actionsNode.innerHTML = "";
   }
 }
 
@@ -2881,17 +3192,17 @@ function appendDetailTask({ prompt = "" } = {}) {
     </div>
     <div class="detail-task-prompt-row">
       <p data-detail-prompt-text>${prompt || getDetailPrompt()}</p>
-      <button class="detail-copy-prompt" type="button" data-copy-detail-prompt>复制</button>
+      <button class="detail-copy-prompt" type="button" data-copy-detail-prompt aria-label="复制描述" title="复制描述"><img src="assets/detail-copy-icon.png" alt=""></button>
     </div>
     <small class="detail-task-relation">关联：${creationRelationText()} / ${state.creation.ratio} / ${state.creation.resolution}</small>
     <div class="detail-result-grid pending" data-detail-card-result></div>
-    <div class="detail-result-actions" data-detail-card-actions></div>
+    <button class="detail-task-regenerate" type="button" data-detail-regenerate-all>重新生成</button>
   `;
   els.detailTaskList.prepend(card);
   window.setTimeout(() => updateDetailTaskCard(card, "running"), 500);
   window.setTimeout(() => {
     updateDetailTaskCard(card, "done");
-    showToast("生成完成，结果已展示在任务记录区");
+    showToast("生成完成，结果已展示在任务记录");
   }, 1600);
   return card;
 }
@@ -2900,13 +3211,23 @@ function openCreationDetail({ fromHistory = false, taskTitle = "", productName =
   const historyPrompt = taskTitle ? `继续处理「${taskTitle}」，关联商品：${productName || "未指定商品"}。` : "浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。";
   state.detailBackPage = backPage;
   const backButton = document.querySelector("[data-back-creation]");
-  if (backButton) backButton.textContent = backPage === "creation-records" ? "返回创作记录" : "返回创作广场";
+  if (backButton) backButton.textContent = "返回";
   syncDetailParamsFromCreation(fromHistory ? historyPrompt : "");
   setWorkspacePage("creation-detail");
   closePrototypeModals();
   if (!fromHistory && !els.detailTaskList.children.length) {
     appendDetailTask({ initial: true });
   }
+}
+
+function leaveCreationDetail() {
+  if (state.detailBackPage === "creation-records") {
+    openCreationRecordsPage();
+    return;
+  }
+  setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
 }
 
 function clearDetailParams() {
@@ -4339,6 +4660,149 @@ document.querySelector("[data-record-open]")?.addEventListener("click", () => {
   openCreationRecordsPage();
 });
 
+document.addEventListener("click", (event) => {
+  const openOutpaintButton = event.target.closest("[data-open-outpaint]");
+  const outpaintResultAction = event.target.closest("[data-outpaint-result-action]");
+
+  if (openOutpaintButton) {
+    openOutpaintEditor();
+    return;
+  }
+
+  if (outpaintResultAction) {
+    outpaintEls.resultMenu?.classList.remove("show");
+    const action = outpaintResultAction.dataset.outpaintResultAction;
+    const messages = {
+      download: "已模拟下载扩图结果",
+      text: "已打开文字编辑入口",
+      save: "扩图结果已保存到成品图片",
+      source: "来源：创作广场生成结果"
+    };
+    if (action === "continue") {
+      outpaintEls.panel?.classList.add("show");
+      document.querySelector("[data-outpaint-open-panel]")?.classList.add("active");
+      showToast("已打开扩图参数，可继续扩图");
+    } else {
+      showToast(messages[action] || "操作已完成");
+    }
+    return;
+  }
+
+  if (outpaintEls.resultMenu?.classList.contains("show") && !event.target.closest("[data-outpaint-result-menu]")) {
+    outpaintEls.resultMenu.classList.remove("show");
+  }
+});
+
+document.querySelector("[data-outpaint-return]")?.addEventListener("click", closeOutpaintEditor);
+
+document.querySelector("[data-outpaint-open-panel]")?.addEventListener("click", () => {
+  const open = outpaintEls.panel?.classList.toggle("show");
+  document.querySelector("[data-outpaint-open-panel]")?.classList.toggle("active", Boolean(open));
+});
+
+document.querySelector("[data-outpaint-cancel]")?.addEventListener("click", () => {
+  outpaintEls.panel?.classList.remove("show");
+  document.querySelector("[data-outpaint-open-panel]")?.classList.remove("active");
+  showToast("已取消扩图设置");
+});
+
+document.querySelector("[data-outpaint-generate]")?.addEventListener("click", generateOutpaint);
+
+document.querySelector("[data-outpaint-upload]")?.addEventListener("click", () => {
+  outpaintEls.file?.click();
+});
+
+document.querySelector("[data-outpaint-download]")?.addEventListener("click", () => {
+  showToast(state.outpaint.generated ? "已模拟下载扩图结果" : "请先生成扩图结果");
+});
+
+outpaintEls.file?.addEventListener("change", () => {
+  const file = outpaintEls.file.files?.[0];
+  if (!file) return;
+  outpaintEls.file.value = "";
+  if (!file.type.startsWith("image/")) {
+    showToast("请选择图片文件");
+    return;
+  }
+  const imageUrl = URL.createObjectURL(file);
+  const image = new Image();
+  image.onload = () => {
+    state.outpaint.sourceImage = imageUrl;
+    state.outpaint.sourceWidth = image.naturalWidth || 2048;
+    state.outpaint.sourceHeight = image.naturalHeight || 2048;
+    const next = outpaintPresetSize(state.outpaint.ratio, Number(outpaintEls.scale?.value || 1));
+    if (outpaintExceedsLimit(next)) {
+      state.outpaint.scale = 1;
+      if (outpaintEls.scale) outpaintEls.scale.value = "1";
+      const fallback = outpaintPresetSize(state.outpaint.ratio, 1);
+      state.outpaint.width = fallback.width;
+      state.outpaint.height = fallback.height;
+    } else {
+      state.outpaint.width = next.width;
+      state.outpaint.height = next.height;
+    }
+    resetOutpaintResult();
+    renderOutpaint();
+    showToast(`已上传：${file.name}`);
+  };
+  image.onerror = () => {
+    URL.revokeObjectURL(imageUrl);
+    showToast("图片读取失败，请重新上传");
+  };
+  image.src = imageUrl;
+});
+
+outpaintEls.ratioList?.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-outpaint-ratio]");
+  if (!button) return;
+  updateOutpaintRatio(button.dataset.outpaintRatio);
+});
+
+outpaintEls.scale?.addEventListener("change", () => {
+  updateOutpaintRatio(state.outpaint.ratio);
+});
+
+outpaintEls.boardStrip?.addEventListener("pointerdown", (event) => {
+  if (!event.target.closest(".integrated-outpaint-artboard")) return;
+  outpaintDragState.active = true;
+  outpaintDragState.pointerId = event.pointerId;
+  outpaintDragState.startX = event.clientX;
+  outpaintDragState.startY = event.clientY;
+  outpaintDragState.originX = state.outpaint.canvasX;
+  outpaintDragState.originY = state.outpaint.canvasY;
+  outpaintEls.boardStrip.classList.add("dragging");
+  outpaintEls.boardStrip.setPointerCapture?.(event.pointerId);
+});
+
+outpaintEls.boardStrip?.addEventListener("pointermove", (event) => {
+  if (!outpaintDragState.active || event.pointerId !== outpaintDragState.pointerId) return;
+  state.outpaint.canvasX = outpaintDragState.originX + event.clientX - outpaintDragState.startX;
+  state.outpaint.canvasY = outpaintDragState.originY + event.clientY - outpaintDragState.startY;
+  renderOutpaintTransform();
+});
+
+const endOutpaintDrag = () => {
+  outpaintDragState.active = false;
+  outpaintDragState.pointerId = null;
+  outpaintEls.boardStrip?.classList.remove("dragging");
+};
+
+outpaintEls.boardStrip?.addEventListener("pointerup", endOutpaintDrag);
+outpaintEls.boardStrip?.addEventListener("pointercancel", endOutpaintDrag);
+
+outpaintEls.canvasShell?.addEventListener("wheel", (event) => {
+  if (!document.body.classList.contains("is-outpaint-editor")) return;
+  if (event.target.closest("[data-outpaint-panel], .integrated-outpaint-dock, .integrated-outpaint-right-rail, [data-outpaint-return], [data-outpaint-result-menu]")) return;
+  event.preventDefault();
+  if (event.ctrlKey || event.metaKey) {
+    zoomOutpaint(event.deltaY > 0 ? -.08 : .08, event.clientX, event.clientY);
+  } else {
+    panOutpaint(-event.deltaX, -event.deltaY);
+  }
+}, { passive: false });
+
+outpaintEls.resultSlot?.addEventListener("contextmenu", placeOutpaintResultMenu);
+
 els.creationTaskStatusButtons.forEach((button) => {
   button.addEventListener("click", () => {
     els.creationTaskStatusButtons.forEach((item) => item.classList.toggle("is-active", item === button));
@@ -4356,13 +4820,12 @@ els.creationTaskTypeButtons.forEach((button) => {
 els.creationTaskSearch?.addEventListener("input", filterCreationTasks);
 
 document.querySelector("[data-back-creation]")?.addEventListener("click", () => {
-  if (state.detailBackPage === "creation-records") {
-    openCreationRecordsPage();
+  const returnModal = document.querySelector("[data-detail-return-modal]");
+  if (returnModal) {
+    openPrototypeModal(returnModal);
     return;
   }
-  setWorkspacePage("creation-plaza");
-  clearMenuActive();
-  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+  leaveCreationDetail();
 });
 
 document.querySelectorAll("[data-detail-upload]").forEach((button) => {
@@ -4382,6 +4845,53 @@ document.querySelectorAll("[data-detail-remove]").forEach((button) => {
   });
 });
 
+function closeDetailImageLightbox() {
+  const lightbox = document.querySelector("[data-detail-image-lightbox]");
+  if (!lightbox) return;
+  lightbox.classList.remove("is-open");
+  lightbox.setAttribute("aria-hidden", "true");
+}
+
+document.addEventListener("click", (event) => {
+  const actionButton = event.target.closest("[data-detail-image-action]");
+  if (actionButton) {
+    const item = actionButton.closest(".detail-result-item");
+    const source = item?.querySelector("[data-detail-image-preview]")?.dataset.detailImagePreview || "";
+    const action = actionButton.dataset.detailImageAction;
+    if (action === "下载" && source) {
+      const link = document.createElement("a");
+      link.href = source;
+      link.download = "AI商品图.png";
+      link.click();
+    } else if (action === "扩图") {
+      openOutpaintEditor(source || state.outpaint.sourceImage);
+    } else {
+      showToast(action === "保存" ? "已保存到素材库" : "已提交上架到图片广场");
+    }
+    return;
+  }
+
+  const previewButton = event.target.closest("[data-detail-image-preview]");
+  if (previewButton) {
+    const lightbox = document.querySelector("[data-detail-image-lightbox]");
+    const image = lightbox?.querySelector("[data-detail-image-lightbox-image]");
+    if (!lightbox || !image) return;
+    image.src = previewButton.dataset.detailImagePreview;
+    lightbox.classList.add("is-open");
+    lightbox.setAttribute("aria-hidden", "false");
+    return;
+  }
+
+  const lightbox = event.target.closest("[data-detail-image-lightbox]");
+  if (event.target.closest("[data-detail-image-lightbox-close]") || (lightbox && event.target === lightbox)) {
+    closeDetailImageLightbox();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape") closeDetailImageLightbox();
+});
+
 document.addEventListener("click", (event) => {
   const button = event.target.closest("[data-copy-detail-prompt]");
   if (!button) return;
@@ -4390,11 +4900,16 @@ document.addEventListener("click", (event) => {
   showToast("文本描述已复制");
 });
 
-document.querySelector("[data-detail-regenerate]")?.addEventListener("click", () => {
-  if (els.detailRatio) state.creation.ratio = els.detailRatio.value;
-  if (els.detailResolution) state.creation.resolution = els.detailResolution.value;
-  appendDetailTask({ prompt: getDetailPrompt() });
-  showToast("已提交重新生成任务");
+document.querySelector("[data-detail-regenerate]")?.addEventListener("click", submitDetailRegeneration);
+
+document.addEventListener("click", (event) => {
+  if (!event.target.closest("[data-detail-regenerate-all]")) return;
+  submitDetailRegeneration();
+});
+
+document.querySelector("[data-detail-return-confirm]")?.addEventListener("click", () => {
+  closePrototypeModals();
+  leaveCreationDetail();
 });
 
 document.querySelectorAll("[data-modal-close]").forEach((button) => {
@@ -4535,16 +5050,41 @@ document.querySelectorAll("[data-resolution-options] button").forEach((button) =
 
 document.querySelector("[data-creation-generate]").addEventListener("click", createGenerationRecord);
 
-document.querySelectorAll("[data-resource-filter] button").forEach((button) => {
-  button.addEventListener("click", () => {
-    document.querySelectorAll("[data-resource-filter] button").forEach((item) => item.classList.remove("is-active"));
-    button.classList.add("is-active");
-    const filter = button.dataset.filter;
-    document.querySelectorAll("[data-resource-card]").forEach((card) => {
-      card.style.display = filter === "全部" || card.dataset.tags.includes(filter) ? "" : "none";
+const resourceFilterGroups = Array.from(document.querySelectorAll("[data-resource-filter]"));
+
+function filterResourceCards() {
+  const activeFilters = resourceFilterGroups
+    .map((group) => group.querySelector("button.is-active")?.dataset.filter || "全部");
+  const activeType = activeFilters[1];
+  const typeLabel = {
+    "单图案例": "单图",
+    "套图模板": "套图",
+    模特: "模特",
+    素材模块: "文字"
+  }[activeType];
+
+  document.querySelectorAll("[data-resource-card]").forEach((card) => {
+    const tags = card.dataset.tags || "";
+    const visible = activeFilters.every((filter) => filter === "全部" || tags.includes(filter));
+    card.style.display = visible ? "" : "none";
+    const categoryBadge = card.querySelector(".resource-badge.category");
+    if (categoryBadge) {
+      categoryBadge.dataset.originalCategory ||= categoryBadge.textContent.trim();
+      categoryBadge.textContent = typeLabel || categoryBadge.dataset.originalCategory;
+    }
+  });
+}
+
+resourceFilterGroups.forEach((group) => {
+  group.querySelectorAll("button").forEach((button) => {
+    button.addEventListener("click", () => {
+      group.querySelectorAll("button").forEach((item) => item.classList.toggle("is-active", item === button));
+      filterResourceCards();
     });
   });
 });
+
+filterResourceCards();
 
 document.querySelectorAll("[data-resource-use]").forEach((button) => {
   button.addEventListener("click", () => openResourcePurchase(button.closest("[data-resource-card]")));
@@ -4704,6 +5244,12 @@ document.querySelectorAll("[data-brand-material-search], [data-brand-material-ty
   control.addEventListener("change", filterBrandMaterialsByControls);
 });
 
+els.brandUploadInput?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+  if (file) addLocalBrandMaterial(file);
+  event.target.value = "";
+});
+
 document.querySelectorAll("[data-material-create-trigger], [data-material-create-trigger-empty]").forEach((button) => {
   button.addEventListener("click", (event) => {
     event.stopPropagation();
@@ -4807,6 +5353,11 @@ document.addEventListener("click", (event) => {
   const brandEditorToolButton = event.target.closest("[data-brand-editor-tool]");
   const brandPanelToggleButton = event.target.closest("[data-brand-panel-toggle]");
   const brandMaterialTabButton = event.target.closest("[data-brand-material-tab]");
+  const brandUploadCardButton = event.target.closest("[data-brand-upload-card]");
+  const brandAssetPreviewButton = event.target.closest("[data-brand-asset-preview]");
+  const brandAssetEditButton = event.target.closest("[data-brand-asset-edit]");
+  const brandAssetPublishButton = event.target.closest("[data-brand-asset-publish]");
+  const brandAssetDeleteButton = event.target.closest("[data-brand-asset-delete]");
   const saveBrandMaterialButton = event.target.closest("[data-save-brand-material]");
   const brandCopyButton = event.target.closest("[data-brand-copy]");
   const brandUseButton = event.target.closest("[data-brand-use]");
@@ -4829,9 +5380,6 @@ document.addEventListener("click", (event) => {
   const brandDeleteObjectButton = event.target.closest("[data-brand-delete-object]");
   const brandGenericPropButton = event.target.closest(".brand-editor-props button");
   const openCreationDetailButton = event.target.closest("[data-open-creation-detail]");
-  const resultActionButton = event.target.closest("[data-result-action]");
-  const historyRegenerateButton = event.target.closest("[data-history-regenerate]");
-  const detailRegenerateButton = event.target.closest(".detail-result-actions [data-detail-regenerate]");
 
   if (materialPrimaryButton) {
     setMaterialPrimary(materialPrimaryButton.dataset.materialPrimary);
@@ -4868,6 +5416,38 @@ document.addEventListener("click", (event) => {
 
   if (brandMaterialTabButton) {
     filterBrandAssetCards(brandMaterialTabButton.dataset.brandMaterialTab);
+    return;
+  }
+
+  if (brandUploadCardButton) {
+    els.brandUploadInput?.click();
+    return;
+  }
+
+  if (brandAssetEditButton) {
+    const card = brandAssetEditButton.closest("[data-brand-asset-source]");
+    if (card?.dataset.brandAssetSource !== "本地上传") {
+      openBrandMaterialEditor();
+      showToast("已进入品牌画板编辑器");
+    }
+    return;
+  }
+
+  if (brandAssetPublishButton) {
+    showToast("已提交发布到 AI 图片广场");
+    return;
+  }
+
+  if (brandAssetDeleteButton) {
+    const card = brandAssetDeleteButton.closest("[data-brand-asset-type]");
+    card?.remove();
+    filterBrandMaterialsByControls();
+    showToast("品牌素材已删除");
+    return;
+  }
+
+  if (brandAssetPreviewButton) {
+    openBrandAssetPreview(brandAssetPreviewButton.closest("[data-brand-asset-type]"));
     return;
   }
 
@@ -5151,30 +5731,6 @@ document.addEventListener("click", (event) => {
       productName: taskCard?.dataset.product || "",
       backPage: taskCard ? "creation-records" : "creation-plaza"
     });
-    return;
-  }
-
-  if (historyRegenerateButton || detailRegenerateButton) {
-    appendDetailTask({ prompt: getDetailPrompt() });
-    showToast("已按该任务参数重新生成");
-    return;
-  }
-
-  if (resultActionButton) {
-    const action = resultActionButton.dataset.resultAction;
-    if (action === "大图") {
-      document.querySelector("[data-preview-title]").textContent = "生成结果大图";
-      document.querySelector("[data-preview-image]").src = "assets/product-cover-03.png";
-      document.querySelector("[data-preview-category]").textContent = state.creation.category;
-      document.querySelector("[data-preview-type]").textContent = "生成结果";
-      document.querySelector("[data-preview-source]").textContent = "图片创作详情";
-      document.querySelector("[data-preview-price]").textContent = "-";
-      document.querySelector("[data-preview-usage]").textContent = "-";
-      document.querySelector("[data-preview-fit]").textContent = "当前商品";
-      openPrototypeModal(els.resourcePreviewModal);
-    } else {
-      showToast(`${action}入口已展示`);
-    }
     return;
   }
 
