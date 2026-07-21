@@ -562,7 +562,7 @@ const materialLibrary = [
     image: "assets/product-cover-01.png",
     tone: "image",
     spec: "详情模块 / 900x900",
-    scene: "详情页材质说明、模板中心拼接",
+    scene: "详情页材质说明、套图方案拼接",
     description: "旧版面料工艺说明模块，包含面料结构和裆部透气说明，已被新版模块替代。",
     records: ["男士内裤详情旧版 · 2026-07-06"],
     tags: ["面料", "工艺", "详情页", "内裤"]
@@ -575,6 +575,21 @@ const materialCategoryGroups = {
   营销组件: ["文字模块", "营销角标"],
   创作素材: ["图片模块", "背景素材"]
 };
+
+const moduleLibraryAssets = [
+  { id: "module-image-001", type: "image", name: "冰丝内裤自然光主图", category: "内裤", status: "可使用", image: "assets/creation-cover-616.jpg", description: "保留商品材质与轮廓，适合自然光棚拍风格的主图生成。", updatedAt: "2026-07-20" },
+  { id: "module-image-002", type: "image", name: "日常袜品陈列图", category: "通用", status: "可使用", image: "assets/creation-cover-608.jpg", description: "简洁陈列构图，突出多色商品与日常穿着氛围。", updatedAt: "2026-07-19" },
+  { id: "module-image-003", type: "image", name: "居家舒适产品图", category: "内衣", status: "已上架", image: "assets/creation-cover-610.jpg", description: "柔和室内光线，突出亲肤和舒适的商品卖点。", updatedAt: "2026-07-18" },
+  { id: "module-image-004", type: "image", name: "儿童夏日户外图", category: "童装", status: "草稿", image: "assets/creation-cover-602.jpg", description: "明亮夏日背景与活力构图，适合儿童商品展示。", updatedAt: "2026-07-17" },
+  { id: "module-fixed-001", type: "fixed", name: "保暖内衣面料成分说明", category: "内衣", status: "可使用", image: "assets/product-cover-01.png", description: "固定展示面料成分、洗护方式与质感说明，不替换图文内容。", updatedAt: "2026-07-20" },
+  { id: "module-fixed-002", type: "fixed", name: "尺码参数对照表", category: "内裤", status: "可使用", image: "assets/product-cover-03.png", description: "适合商品详情页的固定尺码与身材参考信息。", updatedAt: "2026-07-18" },
+  { id: "module-fixed-003", type: "fixed", name: "品牌售后服务说明", category: "通用", status: "已上架", image: "assets/product-cover-04.png", description: "固定售后承诺与服务流程，可直接拼接进详情页。", updatedAt: "2026-07-16" },
+  { id: "module-fixed-004", type: "fixed", name: "产品洗护说明卡", category: "内衣", status: "草稿", image: "assets/creation-cover-606.jpg", description: "固定洗护符号与注意事项，保持品牌详情页排版一致。", updatedAt: "2026-07-15" },
+  { id: "module-text-001", type: "text", name: "轻盈裸感卖点标题", category: "内裤", status: "可使用", image: "assets/creation-cover-606.jpg", description: "用于内裤主图及详情卖点区的标题排版与文字样式。", updatedAt: "2026-07-20" },
+  { id: "module-text-002", type: "text", name: "有氧底档呼吸文案", category: "内裤", status: "可使用", image: "assets/creation-cover-602.jpg", description: "强调透气与耐洗卖点的分段信息排版。", updatedAt: "2026-07-18" },
+  { id: "module-text-003", type: "text", name: "细节满满品牌标题", category: "内衣", status: "已上架", image: "assets/creation-cover-610.jpg", description: "适用于详情图首屏的品牌标题和短卖点组合。", updatedAt: "2026-07-17" },
+  { id: "module-text-004", type: "text", name: "颜色一目了然标签", category: "通用", status: "草稿", image: "assets/creation-cover-608.jpg", description: "用于 SKU 色彩说明的简洁文字排版样式。", updatedAt: "2026-07-16" }
+];
 
 function materialPrimaryCategory(type) {
   return Object.entries(materialCategoryGroups).find(([, types]) => types.includes(type))?.[0] || "创作素材";
@@ -603,6 +618,8 @@ const state = {
   filteredMaterials: materialLibrary,
   materialPrimary: "品牌资产",
   materialSecondary: "全部",
+  moduleLibraryType: "image",
+  filteredModuleAssets: moduleLibraryAssets,
   activeMaterial: materialLibrary[0],
   modelGenderFilter: "全部",
   modelStyleFilters: [],
@@ -613,7 +630,7 @@ const state = {
   templateGroupFilters: [],
   activeTemplate: templates[0],
   templateModalEditing: false,
-  contentTargetGroup: "主图",
+  contentTargetGroup: "多图",
   contentSource: "local",
   contentSelections: [],
   builderMode: "create",
@@ -624,7 +641,7 @@ const state = {
     description: "",
     category: "",
     brand: "",
-    groups: ["主图", "详情图"],
+    groups: ["多图"],
     items: []
   },
   publishTemplate: null,
@@ -633,6 +650,7 @@ const state = {
   purchaseResourceCard: null,
   previewMaterial: null,
   brandEditor: {
+    backPage: "brand-material-library",
     seq: 1,
     selectedId: "seed-watermark",
     zoom: 0.8,
@@ -643,6 +661,7 @@ const state = {
       height: 500,
       background: "transparent"
     },
+    addedImages: [],
     objects: [
       {
         id: "seed-watermark",
@@ -670,6 +689,7 @@ const state = {
   detailBackPage: "creation-plaza",
   creation: {
     category: "文胸",
+    inputMode: "free",
     productUploaded: false,
     referenceUploaded: false,
     modelUploaded: false,
@@ -682,6 +702,7 @@ const state = {
     recordSeq: 0,
     detailSeq: 0
   },
+  moduleCreateType: "image-generation",
   outpaint: {
     sourceImage: "assets/outpaint-main-product.jpg",
     sourceWidth: 2048,
@@ -696,6 +717,7 @@ const state = {
     canvasY: 0
   },
   multiCreate: {
+    mode: "template",
     templateId: "",
     resourceTemplate: null,
     backPage: "template-center",
@@ -705,11 +727,70 @@ const state = {
     elapsed: 0,
     timer: null,
     selectedModuleId: "",
+    replica: {
+      productImages: [],
+      referenceImages: [],
+      prompt: "",
+      preserve: ["构图", "光影", "页面顺序"]
+    },
     modules: [],
     resolution: "2K",
     model: "专业版",
     count: "2 套",
     generated: false
+  },
+  suiteReplicaEditor: {
+    backPage: "creation-plaza",
+    product: null,
+    template: null,
+    resolution: "2K",
+    ratios: { "头图": "3:4", "镶嵌图": "1:1", "SKU图": "1:1" },
+    scale: 1,
+    x: 0,
+    y: 0,
+    draggingId: "",
+    pointers: new Map(),
+    pan: null,
+    pinchDistance: 0,
+    pinchScale: 1
+  }
+};
+
+const moduleImageState = {
+  intent: "create",
+  backPage: "creation-plaza",
+  activeMaterial: "product",
+  materials: { product: [], model: [], package: [], background: [], reference: [] },
+  analysisImages: [],
+  tasks: [],
+  selectedTaskId: "",
+  selectedCandidateId: "",
+  savedModule: null,
+  taskSeq: 4810
+};
+
+const moduleMaterialLabels = {
+  product: "产品图",
+  model: "模特图",
+  package: "包装图",
+  background: "背景图",
+  reference: "参考图"
+};
+
+const moduleStaticState = {
+  mode: "fixed",
+  backPage: "creation-plaza",
+  fixedImage: "",
+  moduleName: "",
+  category: "",
+  saved: null,
+  text: {
+    content: "轻盈裸感\n自在呼吸",
+    font: "Source Han Sans",
+    weight: "400",
+    size: "36",
+    color: "#2f3544",
+    align: "center"
   }
 };
 
@@ -738,6 +819,11 @@ const els = {
 };
 
 els.pages = Array.from(document.querySelectorAll("[data-page]"));
+const inspirationPlaza = document.querySelector("[data-inspiration-plaza]");
+const inspirationResources = document.querySelector("[data-inspiration-resources]");
+if (inspirationPlaza && inspirationResources) {
+  inspirationPlaza.append(inspirationResources);
+}
 const outpaintEls = {
   editor: document.querySelector("[data-outpaint-editor]"),
   canvasShell: document.querySelector("[data-outpaint-canvas-shell]"),
@@ -756,7 +842,9 @@ const outpaintEls = {
   resultMenu: document.querySelector("[data-outpaint-result-menu]")
 };
 els.creationPrompt = document.querySelector("[data-creation-prompt]");
-els.creationMode = document.querySelector("[data-creation-mode]");
+els.creationMode = document.querySelector("[data-creation-mode-label]");
+els.creationInputModeTabs = Array.from(document.querySelectorAll("[data-creation-mode]"));
+els.moduleCreateModal = document.querySelector("[data-module-create-modal]");
 els.creationCategories = Array.from(document.querySelectorAll("[data-creation-categories] button"));
 els.creationRecordList = document.querySelector("[data-creation-record-list]");
 els.creationTaskFlow = document.querySelector("[data-creation-task-flow]");
@@ -813,13 +901,19 @@ els.templateDetailEdit = document.querySelector("[data-template-detail-edit]");
 els.multiPage = document.querySelector("[data-multi-page]");
 els.multiBack = document.querySelector("[data-multi-back]");
 els.multiStepButtons = Array.from(document.querySelectorAll("[data-multi-step-button]"));
+els.multiTaskKind = document.querySelector("[data-multi-task-kind]");
+els.multiConfigStepName = document.querySelector("[data-multi-config-step-name]");
 els.multiTemplateTitle = document.querySelector("[data-multi-template-title]");
 els.multiTemplateSubtitle = document.querySelector("[data-multi-template-subtitle]");
 els.multiTemplateName = document.querySelector("[data-multi-template-name]");
 els.multiTemplateThumb = document.querySelector("[data-multi-template-thumb]");
+els.multiLinkedLabel = document.querySelector("[data-multi-linked-label]");
+els.multiCountLabel = document.querySelector("[data-multi-count-label]");
 els.multiModuleList = document.querySelector("[data-multi-module-list]");
 els.multiConfigEmpty = document.querySelector("[data-multi-config-empty]");
 els.multiConfigContent = document.querySelector("[data-multi-config-content]");
+els.multiConfigTitle = document.querySelector("[data-multi-config-title]");
+els.multiConfigDescription = document.querySelector("[data-multi-config-description]");
 els.multiEnabledCount = document.querySelector("[data-multi-enabled-count]");
 els.multiMissingCount = document.querySelector("[data-multi-missing-count]");
 els.multiCost = document.querySelector("[data-multi-cost]");
@@ -1030,8 +1124,8 @@ function cloneTemplate(template) {
     description: template.description || "",
     category: template.category || "",
     brand: template.brand || "",
-    groups: [...template.groups],
-    items: template.items.map((item) => ({ ...item, enabled: isTemplateItemEnabled(item) }))
+    groups: ["多图"],
+    items: template.items.map((item) => ({ ...item, group: "多图", enabled: isTemplateItemEnabled(item) }))
   };
 }
 
@@ -1044,7 +1138,7 @@ function resetTemplateBuilder(template = null) {
     description: "",
     category: "",
     brand: "",
-    groups: ["主图", "详情图"],
+    groups: ["多图"],
     items: []
   };
   syncBuilderForm();
@@ -1068,21 +1162,18 @@ function getGroupItems(group) {
 
 function renderTemplateBuilder() {
   if (!els.builderGroupBoard) return;
-  const groups = state.builder.groups;
-  els.builderGroupBoard.innerHTML = groups.map((group) => {
-    const items = getGroupItems(group);
-    return `
-      <section class="builder-group-section" data-builder-group-section="${group}">
+  const items = state.builder.items;
+  els.builderGroupBoard.innerHTML = `
+      <section class="builder-group-section" data-builder-group-section="多图">
         <div class="builder-group-head">
-          <div><h3>${group}配置</h3><span>${items.length} 张内容</span></div>
-          <button class="btn ghost builder-add-content-btn" type="button" data-open-content-picker="${group}"><span class="builder-add-plus">+</span>添加内容</button>
+          <div><h3>多图配置</h3><span>${items.length} 张内容</span></div>
+          <button class="btn ghost builder-add-content-btn" type="button" data-open-content-picker="多图"><span class="builder-add-plus">+</span>添加内容</button>
         </div>
         <div class="builder-item-list">
           ${items.length ? items.map((item) => renderBuilderItem(item)).join("") : `<div class="builder-empty-group">暂无内容，可从本地上传、素材库或历史创作中选择</div>`}
         </div>
       </section>
     `;
-  }).join("");
   renderBuilderPreview();
 }
 
@@ -1129,10 +1220,10 @@ function toggleBuilderGroup(group) {
 }
 
 function openContentPicker(group) {
-  state.contentTargetGroup = group;
+  state.contentTargetGroup = "多图";
   state.contentSelections = [];
   state.contentSource = "local";
-  if (els.contentModalSubtitle) els.contentModalSubtitle.textContent = `将内容加入「${group}」分组`;
+  if (els.contentModalSubtitle) els.contentModalSubtitle.textContent = "多选后加入多图配置";
   document.querySelectorAll("[data-content-source]").forEach((button) => {
     button.classList.toggle("is-active", button.dataset.contentSource === "local");
   });
@@ -1196,7 +1287,7 @@ function confirmContentSelection() {
     state.builder.items.push({
       id: `builder-${Date.now()}-${state.builderSeq++}`,
       title: option.title,
-      group: state.contentTargetGroup,
+      group: "多图",
       purpose: option.purpose,
       source: option.source,
       image: option.image,
@@ -1249,7 +1340,6 @@ function validateBuilder() {
   updateBuilderFromInputs();
   if (!state.builder.name) return "请输入模板名称";
   if (!state.builder.category) return "请选择商品分类";
-  if (!state.builder.groups.length) return "请至少选择一个模板分组";
   if (!state.builder.items.length) return "请至少添加一张图片内容";
   if (!getEnabledTemplateItems(state.builder.items).length) return "请至少启用一张图片参与长图拼接";
   return "";
@@ -2285,7 +2375,7 @@ function editTemplateInBuilder(templateId) {
   resetTemplateBuilder(template);
   closePrototypeModals();
   clearMenuActive();
-  document.querySelector('[data-single-menu="模板中心"]')?.classList.add("active");
+  document.querySelector('[data-single-menu="套图方案库"]')?.classList.add("active");
   setWorkspacePage("template-builder");
   showToast("已进入模板编辑页");
 }
@@ -2358,7 +2448,10 @@ function setWorkspacePage(pageName) {
     page.classList.toggle("active", page.dataset.page === pageName);
   });
   els.body.classList.toggle("is-creation-detail", pageName === "creation-detail");
+  els.body.classList.toggle("is-module-image-create", pageName === "module-image-create");
+  els.body.classList.toggle("is-module-static-create", pageName === "module-static-create");
   els.body.classList.toggle("is-multi-task", pageName === "multi-image-creation");
+  els.body.classList.toggle("is-suite-replica-editor", pageName === "suite-replica-editor");
   els.body.classList.toggle("is-brand-editor", pageName === "brand-material-editor");
   els.body.classList.toggle("is-outpaint-editor", pageName === "outpaint-editor");
   closeCreateMenu();
@@ -2506,6 +2599,7 @@ function appendOutpaintTaskRecord() {
   record.dataset.type = "扩图";
   record.dataset.title = title;
   record.dataset.product = state.creation.category;
+  record.dataset.boutiqueState = "none";
   record.innerHTML = `
     <div class="creation-task-thumb outpaint">
       <div class="outpaint-before"><img src="${state.outpaint.sourceImage}" alt=""></div>
@@ -2517,7 +2611,7 @@ function appendOutpaintTaskRecord() {
       <div class="creation-task-meta"><span>1 张图</span><span>${state.outpaint.width} × ${state.outpaint.height}</span><span>刚刚</span></div>
       <div class="creation-task-tags"><span>扩图</span><span>${state.creation.category}</span><span>${state.outpaint.ratio}</span></div>
     </div>
-    <div class="creation-task-action"><button class="btn primary" type="button" data-open-outpaint>继续扩图</button></div>
+    <div class="creation-task-action"><button class="btn ghost" type="button" data-add-to-boutique>加入精品库</button><button class="btn primary" type="button" data-open-outpaint>继续扩图</button></div>
   `;
   flow.prepend(record);
 }
@@ -2554,8 +2648,9 @@ function placeOutpaintResultMenu(event) {
   outpaintEls.resultMenu.classList.add("show");
 }
 
-function openOutpaintEditor(sourceImage = state.outpaint.sourceImage) {
+function openOutpaintEditor(sourceImage = state.outpaint.sourceImage, backPage = "creation-plaza") {
   state.outpaint.sourceImage = sourceImage || "assets/outpaint-main-product.jpg";
+  state.outpaint.backPage = backPage;
   state.outpaint.sourceWidth = 2048;
   state.outpaint.sourceHeight = 2048;
   state.outpaint.ratio = "3:4";
@@ -2567,6 +2662,8 @@ function openOutpaintEditor(sourceImage = state.outpaint.sourceImage) {
   state.outpaint.canvasY = 0;
   setWorkspacePage("outpaint-editor");
   clearMenuActive();
+  const returnButton = document.querySelector("[data-outpaint-return]");
+  if (returnButton) returnButton.lastChild.textContent = backPage === "creation-records" ? "返回创作记录" : "返回创作广场";
   resetOutpaintResult();
   outpaintEls.panel?.classList.add("show");
   document.querySelector("[data-outpaint-open-panel]")?.classList.add("active");
@@ -2574,6 +2671,10 @@ function openOutpaintEditor(sourceImage = state.outpaint.sourceImage) {
 }
 
 function closeOutpaintEditor() {
+  if (state.outpaint.backPage === "creation-records") {
+    openCreationRecordsPage();
+    return;
+  }
   setWorkspacePage("creation-plaza");
   clearMenuActive();
   document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
@@ -2586,18 +2687,170 @@ function openCreationRecordsPage() {
   filterCreationTasks();
 }
 
+function setMaterialLibraryTitle(title) {
+  const heading = document.querySelector("[data-material-library-title]");
+  if (heading) heading.textContent = title;
+}
+
+function getModuleLibraryAsset(assetId) {
+  return moduleLibraryAssets.find((item) => item.id === assetId);
+}
+
+function moduleLibraryTypeLabel(type = state.moduleLibraryType) {
+  return { image: "图生图模块", fixed: "固定图模块", text: "文字模块" }[type] || "模块";
+}
+
+function renderModuleLibrary() {
+  const grid = document.querySelector("[data-module-library-grid]");
+  const empty = document.querySelector("[data-module-library-empty]");
+  const summary = document.querySelector("[data-module-library-summary]");
+  if (!grid || !empty || !summary) return;
+
+  document.querySelectorAll("[data-module-library-tab]").forEach((button) => {
+    const active = button.dataset.moduleLibraryTab === state.moduleLibraryType;
+    button.classList.toggle("is-active", active);
+    button.setAttribute("aria-selected", String(active));
+  });
+
+  summary.textContent = `共 ${state.filteredModuleAssets.length} 个${moduleLibraryTypeLabel()}`;
+  grid.innerHTML = state.filteredModuleAssets.map((asset) => {
+    const canCreate = asset.type === "image";
+    return `
+      <article class="module-library-card" data-module-library-card="${asset.id}">
+        <button class="module-library-cover" type="button" data-module-library-preview="${asset.id}" aria-label="预览${asset.name}">
+          <img src="${asset.image}" alt="${asset.name}">
+          <span class="module-library-status ${asset.status === "草稿" ? "draft" : ""}">${asset.status}</span>
+        </button>
+        <div class="module-library-card-body">
+          <h2 title="${asset.name}">${asset.name}</h2>
+          <p>${asset.description}</p>
+          <div class="module-library-meta"><span>${asset.category}</span><i></i><span>更新于 ${asset.updatedAt}</span></div>
+          <div class="module-library-actions ${canCreate ? "has-create" : ""}">
+            ${canCreate ? `<button class="primary" type="button" data-module-library-create-image="${asset.id}">创作图片</button>` : ""}
+            <button type="button" data-module-library-edit="${asset.id}">编辑</button>
+            <button class="danger" type="button" data-module-library-delete="${asset.id}">删除</button>
+          </div>
+          <button class="module-library-publish" type="button" data-module-library-publish="${asset.id}">发布到模块广场</button>
+        </div>
+      </article>`;
+  }).join("");
+  grid.hidden = !state.filteredModuleAssets.length;
+  empty.hidden = Boolean(state.filteredModuleAssets.length);
+}
+
+function filterModuleLibrary() {
+  const keyword = document.querySelector("[data-module-library-search]")?.value.trim().toLowerCase() || "";
+  const category = document.querySelector("[data-module-library-category]")?.value || "全部类目";
+  const status = document.querySelector("[data-module-library-status]")?.value || "全部状态";
+  state.filteredModuleAssets = moduleLibraryAssets.filter((asset) => {
+    const haystack = [asset.name, asset.description, asset.category, asset.status].join(" ").toLowerCase();
+    return asset.type === state.moduleLibraryType &&
+      (!keyword || haystack.includes(keyword)) &&
+      (category === "全部类目" || asset.category === category) &&
+      (status === "全部状态" || asset.status === status);
+  });
+  renderModuleLibrary();
+}
+
+function setModuleLibraryType(type) {
+  if (!["image", "fixed", "text"].includes(type)) return;
+  state.moduleLibraryType = type;
+  filterModuleLibrary();
+}
+
+function openModuleLibraryPreview(assetId) {
+  const asset = getModuleLibraryAsset(assetId);
+  if (!asset) return;
+  state.previewResourceCard = null;
+  state.previewMaterial = null;
+  setPreviewMetaLabels({ price: "状态", fit: "模块类目" });
+  document.querySelector("[data-preview-title]").textContent = asset.name;
+  document.querySelector("[data-preview-image]").src = asset.image;
+  document.querySelector("[data-preview-category]").textContent = asset.category;
+  document.querySelector("[data-preview-type]").textContent = moduleLibraryTypeLabel(asset.type);
+  document.querySelector("[data-preview-source]").textContent = "自建模块";
+  document.querySelector("[data-preview-price]").textContent = asset.status;
+  document.querySelector("[data-preview-usage]").textContent = "可在创作中调用";
+  document.querySelector("[data-preview-fit]").textContent = asset.category;
+  document.querySelector("[data-preview-use]").textContent = asset.type === "image" ? "创作图片" : "编辑模块";
+  openPrototypeModal(els.resourcePreviewModal);
+}
+
+function openModuleLibraryAsset(assetId, action = "edit") {
+  const asset = getModuleLibraryAsset(assetId);
+  if (!asset) return;
+  if (asset.type === "image") {
+    openModuleImageWorkspace({ fresh: true, backPage: "module-library" });
+    moduleImageState.materials.reference = [{ url: asset.image, name: asset.name }];
+    document.querySelector("[data-module-product-prompt]").value = asset.description;
+    document.querySelector("[data-module-scene-prompt]").value = "保持模块参考图的构图节奏与光影风格。";
+    renderModuleImageWorkspace();
+    showToast(action === "create" ? `已应用模块：${asset.name}` : `正在编辑：${asset.name}`);
+    return;
+  }
+  if (asset.type === "fixed") {
+    openStaticModuleWorkspace("fixed", { backPage: "module-library" });
+    moduleStaticState.fixedImage = asset.image;
+    moduleStaticState.moduleName = asset.name;
+    moduleStaticState.category = asset.category === "内衣" ? "内衣" : asset.category;
+    renderStaticModuleWorkspace();
+    showToast(`正在编辑：${asset.name}`);
+    return;
+  }
+  openBrandMaterialEditor();
+  showToast(`正在编辑：${asset.name}`);
+}
+
+function deleteModuleLibraryAsset(assetId) {
+  const index = moduleLibraryAssets.findIndex((asset) => asset.id === assetId);
+  if (index < 0) return;
+  const [asset] = moduleLibraryAssets.splice(index, 1);
+  filterModuleLibrary();
+  showToast(`已删除模块：${asset.name}`);
+}
+
+function openModuleLibrary() {
+  state.moduleLibraryType = "image";
+  setWorkspacePage("module-library");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="模块库"]')?.classList.add("active");
+  filterModuleLibrary();
+}
+
+function openBoutiqueLibrary() {
+  setMaterialLibraryTitle("精品库");
+  setWorkspacePage("material-library");
+  filterMaterials();
+}
+
 function openBrandMaterialLibrary() {
   setWorkspacePage("brand-material-library");
   clearMenuActive();
   document.querySelector('[data-single-menu="品牌素材库"]')?.classList.add("active");
 }
 
-function openBrandMaterialEditor() {
+function openBrandMaterialEditor(backPage = "brand-material-library") {
+  const target = backPage === "creation-plaza" ? "creation-plaza" : "brand-material-library";
+  state.brandEditor.backPage = target;
   setWorkspacePage("brand-material-editor");
   clearMenuActive();
-  document.querySelector('[data-single-menu="品牌素材库"]')?.classList.add("active");
+  const menuName = target === "creation-plaza" ? "创作广场" : "品牌素材库";
+  document.querySelector(`[data-single-menu="${menuName}"]`)?.classList.add("active");
+  const backButton = document.querySelector("[data-back-brand-library]");
+  if (backButton) {
+    backButton.lastChild.textContent = target === "creation-plaza" ? "返回创作广场" : "返回品牌素材库";
+    backButton.setAttribute("aria-label", target === "creation-plaza" ? "返回创作广场" : "返回品牌素材库");
+  }
   setBrandEditorTool("add");
+  renderBrandAddedImages();
   renderBrandCanvas();
+}
+
+function leaveBrandMaterialEditor() {
+  const backPage = state.brandEditor.backPage === "creation-plaza" ? "creation-plaza" : "brand-material-library";
+  setWorkspacePage(backPage);
+  clearMenuActive();
+  document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : "品牌素材库"}"]`)?.classList.add("active");
 }
 
 function setBrandEditorTool(tool) {
@@ -2618,6 +2871,7 @@ function setBrandEditorTool(tool) {
   document.querySelectorAll("[data-brand-prop-panel]").forEach((panel) => {
     panel.classList.toggle("active", panel.dataset.brandPropPanel === propPanel);
   });
+  if (tool === "add") renderBrandAddedImages();
   syncBrandEditorProps(propPanel);
 }
 
@@ -2703,7 +2957,7 @@ function renderBrandObject(object) {
   if (object.type === "image") {
     return `
       <div class="brand-canvas-object brand-canvas-image${selected}" data-brand-object="${object.id}" style="${style}">
-        <div class="brand-object-element"><span>${escapeBrandText(object.name)}</span></div>
+        ${object.imageUrl ? `<img src="${object.imageUrl}" alt="${escapeBrandText(object.name)}">` : `<div class="brand-object-element"><span>${escapeBrandText(object.name)}</span></div>`}
         ${brandObjectHandles()}
       </div>
     `;
@@ -2856,6 +3110,30 @@ function addBrandObject(partial, preferredPanel) {
   renderBrandCanvas();
   setBrandPropPanel(preferredPanel || getBrandObjectPropPanel(next));
   showToast(`${next.name}已添加到画布`);
+}
+
+function renderBrandAddedImages() {
+  const section = document.querySelector("[data-brand-added-images]");
+  const count = document.querySelector("[data-brand-added-image-count]");
+  const grid = document.querySelector("[data-brand-added-image-grid]");
+  if (!section || !count || !grid) return;
+  const images = state.brandEditor.addedImages || [];
+  section.hidden = !images.length;
+  count.textContent = images.length;
+  grid.innerHTML = images.map((image) => `
+    <button class="brand-added-image-card" type="button" data-brand-added-image="${image.id}">
+      <img src="${image.url}" alt="${escapeBrandText(image.name)}">
+      <span>${escapeBrandText(image.name)}</span><b>＋</b>
+    </button>`).join("");
+}
+
+function bringModuleImagesToBrandEditor(task) {
+  state.brandEditor.addedImages = task.candidates.map((candidate, index) => ({
+    id: `${task.id}-brand-image-${index + 1}`,
+    name: `生成图 ${index + 1}`,
+    url: candidate.image
+  }));
+  openBrandMaterialEditor();
 }
 
 function removeBrandObject(objectId = state.brandEditor.selectedId) {
@@ -3030,17 +3308,15 @@ function getCreationMode() {
   const hasPrompt = els.creationPrompt.value.trim().length > 0;
   if (state.creation.templateKind === "suite") return "套图创作";
   if (state.creation.template) return "模板创作";
-  if (state.creation.productUploaded && state.creation.referenceUploaded) return "参考图复刻";
-  if (state.creation.productUploaded && hasPrompt) return "商品图生成";
-  if (hasPrompt) return "自由生图";
+  if (state.creation.inputMode === "reference") return "参考图复刻";
+  if (hasPrompt || state.creation.productUploaded || state.creation.referenceUploaded) return "自由创作";
   return "待识别";
 }
 
 function getCreationCost(mode) {
   return {
     待识别: 0,
-    自由生图: 4,
-    商品图生成: 6,
+    自由创作: 4,
     参考图复刻: 10,
     模板创作: 8,
     套图创作: 18
@@ -3052,6 +3328,39 @@ function updateCreationMode() {
   if (els.creationMode) els.creationMode.textContent = mode;
   if (els.creationCost) els.creationCost.textContent = `${getCreationCost(mode)} 融豆`;
   if (els.creationGenerateCost) els.creationGenerateCost.textContent = getCreationCost(mode);
+}
+
+function setCreationInputMode(mode) {
+  const copy = mode === "reference"
+    ? {
+        placeholder: "（非必填）描述需保留或调整的构图、背景、光影等元素，例如：保留人物姿势与构图，背景改为奶油白，替换为我的商品。",
+        productLabel: "上传商品图",
+        referenceLabel: "上传参考图"
+      }
+    : {
+        placeholder: "描述商品、场景与视觉风格，AI 将结合商品图生成图片，例如：自然光卧室场景的文胸模特主图，突出蕾丝杯面与舒适承托。",
+        productLabel: "上传商品图",
+        referenceLabel: "上传参考图"
+      };
+  state.creation.inputMode = mode;
+  document.querySelector(".creation-mode-tabs")?.classList.toggle("is-reference-active", mode === "reference");
+  els.creationInputModeTabs.forEach((button) => {
+    const selected = button.dataset.creationMode === mode;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-selected", String(selected));
+  });
+  if (els.creationPrompt) els.creationPrompt.placeholder = copy.placeholder;
+  const productLabel = document.querySelector('[data-creation-upload-copy="product"]');
+  if (productLabel) productLabel.textContent = copy.productLabel;
+  const referenceLabel = document.querySelector('[data-creation-upload-copy="reference"]');
+  if (referenceLabel) referenceLabel.textContent = copy.referenceLabel;
+  document.querySelectorAll("[data-creation-upload-required]").forEach((required) => {
+    required.hidden = mode !== "reference";
+  });
+  const generateLabel = document.querySelector("[data-creation-generate] span");
+  if (generateLabel) generateLabel.textContent = mode === "reference" ? "开始复刻" : "生成图片";
+  document.querySelector(".creation-prompt-shell")?.setAttribute("data-input-mode", mode);
+  updateCreationMode();
 }
 
 function setCreationCategory(category) {
@@ -3124,7 +3433,7 @@ function detailImageActionsMarkup() {
   return `
     <div class="detail-result-hover-actions">
       <button type="button" data-detail-image-action="下载" title="下载" aria-label="下载"><img src="assets/download-icon.png" alt=""></button>
-      <button class="save" type="button" data-detail-image-action="保存" title="保存到素材库" aria-label="保存到素材库"><span></span></button>
+      <button class="save" type="button" data-detail-image-action="保存" title="加入精品库" aria-label="加入精品库"><span></span></button>
       <button type="button" data-detail-image-action="扩图" title="扩图" aria-label="扩图"><img src="assets/outpaint-icon.png" alt=""></button>
       <button type="button" data-detail-image-action="上架" title="上架到图片广场" aria-label="上架到图片广场"><img src="assets/upload-icon.png" alt=""></button>
     </div>
@@ -3178,6 +3487,8 @@ function appendDetailTask({ prompt = "" } = {}) {
   if (!els.detailTaskList) return null;
   state.creation.detailSeq += 1;
   const mode = getCreationMode() === "待识别" ? "自由生图" : getCreationMode();
+  const taskType = mode === "参考图复刻" ? "参考图复刻" : "创意生图";
+  const taskTypeClass = mode === "参考图复刻" ? "reference" : "creative";
   const taskTitle = state.creation.template || `${state.creation.category}${mode}`;
   const createdAt = "2026-07-13 14:30";
   const card = document.createElement("article");
@@ -3188,13 +3499,13 @@ function appendDetailTask({ prompt = "" } = {}) {
         <strong>${taskTitle}</strong>
         <span class="record-status queued" data-detail-card-status>排队中</span>
       </div>
-      <small>${createdAt}</small>
+      <span class="detail-task-type ${taskTypeClass}">${taskType}</span>
     </div>
     <div class="detail-task-prompt-row">
       <p data-detail-prompt-text>${prompt || getDetailPrompt()}</p>
       <button class="detail-copy-prompt" type="button" data-copy-detail-prompt aria-label="复制描述" title="复制描述"><img src="assets/detail-copy-icon.png" alt=""></button>
     </div>
-    <small class="detail-task-relation">关联：${creationRelationText()} / ${state.creation.ratio} / ${state.creation.resolution}</small>
+    <div class="detail-task-relation"><span>关联：${creationRelationText()} / ${state.creation.ratio} / ${state.creation.resolution}</span><time>创建于 ${createdAt}</time></div>
     <div class="detail-result-grid pending" data-detail-card-result></div>
     <button class="detail-task-regenerate" type="button" data-detail-regenerate-all>重新生成</button>
   `;
@@ -3218,6 +3529,408 @@ function openCreationDetail({ fromHistory = false, taskTitle = "", productName =
   if (!fromHistory && !els.detailTaskList.children.length) {
     appendDetailTask({ initial: true });
   }
+}
+
+function setModuleCreateType(type) {
+  const typeConfig = {
+    "image-generation": {
+      title: "图生图模块",
+      description: "用商品图和提示词，沉淀可复用的视觉效果。"
+    },
+    "fixed-image": {
+      title: "固定图模块",
+      description: "固定图片与版式，让素材呈现始终一致。"
+    },
+    "text-style": {
+      title: "文字模块",
+      description: "保存品牌文案与排版，快速复用文字表达。"
+    }
+  };
+  const config = typeConfig[type] || typeConfig["image-generation"];
+  state.moduleCreateType = typeConfig[type] ? type : "image-generation";
+  document.querySelectorAll("[data-module-create-type]").forEach((button) => {
+    const selected = button.dataset.moduleCreateType === state.moduleCreateType;
+    button.classList.toggle("is-active", selected);
+    button.setAttribute("aria-selected", String(selected));
+  });
+  const title = document.querySelector("[data-module-create-type-title]");
+  const description = document.querySelector("[data-module-create-type-description]");
+  if (title) title.textContent = config.title;
+  if (description) description.textContent = config.description;
+}
+
+function moduleTimestamp() {
+  return "2026-07-20 16:24";
+}
+
+function resetModuleImageWorkspace() {
+  moduleImageState.activeMaterial = "product";
+  moduleImageState.materials = { product: [], model: [], package: [], background: [], reference: [] };
+  moduleImageState.analysisImages = [];
+  moduleImageState.tasks = [];
+  moduleImageState.selectedTaskId = "";
+  moduleImageState.selectedCandidateId = "";
+  moduleImageState.savedModule = null;
+  document.querySelector("[data-module-product-prompt]").value = "";
+  document.querySelector("[data-module-scene-prompt]").value = "";
+  document.querySelector("[data-module-analysis-result]").hidden = true;
+}
+
+function getModuleSelectedTask() {
+  return moduleImageState.tasks.find((task) => task.id === moduleImageState.selectedTaskId) || null;
+}
+
+function getModulePrompt() {
+  return [
+    document.querySelector("[data-module-product-prompt]")?.value.trim(),
+    document.querySelector("[data-module-scene-prompt]")?.value.trim()
+  ].filter(Boolean).join("；");
+}
+
+function moduleHasMaterial() {
+  return Object.values(moduleImageState.materials).some((items) => items.length > 0);
+}
+
+function renderModuleMaterialPanel() {
+  const grid = document.querySelector("[data-module-material-grid]");
+  if (!grid) return;
+  grid.innerHTML = Object.entries(moduleMaterialLabels).map(([type, label]) => {
+    const items = moduleImageState.materials[type];
+    return `
+      <section class="module-material-card">
+        <div class="module-material-card-head"><strong>${label}</strong><span>${items.length}/6 张</span></div>
+        <div class="module-material-row">
+          <label class="module-material-upload"><input type="file" accept="image/*" multiple data-module-material-input="${type}"><i>＋</i>上传</label>
+          <div class="module-material-thumbs">${items.map((item, index) => `<span class="module-material-thumb" data-module-material-preview="${type}" data-module-material-index="${index}" role="button" tabindex="0" aria-label="预览${label}第 ${index + 1} 张"><img src="${item.url}" alt="${label}第 ${index + 1} 张"><i>${index + 1}</i><b data-module-material-remove="${type}" data-module-material-index="${index}" aria-label="删除${label}第 ${index + 1} 张">×</b></span>`).join("")}</div>
+        </div>
+      </section>`;
+  }).join("");
+}
+
+function openModuleMaterialPreview(type, index) {
+  const item = moduleImageState.materials[type]?.[Number(index)];
+  const modal = document.querySelector("[data-module-image-preview-modal]");
+  if (!item || !modal) return;
+  const label = moduleMaterialLabels[type] || "素材图";
+  modal.querySelector("[data-module-image-preview-image]").src = item.url;
+  modal.querySelector("[data-module-image-preview-image]").alt = `${label}第 ${Number(index) + 1} 张预览`;
+  modal.querySelector("[data-module-image-preview-title]").textContent = `${label} · 第 ${Number(index) + 1} 张`;
+  openPrototypeModal(modal);
+}
+
+function renderModuleAnalysisImages() {
+  const thumbs = document.querySelector("[data-module-analysis-thumbs]");
+  const submit = document.querySelector("[data-module-analysis-submit]");
+  const count = document.querySelector("[data-module-analysis-count]");
+  if (!thumbs || !submit || !count) return;
+  thumbs.innerHTML = moduleImageState.analysisImages.map((item, index) => `<span class="module-analysis-thumb"><img src="${item.url}" alt="解析图片"><b data-module-analysis-remove="${index}">×</b></span>`).join("");
+  count.textContent = moduleImageState.analysisImages.length ? `已上传 ${moduleImageState.analysisImages.length} 张` : "最多 6 张";
+  submit.disabled = !moduleImageState.analysisImages.length;
+}
+
+function renderModuleAssetWorkspace() {
+  const empty = document.querySelector("[data-module-asset-empty]");
+  const zone = document.querySelector("[data-module-candidate-zone]");
+  const grid = document.querySelector("[data-module-candidate-grid]");
+  const stateBadge = document.querySelector("[data-module-asset-state]");
+  const subtitle = document.querySelector("[data-module-asset-subtitle]");
+  const addModuleButton = document.querySelector("[data-module-add-module]");
+  const selection = document.querySelector("[data-module-selection-count]");
+  const task = getModuleSelectedTask();
+
+  if (!task) {
+    empty.hidden = false;
+    zone.hidden = true;
+    stateBadge.textContent = "未生成";
+    stateBadge.className = "module-asset-state";
+    subtitle.textContent = "补充描述和任意一类素材后，即可生成候选图片。";
+  } else {
+    empty.hidden = true;
+    zone.hidden = false;
+    stateBadge.textContent = task.status === "running" ? "生成中" : "已完成";
+    stateBadge.className = `module-asset-state ${task.status === "running" ? "is-running" : "is-complete"}`;
+    subtitle.textContent = task.status === "running" ? "任务正在生成候选图片，可继续调整配置或打开任务记录。" : `当前展示 ${task.title} 的候选资产`;
+    grid.innerHTML = task.candidates.map((candidate, index) => `
+      <button class="module-candidate-card ${candidate.id === moduleImageState.selectedCandidateId ? "is-selected" : ""}" type="button" data-module-candidate="${candidate.id}" aria-label="选择生成图片 ${index + 1}">
+        <img src="${candidate.image}" alt="生成图片 ${index + 1}"><b>✓</b>
+      </button>`).join("");
+  }
+  const chosen = task?.candidates.find((candidate) => candidate.id === moduleImageState.selectedCandidateId);
+  selection.textContent = chosen ? "已选择 1 张生成图片" : "请选择一张生成图片";
+  addModuleButton.disabled = !chosen || task?.status !== "done";
+}
+
+function renderModuleTaskList() {
+  const list = document.querySelector("[data-module-task-list]");
+  const count = document.querySelector("[data-module-task-count]");
+  if (!list || !count) return;
+  count.textContent = moduleImageState.tasks.length;
+  if (!moduleImageState.tasks.length) {
+    list.innerHTML = '<div class="module-task-empty">暂未产生任务记录<br>提交创作后将在这里保留每次结果。</div>';
+    return;
+  }
+  list.innerHTML = moduleImageState.tasks.map((task) => `
+    <button class="module-task-item ${task.id === moduleImageState.selectedTaskId ? "is-active" : ""}" type="button" data-module-task-select="${task.id}">
+      <div class="module-task-item-head"><h3>${task.title}</h3><span class="module-task-status ${task.status === "done" ? "done" : ""}">${task.status === "done" ? "已完成" : "生成中"}</span></div>
+      <p>${task.prompt}</p>
+      <div class="module-task-item-footer"><span>${task.materialSummary}</span><time>${task.createdAt}</time></div>
+    </button>`).join("");
+}
+
+function renderModuleImageWorkspace() {
+  const isGenerate = moduleImageState.intent === "generate";
+  const title = document.querySelector("[data-module-image-title]");
+  const subtitle = document.querySelector("[data-module-image-subtitle]");
+  if (title) title.textContent = isGenerate ? "基于模块创作" : "创建图生图模块";
+  if (subtitle) subtitle.textContent = isGenerate ? "已选模块：自然光商品主图 · 可继续补充商品与场景素材" : "草稿已自动保存";
+  renderModuleMaterialPanel();
+  renderModuleAnalysisImages();
+  renderModuleAssetWorkspace();
+  renderModuleTaskList();
+}
+
+function setModuleTaskDrawer(open) {
+  const panel = document.querySelector("[data-module-task-drawer-panel]");
+  const mask = document.querySelector("[data-module-task-mask]");
+  const trigger = document.querySelector("[data-module-task-drawer]");
+  panel?.classList.toggle("is-open", open);
+  mask?.classList.toggle("is-open", open);
+  panel?.setAttribute("aria-hidden", String(!open));
+  trigger?.setAttribute("aria-expanded", String(open));
+}
+
+function openModuleImageWorkspace({ taskId = "", backPage = "creation-plaza", fresh = false, intent = "create" } = {}) {
+  if (fresh) resetModuleImageWorkspace();
+  moduleImageState.intent = intent;
+  moduleImageState.backPage = backPage;
+  if (taskId) moduleImageState.selectedTaskId = taskId;
+  setWorkspacePage("module-image-create");
+  closePrototypeModals();
+  setModuleTaskDrawer(false);
+  renderModuleImageWorkspace();
+}
+
+function leaveModuleImageWorkspace() {
+  setModuleTaskDrawer(false);
+  if (moduleImageState.backPage === "creation-records") {
+    openCreationRecordsPage();
+    return;
+  }
+  if (moduleImageState.backPage === "module-library") {
+    openModuleLibrary();
+    return;
+  }
+  setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+}
+
+function appendModuleImageTaskToRecords(task) {
+  if (!els.creationTaskFlow) return;
+  const card = document.createElement("article");
+  card.className = "creation-task-card";
+  card.dataset.creationTaskCard = "";
+  card.dataset.moduleImageTask = task.id;
+  card.dataset.status = "running";
+  card.dataset.type = "模块创建";
+  card.dataset.title = task.title;
+  card.dataset.product = "图生图模块";
+  card.innerHTML = `
+    <div class="creation-task-thumb single"><img src="${task.candidates[0].image}" alt=""><span class="creation-task-type">模块</span></div>
+    <div class="creation-task-main">
+      <div class="creation-task-title-row"><h2>${task.title}</h2><span class="creation-task-status running">生成中</span></div>
+      <div class="creation-task-meta"><span>${task.candidates.length} 张候选图</span><span>正在生成模块资产</span><span>刚刚</span></div>
+      <div class="creation-task-tags"><span>图生图模块</span><span>${task.materialSummary}</span><span>${task.ratio}</span></div>
+      <div class="creation-task-progress"><span>可返回创作详情查看候选结果</span><div class="creation-task-progress-line"><i style="width: 54%;"></i></div></div>
+    </div>
+    <div class="creation-task-action"><button class="btn primary" type="button" data-open-module-image-task="${task.id}">查看详情</button></div>`;
+  els.creationTaskFlow.prepend(card);
+  els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
+  window.setTimeout(() => {
+    if (!card.isConnected) return;
+    card.dataset.status = "done";
+    card.querySelector(".creation-task-status")?.classList.replace("running", "done");
+    const badge = card.querySelector(".creation-task-status");
+    if (badge) badge.textContent = "已完成";
+    const meta = card.querySelector(".creation-task-meta");
+    if (meta) meta.innerHTML = `<span>${task.candidates.length} 张候选图</span><span>已完成 ${task.candidates.length}/${task.candidates.length}</span><span>刚刚</span>`;
+    card.querySelector(".creation-task-progress")?.remove();
+  }, 1200);
+}
+
+function generateModuleImageTask() {
+  const prompt = getModulePrompt();
+  if (!prompt) {
+    showToast("请先填写产品描述或场景描述");
+    return;
+  }
+  if (!moduleHasMaterial()) {
+    showToast("请至少上传一类创作素材");
+    return;
+  }
+  const countValue = document.querySelector("[data-module-count]")?.value || "4 张";
+  const count = Number.parseInt(countValue, 10) || 4;
+  const candidates = ["assets/creation-cover-608.jpg", "assets/creation-cover-610.jpg", "assets/creation-cover-616.jpg", "assets/creation-cover-606.jpg"].slice(0, count).map((image, index) => ({ id: `module-candidate-${Date.now()}-${index}`, image }));
+  const materialParts = Object.entries(moduleImageState.materials).filter(([, items]) => items.length).map(([type, items]) => `${moduleMaterialLabels[type]} ${items.length} 张`);
+  const task = {
+    id: `module-task-${++moduleImageState.taskSeq}`,
+    title: moduleImageState.tasks.length ? "图生图模块重新生成" : "图生图模块创作",
+    status: "running",
+    prompt,
+    materialSummary: materialParts.join(" / "),
+    ratio: document.querySelector("[data-module-ratio]")?.value || "3:4",
+    createdAt: moduleTimestamp(),
+    candidates
+  };
+  moduleImageState.tasks.unshift(task);
+  moduleImageState.selectedTaskId = task.id;
+  moduleImageState.selectedCandidateId = "";
+  appendModuleImageTaskToRecords(task);
+  renderModuleImageWorkspace();
+  window.setTimeout(() => {
+    task.status = "done";
+    renderModuleImageWorkspace();
+    showToast("图生图模块候选资产已生成");
+  }, 1200);
+}
+
+function runModulePromptAnalysis() {
+  if (!moduleImageState.analysisImages.length) return;
+  const isMulti = moduleImageState.analysisImages.length > 1;
+  document.querySelector("[data-module-product-prompt]").value = "商品主体细节清晰，保留材质纹理与核心卖点，画面中突出商品本身。";
+  document.querySelector("[data-module-scene-prompt]").value = "柔和自然光，高级电商陈列场景，构图干净，整体氛围舒适有质感。";
+  const result = document.querySelector("[data-module-analysis-result]");
+  result.hidden = false;
+  result.querySelector("span").textContent = isMulti ? "多图解析完成" : "单图解析完成";
+  showToast("解析结果已回填至创作描述");
+}
+
+function addModuleImageAsset() {
+  const task = getModuleSelectedTask();
+  const candidate = task?.candidates.find((item) => item.id === moduleImageState.selectedCandidateId);
+  if (!candidate) {
+    showToast("请先选择一张生成图片");
+    return;
+  }
+  moduleImageState.savedModule = { name: `图生图模块·${task.createdAt}`, image: candidate.image, taskId: task.id };
+  renderModuleImageWorkspace();
+  showToast("已保存到模块记录");
+}
+
+function renderStaticModuleWorkspace() {
+  const isText = moduleStaticState.mode === "text";
+  const title = document.querySelector("[data-module-static-title]");
+  const type = document.querySelector("[data-module-static-type]");
+  const previewTitle = document.querySelector("[data-static-preview-title]");
+  const previewCopy = document.querySelector("[data-static-preview-copy]");
+  const stateBadge = document.querySelector("[data-static-preview-state]");
+  const saveLabel = document.querySelector("[data-static-save-label]");
+  document.querySelectorAll("[data-static-fixed-panel]").forEach((panel) => { panel.hidden = isText; });
+  document.querySelectorAll("[data-static-text-panel]").forEach((panel) => { panel.hidden = !isText; });
+  document.querySelector("[data-static-fixed-preview]").hidden = isText;
+  document.querySelector("[data-static-text-preview]").hidden = !isText;
+  title.textContent = isText ? "创建文字模块" : "创建固定图模块";
+  type.textContent = isText ? "文字模块" : "固定图模块";
+  previewTitle.textContent = isText ? "文字效果预览" : "固定图预览";
+  previewCopy.textContent = isText ? "设置文字内容、样式和排版后，保存为可复用模块。" : "上传图片后可预览最终固定图资产。";
+  saveLabel.textContent = isText ? "保存文字模块" : "保存固定图模块";
+  stateBadge.textContent = moduleStaticState.saved ? "已保存" : isText ? "编辑中" : moduleStaticState.fixedImage ? "待保存" : "待配置";
+  stateBadge.className = `module-asset-state ${moduleStaticState.saved ? "is-complete" : ""}`;
+
+  const uploadEmpty = document.querySelector(".static-image-upload-empty");
+  const uploadFilled = document.querySelector(".static-image-upload-filled");
+  const uploadThumb = document.querySelector("[data-static-upload-thumb]");
+  const previewEmpty = document.querySelector("[data-static-fixed-empty]");
+  const previewImage = document.querySelector("[data-static-fixed-preview-image]");
+  uploadEmpty.hidden = Boolean(moduleStaticState.fixedImage);
+  uploadFilled.hidden = !moduleStaticState.fixedImage;
+  previewEmpty.hidden = Boolean(moduleStaticState.fixedImage);
+  previewImage.hidden = !moduleStaticState.fixedImage;
+  if (moduleStaticState.fixedImage) {
+    uploadThumb.src = moduleStaticState.fixedImage;
+    previewImage.src = moduleStaticState.fixedImage;
+  }
+
+  const moduleNameInput = document.querySelector("[data-static-module-name]");
+  const categorySelect = document.querySelector("[data-static-module-category]");
+  if (moduleNameInput) moduleNameInput.value = moduleStaticState.moduleName;
+  if (categorySelect) categorySelect.value = moduleStaticState.category;
+
+  const textArea = document.querySelector("[data-static-text-content]");
+  const canvas = document.querySelector("[data-static-text-canvas]");
+  const render = document.querySelector("[data-static-text-render]");
+  if (textArea) textArea.value = moduleStaticState.text.content;
+  if (render) {
+    render.textContent = moduleStaticState.text.content;
+    render.style.fontFamily = moduleStaticState.text.font;
+    render.style.fontWeight = moduleStaticState.text.weight;
+    render.style.fontSize = `${moduleStaticState.text.size}px`;
+    render.style.color = moduleStaticState.text.color;
+    render.style.textAlign = moduleStaticState.text.align;
+    render.style.alignSelf = moduleStaticState.text.align === "left" ? "flex-start" : moduleStaticState.text.align === "right" ? "flex-end" : "center";
+  }
+  canvas?.style.setProperty("justify-content", moduleStaticState.text.align === "left" ? "flex-start" : moduleStaticState.text.align === "right" ? "flex-end" : "center");
+  document.querySelector("[data-static-font]").value = moduleStaticState.text.font;
+  document.querySelector("[data-static-weight]").value = moduleStaticState.text.weight;
+  document.querySelectorAll("[data-static-size-value]").forEach((button) => button.classList.toggle("is-active", button.dataset.staticSizeValue === moduleStaticState.text.size));
+  document.querySelectorAll("[data-static-color-value]").forEach((button) => button.classList.toggle("is-active", button.dataset.staticColorValue === moduleStaticState.text.color));
+  document.querySelectorAll("[data-static-align-value]").forEach((button) => button.classList.toggle("is-active", button.dataset.staticAlignValue === moduleStaticState.text.align));
+  const saved = document.querySelector("[data-static-saved-asset]");
+  saved.hidden = !moduleStaticState.saved;
+  if (moduleStaticState.saved) {
+    document.querySelector("[data-static-saved-name]").textContent = moduleStaticState.saved.name;
+    document.querySelector("[data-static-saved-copy]").textContent = isText ? "已保存文字样式与排版规则，可在套图方案继续使用。" : `已保存唯一当前固定图片 · ${moduleStaticState.saved.category}，可在套图方案继续使用。`;
+  }
+}
+
+function openStaticModuleWorkspace(mode, { backPage = "creation-plaza" } = {}) {
+  moduleStaticState.mode = mode;
+  moduleStaticState.backPage = backPage;
+  moduleStaticState.saved = null;
+  moduleStaticState.fixedImage = "";
+  moduleStaticState.moduleName = "";
+  moduleStaticState.category = "";
+  setWorkspacePage("module-static-create");
+  closePrototypeModals();
+  renderStaticModuleWorkspace();
+}
+
+function leaveStaticModuleWorkspace() {
+  if (moduleStaticState.backPage === "creation-records") {
+    openCreationRecordsPage();
+    return;
+  }
+  if (moduleStaticState.backPage === "module-library") {
+    openModuleLibrary();
+    return;
+  }
+  setWorkspacePage("creation-plaza");
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+}
+
+function saveStaticModuleAsset() {
+  const isText = moduleStaticState.mode === "text";
+  if (!isText && !moduleStaticState.fixedImage) {
+    showToast("请先上传一张固定图片");
+    return;
+  }
+  if (isText && !moduleStaticState.text.content.trim()) {
+    showToast("请先填写示例文字");
+    return;
+  }
+  const name = moduleStaticState.moduleName.trim();
+  if (!name) {
+    showToast("请输入模块名称");
+    return;
+  }
+  if (!moduleStaticState.category) {
+    showToast("请选择类目");
+    return;
+  }
+  moduleStaticState.saved = { name, category: moduleStaticState.category, mode: moduleStaticState.mode };
+  renderStaticModuleWorkspace();
+  showToast(`${isText ? "文字模块" : "固定图模块"}已保存到模块资产`);
 }
 
 function leaveCreationDetail() {
@@ -3405,9 +4118,10 @@ function buildMultiCreateModule(item, index) {
   };
 }
 
-function setupMultiImageCreationWithTemplate(template, backPage = "template-center") {
+function setupMultiImageCreationWithTemplate(template, backPage = "template-center", mode = "template") {
   if (!template) return;
 
+  state.multiCreate.mode = mode;
   state.multiCreate.templateId = template.id || "";
   state.multiCreate.resourceTemplate = template.fromResource ? template : null;
   state.multiCreate.backPage = backPage;
@@ -3416,6 +4130,12 @@ function setupMultiImageCreationWithTemplate(template, backPage = "template-cent
   state.multiCreate.taskStatus = "draft";
   state.multiCreate.selectedModuleId = "";
   state.multiCreate.generated = false;
+  state.multiCreate.replica = {
+    productImages: [],
+    referenceImages: mode === "replica" ? template.items.map((item) => ({ image: item.image, title: item.title })) : [],
+    prompt: "",
+    preserve: ["构图", "光影", "页面顺序"]
+  };
   state.multiCreate.modules = template.items.map((item, index) => buildMultiCreateModule(item, index));
   const firstEnabled = state.multiCreate.modules.find((module) => module.enabled) || state.multiCreate.modules[0];
   state.multiCreate.selectedModuleId = firstEnabled?.id || "";
@@ -3434,6 +4154,248 @@ function setupMultiImageCreation(templateId, backPage = "template-center") {
   setupMultiImageCreationWithTemplate(template, backPage);
 }
 
+function isSuiteReplicaMode() {
+  return state.multiCreate.mode === "replica";
+}
+
+function buildSuiteReplicaTemplate() {
+  return {
+    id: "suite-replica-reference",
+    name: "轻盈裸感内衣参考套图",
+    description: "参考套图中的主图、卖点图与详情图将共享同一套复刻提示词。",
+    category: "内衣",
+    brand: "参考套图",
+    groups: ["主图", "卖点图", "详情图"],
+    items: [
+      { id: "replica-1", title: "自然光主图", group: "主图", purpose: "参考复刻", source: "参考套图", image: "assets/product-cover-03.png" },
+      { id: "replica-2", title: "蕾丝材质卖点图", group: "卖点图", purpose: "参考复刻", source: "参考套图", image: "assets/creation-cover-608.jpg" },
+      { id: "replica-3", title: "舒适承托详情图", group: "详情图", purpose: "参考复刻", source: "参考套图", image: "assets/creation-cover-610.jpg" },
+      { id: "replica-4", title: "细节展示图", group: "详情图", purpose: "参考复刻", source: "参考套图", image: "assets/creation-cover-606.jpg" }
+    ]
+  };
+}
+
+function setupSuiteReplicaCreation() {
+  setupMultiImageCreationWithTemplate(buildSuiteReplicaTemplate(), "creation-plaza", "replica");
+  showToast("已进入套图复刻：整套图片将使用同一套复刻要求");
+}
+
+const suiteReplicaTemplateOptions = [
+  {
+    id: "classic-innerwear",
+    name: "轻盈裸感内衣详情套图",
+    category: "经典画册风",
+    description: "奶油白底、柔和自然光，突出面料与承托细节。",
+    cover: "assets/creation-cover-608.jpg",
+    pages: [
+      { id: "page-cover", type: "头图", title: "自然光主视觉", image: "assets/product-cover-03.png" },
+      { id: "page-feature", type: "镶嵌图", title: "轻薄贴合卖点", image: "assets/creation-cover-608.jpg" },
+      { id: "page-detail", type: "镶嵌图", title: "蕾丝细节展示", image: "assets/creation-cover-610.jpg" },
+      { id: "page-sku", type: "SKU图", title: "颜色与尺码说明", image: "assets/creation-cover-606.jpg" }
+    ]
+  },
+  {
+    id: "blue-studio",
+    name: "蓝调棚拍商品套图",
+    category: "官方模板",
+    description: "干净棚拍背景，适合主图、卖点与 SKU 信息呈现。",
+    cover: "assets/creation-cover-602.jpg",
+    pages: [
+      { id: "page-cover", type: "头图", title: "蓝调棚拍头图", image: "assets/creation-cover-602.jpg" },
+      { id: "page-feature", type: "镶嵌图", title: "核心卖点镶嵌图", image: "assets/creation-cover-616.jpg" },
+      { id: "page-detail", type: "镶嵌图", title: "材质细节图", image: "assets/creation-cover-606.jpg" },
+      { id: "page-sku", type: "SKU图", title: "SKU 展示图", image: "assets/product-cover-04.png" }
+    ]
+  },
+  {
+    id: "summer-sale",
+    name: "夏日上新营销套图",
+    category: "我的模板",
+    description: "轻快色彩与大字信息层级，适合新品营销与活动页。",
+    cover: "assets/creation-cover-616.jpg",
+    pages: [
+      { id: "page-cover", type: "头图", title: "上新活动头图", image: "assets/creation-cover-616.jpg" },
+      { id: "page-feature", type: "镶嵌图", title: "场景卖点图", image: "assets/product-cover-04.png" },
+      { id: "page-detail", type: "镶嵌图", title: "产品细节图", image: "assets/creation-cover-608.jpg" },
+      { id: "page-sku", type: "SKU图", title: "SKU 选择图", image: "assets/product-cover-02.png" }
+    ]
+  }
+];
+
+function openSuiteReplicaEditor(backPage = "creation-plaza") {
+  const editor = state.suiteReplicaEditor;
+  editor.backPage = backPage;
+  editor.product = null;
+  editor.template = null;
+  editor.resolution = "2K";
+  editor.ratios = { "头图": "3:4", "镶嵌图": "1:1", "SKU图": "1:1" };
+  editor.scale = 1;
+  editor.x = 0;
+  editor.y = 0;
+  clearMenuActive();
+  document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active");
+  setWorkspacePage("suite-replica-editor");
+  renderSuiteReplicaEditor();
+}
+
+function getSuiteEditor() {
+  return state.suiteReplicaEditor;
+}
+
+function renderSuiteReplicaEditor() {
+  const editor = getSuiteEditor();
+  const productSlot = document.querySelector("[data-suite-product-selected]");
+  const templateSlot = document.querySelector("[data-suite-template-selected]");
+  const resolutionOptions = document.querySelectorAll("[data-suite-resolution]");
+  const ratioOptions = document.querySelectorAll("[data-suite-ratio]");
+  if (productSlot) {
+    productSlot.innerHTML = editor.product ? `
+      <img src="${editor.product.image}" alt="${editor.product.name}">
+      <div><strong>${editor.product.name}</strong><small>${editor.product.category} · 商品图 ${editor.product.materialCount} 张</small></div>
+      <button type="button" data-suite-open-product aria-label="重新选择商品">×</button>
+    ` : `<div class="suite-product-empty"><span>＋</span><strong>暂未选择商品</strong><small>请选择商品图或上传本地商品素材</small></div>`;
+  }
+  if (templateSlot) {
+    templateSlot.innerHTML = editor.template ? `
+      <img src="${editor.template.cover}" alt="${editor.template.name}">
+      <div><strong>${editor.template.name}</strong><small>${editor.template.category} · ${editor.template.pages.length} 页</small></div>
+      <button type="button" data-suite-open-template aria-label="重新选择模板">×</button>
+    ` : `<div class="suite-template-empty"><span>▧</span><strong>选择一套参考模板</strong><small>支持从模板库或我的模板中选择</small></div>`;
+  }
+  resolutionOptions.forEach((button) => button.classList.toggle("is-active", button.dataset.suiteResolution === editor.resolution));
+  ratioOptions.forEach((select) => { select.value = editor.ratios[select.dataset.suiteRatio] || select.value; });
+  renderSuiteCanvas();
+}
+
+function renderSuiteCanvas() {
+  const editor = getSuiteEditor();
+  const stage = document.querySelector("[data-suite-canvas-stage]");
+  const zoomLabel = document.querySelector("[data-suite-canvas-zoom-label]");
+  if (!stage) return;
+  stage.classList.toggle("has-template", Boolean(editor.template));
+  stage.style.transform = `translate(${editor.x}px, ${editor.y}px) scale(${editor.scale})`;
+  if (zoomLabel) zoomLabel.textContent = `${Math.round(editor.scale * 100)}%`;
+  if (!editor.template) {
+    stage.innerHTML = `<div class="suite-canvas-empty"><span>▧</span><strong>选择模板后，在这里预览整套图片</strong><small>可拖动调整顺序，也可使用滚轮或双指缩放画布</small></div>`;
+    return;
+  }
+  stage.innerHTML = editor.template.pages.map((page, index) => `
+    <article class="suite-canvas-card" draggable="true" data-suite-page-id="${page.id}">
+      <div class="suite-canvas-card-head"><span class="suite-canvas-order">${String(index + 1).padStart(2, "0")}</span><span>${page.type} · ${editor.ratios[page.type] || "原比例"}</span><button type="button" aria-label="拖动调整顺序" title="拖动调整顺序">⠿</button></div>
+      <div class="suite-canvas-card-image"><img src="${page.image}" alt="${page.title}"><em>模板图</em></div>
+      <div class="suite-canvas-card-foot"><strong>${page.title}</strong><small>拖动可调整页面顺序</small></div>
+    </article>
+  `).join("");
+  stage.querySelectorAll("[data-suite-page-id]").forEach((card) => {
+    card.addEventListener("dragstart", () => { editor.draggingId = card.dataset.suitePageId; card.classList.add("is-dragging"); });
+    card.addEventListener("dragend", () => { editor.draggingId = ""; card.classList.remove("is-dragging"); stage.querySelectorAll(".is-drop-target").forEach((item) => item.classList.remove("is-drop-target")); });
+    card.addEventListener("dragover", (event) => { event.preventDefault(); if (editor.draggingId && editor.draggingId !== card.dataset.suitePageId) card.classList.add("is-drop-target"); });
+    card.addEventListener("dragleave", () => card.classList.remove("is-drop-target"));
+    card.addEventListener("drop", (event) => {
+      event.preventDefault();
+      const from = editor.template.pages.findIndex((item) => item.id === editor.draggingId);
+      const to = editor.template.pages.findIndex((item) => item.id === card.dataset.suitePageId);
+      if (from >= 0 && to >= 0 && from !== to) {
+        const [moved] = editor.template.pages.splice(from, 1);
+        editor.template.pages.splice(to, 0, moved);
+        renderSuiteCanvas();
+        showToast("已调整套图页面顺序");
+      }
+    });
+  });
+}
+
+function setSuiteCanvasZoom(nextScale) {
+  const editor = getSuiteEditor();
+  editor.scale = Math.max(0.5, Math.min(1.8, Number(nextScale.toFixed(2))));
+  renderSuiteCanvas();
+}
+
+function selectSuiteProduct(product) {
+  getSuiteEditor().product = product;
+  closePrototypeModals();
+  renderSuiteReplicaEditor();
+  showToast(`已选择商品：${product.name}`);
+}
+
+function selectSuiteTemplate(templateId) {
+  const source = suiteReplicaTemplateOptions.find((item) => item.id === templateId);
+  if (!source) return;
+  getSuiteEditor().template = { ...source, pages: source.pages.map((page) => ({ ...page })) };
+  closePrototypeModals();
+  renderSuiteReplicaEditor();
+  showToast("模板已加载到参考套图画布");
+}
+
+function getSuiteModal(kind) {
+  const selector = kind === "product" ? "[data-suite-product-modal]" : "[data-suite-template-modal]";
+  let modal = document.querySelector(selector);
+  if (modal) return modal;
+  const isProduct = kind === "product";
+  modal = document.createElement("div");
+  modal.className = "prototype-modal suite-picker-modal";
+  modal.dataset[isProduct ? "suiteProductModal" : "suiteTemplateModal"] = "";
+  modal.setAttribute("aria-hidden", "true");
+  modal.innerHTML = isProduct ? `
+    <div class="prototype-modal-panel suite-picker-panel">
+      <div class="prototype-modal-head"><div><h2>选择商品图</h2><p>选择商品库素材，或上传本地商品图用于整套复刻。</p></div><button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button></div>
+      <div class="suite-picker-tabs" data-suite-product-tabs><button class="is-active" type="button" data-suite-product-tab="library">从商品库选择</button><button type="button" data-suite-product-tab="local">本地上传</button></div>
+      <div class="suite-product-picker-panel is-active" data-suite-product-panel="library"><div class="suite-product-picker-grid">${products.slice(0, 6).map((product) => `<button type="button" data-suite-product-choice="${product.id}"><img src="${product.image}" alt=""><span><strong>${product.name}</strong><small>${product.category} · ${product.materialCount} 张商品图</small></span><i>选择</i></button>`).join("")}</div></div>
+      <div class="suite-product-picker-panel" data-suite-product-panel="local"><div class="suite-local-upload"><span>⇧</span><h3>上传本地商品图</h3><p>支持 JPG、PNG、WEBP，建议上传正面、侧面和细节图。</p><input type="file" accept="image/*" data-suite-local-file hidden><button class="btn primary" type="button" data-suite-local-upload>选择本地图片</button></div></div>
+    </div>` : `
+    <div class="prototype-modal-panel suite-picker-panel suite-template-picker-panel">
+      <div class="prototype-modal-head"><div><h2>选择模板</h2><p>模板图片会加载到右侧画布，可在生成前自由调整页面顺序。</p></div><button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button></div>
+      <div class="suite-picker-tabs"><button class="is-active" type="button">精选模板</button><button type="button">官方模板</button><button type="button">我的模板</button></div>
+      <div class="suite-template-picker-grid">${suiteReplicaTemplateOptions.map((template) => `<button type="button" data-suite-template-choice="${template.id}"><div><img src="${template.cover}" alt="${template.name}"><span>${template.pages.length} 页</span></div><strong>${template.name}</strong><small>${template.category}</small><p>${template.description}</p></button>`).join("")}</div>
+    </div>`;
+  document.body.appendChild(modal);
+  return modal;
+}
+
+function openSuitePicker(kind) {
+  openPrototypeModal(getSuiteModal(kind));
+}
+
+function bindSuiteCanvasInteractions() {
+  const viewport = document.querySelector("[data-suite-canvas-viewport]");
+  if (!viewport || viewport.dataset.suiteBound) return;
+  viewport.dataset.suiteBound = "true";
+  const editor = getSuiteEditor();
+  viewport.addEventListener("wheel", (event) => {
+    event.preventDefault();
+    setSuiteCanvasZoom(editor.scale + (event.deltaY < 0 ? 0.08 : -0.08));
+  }, { passive: false });
+  viewport.addEventListener("pointerdown", (event) => {
+    if (event.target.closest(".suite-canvas-card")) return;
+    editor.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    viewport.setPointerCapture?.(event.pointerId);
+    if (editor.pointers.size === 1) editor.pan = { startX: event.clientX, startY: event.clientY, x: editor.x, y: editor.y };
+    if (editor.pointers.size === 2) {
+      const [first, second] = [...editor.pointers.values()];
+      editor.pinchDistance = Math.hypot(first.x - second.x, first.y - second.y);
+      editor.pinchScale = editor.scale;
+    }
+  });
+  viewport.addEventListener("pointermove", (event) => {
+    if (!editor.pointers.has(event.pointerId)) return;
+    editor.pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+    if (editor.pointers.size === 2) {
+      const [first, second] = [...editor.pointers.values()];
+      const distance = Math.hypot(first.x - second.x, first.y - second.y);
+      if (editor.pinchDistance) setSuiteCanvasZoom(editor.pinchScale * distance / editor.pinchDistance);
+      return;
+    }
+    if (editor.pan) {
+      editor.x = editor.pan.x + event.clientX - editor.pan.startX;
+      editor.y = editor.pan.y + event.clientY - editor.pan.startY;
+      renderSuiteCanvas();
+    }
+  });
+  const end = (event) => { editor.pointers.delete(event.pointerId); if (editor.pointers.size < 2) editor.pinchDistance = 0; if (!editor.pointers.size) editor.pan = null; };
+  viewport.addEventListener("pointerup", end);
+  viewport.addEventListener("pointercancel", end);
+}
+
 function getActiveMultiTemplate() {
   if (state.multiCreate.resourceTemplate) return state.multiCreate.resourceTemplate;
   return getTemplate(state.multiCreate.templateId);
@@ -3447,6 +4409,7 @@ function renderMultiImageCreation() {
   const template = getActiveMultiTemplate();
   if (!template || !els.multiModuleList) return;
 
+  const isReplica = isSuiteReplicaMode();
   const enabledModules = getEnabledMultiModules();
   const generativeModules = getGenerativeMultiModules();
   const missingModules = getMissingMultiModules();
@@ -3459,13 +4422,23 @@ function renderMultiImageCreation() {
     button.classList.toggle("is-active", button.dataset.multiStepButton === state.multiCreate.step);
   });
   if (els.multiBack) {
-    const backText = state.multiCreate.backPage === "creation-plaza" ? "返回创作广场" : state.multiCreate.backPage === "creation-records" ? "返回创作记录" : "返回模板中心";
+    const backText = state.multiCreate.backPage === "creation-plaza" ? "返回创作广场" : state.multiCreate.backPage === "creation-records" ? "返回创作记录" : "返回套图方案";
     els.multiBack.innerHTML = `<span></span>${backText}`;
   }
-  if (els.multiTemplateTitle) els.multiTemplateTitle.textContent = `${template.name} - 多图创作`;
-  if (els.multiTemplateSubtitle) els.multiTemplateSubtitle.textContent = `${templateComboLabel(template)} · ${template.category} · 先看整套模板，再补充缺失素材`;
+  if (els.multiTaskKind) els.multiTaskKind.textContent = isReplica ? "套图复刻" : "模板创作";
+  if (els.multiConfigStepName) els.multiConfigStepName.textContent = isReplica ? "配置复刻" : "配置模板";
+  if (els.multiTemplateTitle) els.multiTemplateTitle.textContent = isReplica ? `${template.name} - 套图复刻` : `${template.name} - 多图创作`;
+  if (els.multiTemplateSubtitle) els.multiTemplateSubtitle.textContent = isReplica
+    ? "一套提示词控制整套视觉表达，保留参考图的构图、光影与页面节奏"
+    : `${templateComboLabel(template)} · ${template.category} · 先看整套模板，再补充缺失素材`;
   if (els.multiTemplateName) els.multiTemplateName.textContent = template.name;
   if (els.multiTemplateThumb) els.multiTemplateThumb.src = template.items[0]?.image || "assets/product-cover-01.png";
+  if (els.multiLinkedLabel) els.multiLinkedLabel.textContent = isReplica ? "参考套图" : "已使用模板";
+  if (els.multiCountLabel) els.multiCountLabel.textContent = isReplica ? "参考页数" : "启用模块";
+  if (els.multiConfigTitle) els.multiConfigTitle.textContent = isReplica ? "整套复刻配置" : "模块配置";
+  if (els.multiConfigDescription) els.multiConfigDescription.textContent = isReplica
+    ? "所有页面共享商品图、参考套图和同一套复刻要求"
+    : "按模板顺序配置素材、比例和文案策略";
   if (els.multiEnabledCount) els.multiEnabledCount.textContent = `${enabledModules.length} 个`;
   if (els.multiMissingCount) els.multiMissingCount.textContent = `${missingModules.length} 个`;
   if (els.multiCost) els.multiCost.textContent = `${cost} 融豆`;
@@ -3473,7 +4446,7 @@ function renderMultiImageCreation() {
   if (els.multiResultStatus) els.multiResultStatus.textContent = state.multiCreate.taskStatus === "running" ? `${doneCount}/${enabledModules.length} 已完成` : state.multiCreate.taskStatus === "done" ? "全部完成" : "等待生成";
   if (els.multiFooterStatus) {
     els.multiFooterStatus.textContent = state.multiCreate.step === "config"
-      ? `预计生成 ${generativeModules.length} 个模块`
+      ? isReplica ? `同一套复刻提示词将用于 ${enabledModules.length} 个页面` : `预计生成 ${generativeModules.length} 个模块`
       : state.multiCreate.taskStatus === "done"
         ? "已完成生成，可选择入选图并保存结果"
         : "后台生成中，可返回创作记录后继续查看";
@@ -3487,7 +4460,7 @@ function renderMultiImageCreation() {
     return `
       <article class="multi-module-card ${selected ? "is-selected" : ""} ${module.enabled ? "" : "is-closed"}" data-multi-module="${module.id}">
         <div class="multi-module-index">${index + 1}</div>
-        <button class="multi-module-switch ${module.enabled ? "is-on" : ""}" type="button" data-multi-toggle="${module.id}" aria-label="${module.enabled ? "关闭模块" : "启用模块"}"></button>
+        ${isReplica ? `<span class="multi-replica-page-tag">参考页</span>` : `<button class="multi-module-switch ${module.enabled ? "is-on" : ""}" type="button" data-multi-toggle="${module.id}" aria-label="${module.enabled ? "关闭模块" : "启用模块"}"></button>`}
         ${module.enabled ? `
           <div class="multi-module-cover">
             <img src="${module.generated && module.resultImage ? module.resultImage : module.image}" alt="${module.title}">
@@ -3496,7 +4469,7 @@ function renderMultiImageCreation() {
           </div>
           <div class="multi-module-copy">
             <strong>${module.title}</strong>
-            <span>${isMultiModuleFixed(module) ? "无需商品图" : `商品图 ${productCount}/${getMultiModuleRequiredCount(module)}`} · ${module.purpose} · 输出 ${getMultiModuleRatioLabel(module)}</span>
+            <span>${isReplica ? "共享整套复刻要求 · 保持参考页面关系" : `${isMultiModuleFixed(module) ? "无需商品图" : `商品图 ${productCount}/${getMultiModuleRequiredCount(module)}`} · ${module.purpose} · 输出 ${getMultiModuleRatioLabel(module)}`}</span>
           </div>
         ` : `
           <div class="multi-module-closed">
@@ -3514,6 +4487,10 @@ function renderMultiImageCreation() {
 }
 
 function renderMultiConfigPanel() {
+  if (isSuiteReplicaMode()) {
+    renderSuiteReplicaConfigPanel();
+    return;
+  }
   const module = getSelectedMultiModule();
   if (!els.multiConfigContent || !els.multiConfigEmpty) return;
   if (!module) {
@@ -3578,6 +4555,70 @@ function renderMultiConfigPanel() {
       </section>
     ` : `<p class="multi-disabled-note">该模块已关闭，本次不生成、不校验、不计费。重新启用后可继续配置。</p>`}
   `;
+}
+
+function renderSuiteReplicaConfigPanel() {
+  if (!els.multiConfigContent || !els.multiConfigEmpty) return;
+  const replica = state.multiCreate.replica;
+  els.multiConfigEmpty.classList.remove("is-visible");
+  els.multiConfigContent.innerHTML = `
+    <div class="suite-replica-intro">
+      <span>整套共享</span>
+      <strong>不需要逐张填写提示词</strong>
+      <p>上传商品图并填写一次复刻要求，系统会按参考套图的页面顺序生成全部图片。</p>
+    </div>
+    <section class="multi-config-section suite-replica-section">
+      <h4>待替换商品图 <em>必填</em></h4>
+      <p>同一商品图将用于整套图片，保证商品主体一致。</p>
+      <div class="multi-thumb-row suite-replica-thumbs">
+        ${replica.productImages.map((image, index) => `<img src="${image.image}" alt="商品图 ${index + 1}">`).join("")}
+        <button type="button" data-suite-replica-upload-product>+ 选择商品图</button>
+      </div>
+    </section>
+    <section class="multi-config-section suite-replica-section">
+      <h4>参考套图 <em>已关联</em></h4>
+      <p>系统已按参考图顺序识别主图、卖点图和详情图。</p>
+      <div class="suite-replica-reference-grid">
+        ${replica.referenceImages.map((image, index) => `<figure><img src="${image.image}" alt="${image.title}"><figcaption>${index + 1}. ${image.title}</figcaption></figure>`).join("")}
+      </div>
+    </section>
+    <label class="multi-config-section suite-replica-section">
+      <h4>整套复刻要求 <em>选填</em></h4>
+      <textarea data-suite-replica-prompt placeholder="例如：保留参考套图的页面顺序、人物姿势与自然光氛围；将商品替换为本款文胸，背景改为奶油白。">${replica.prompt}</textarea>
+      <p>无需逐张描述；这里填写相对参考套图需要统一调整的内容。</p>
+    </label>
+    <section class="multi-config-section suite-replica-section">
+      <h4>默认保留</h4>
+      <div class="suite-replica-preserve-list">
+        ${["构图", "光影", "页面顺序", "模特姿势"].map((item) => `<button class="${replica.preserve.includes(item) ? "is-active" : ""}" type="button" data-suite-replica-preserve="${item}">${item}</button>`).join("")}
+      </div>
+    </section>
+  `;
+}
+
+function fillSuiteReplicaProductImages() {
+  const images = [
+    { image: "assets/product-cover-03.png", title: "蕾丝聚拢文胸" },
+    { image: "assets/product-cover-04.png", title: "商品细节图" }
+  ];
+  state.multiCreate.replica.productImages = images;
+  state.multiCreate.modules.forEach((module) => {
+    if (!isMultiModuleFixed(module)) module.productImages = images;
+  });
+  renderMultiImageCreation();
+  showToast("已添加商品图，整套复刻将共享该商品素材");
+}
+
+function updateSuiteReplicaPrompt(value) {
+  state.multiCreate.replica.prompt = value;
+}
+
+function toggleSuiteReplicaPreserve(item) {
+  const preserve = state.multiCreate.replica.preserve;
+  const index = preserve.indexOf(item);
+  if (index >= 0) preserve.splice(index, 1);
+  else preserve.push(item);
+  renderSuiteReplicaConfigPanel();
 }
 
 function renderMultiResultList() {
@@ -3815,11 +4856,12 @@ function regenerateMultiModule(moduleId) {
 function createOrUpdateMultiTaskRecord() {
   if (!els.creationTaskFlow || !state.multiCreate.taskId) return;
   const template = getActiveMultiTemplate();
+  const isReplica = isSuiteReplicaMode();
   const enabledModules = getEnabledMultiModules();
   const doneCount = enabledModules.filter((module) => ["done", "fixed"].includes(getModuleResultStatus(module).key)).length;
   const status = state.multiCreate.taskStatus === "done" ? "done" : "running";
   let card = els.creationTaskFlow.querySelector(`[data-multi-task-id="${state.multiCreate.taskId}"]`);
-  const title = `${template?.name || "模板"}多图创作`;
+  const title = isReplica ? `${template?.name || "参考套图"}复刻` : `${template?.name || "模板"}多图创作`;
   const thumbs = enabledModules.slice(0, 3).map((module) => `<img src="${getSelectedModuleImage(module) || module.image}" alt="">`).join("");
   const html = `
     <div class="creation-task-thumb suite">
@@ -3832,23 +4874,24 @@ function createOrUpdateMultiTaskRecord() {
         <span class="creation-task-status ${status === "done" ? "done" : "running"}">${status === "done" ? "已完成" : "生成中"}</span>
       </div>
       <div class="creation-task-meta">
-        <span>${enabledModules.length} 个模块</span>
+        <span>${isReplica ? `${enabledModules.length} 个页面` : `${enabledModules.length} 个模块`}</span>
         <span>已完成 ${doneCount}/${enabledModules.length}</span>
         <span>刚刚</span>
       </div>
       <div class="creation-task-tags">
-        <span data-tag-source="product_name">${template?.name || "模板创作"}</span>
+        <span data-tag-source="product_name">${isReplica ? "参考套图复刻" : template?.name || "模板创作"}</span>
         <span data-tag-source="product_category">${template?.category || "未分类"}</span>
         <span data-tag-source="output_ratio">按模块比例</span>
       </div>
       <div class="creation-task-progress">
-        <span>${status === "done" ? "候选图已生成，可继续确认结果" : "后台生成中，可返回任务继续查看"}</span>
+        <span>${status === "done" ? (isReplica ? "整套复刻结果已生成，可继续确认入选图" : "候选图已生成，可继续确认结果") : "后台生成中，可返回任务继续查看"}</span>
         <div class="creation-task-progress-line">
           <i style="width: ${enabledModules.length ? Math.round((doneCount / enabledModules.length) * 100) : 0}%;"></i>
         </div>
       </div>
     </div>
     <div class="creation-task-action">
+      ${status === "done" ? '<button class="btn ghost" type="button" data-add-to-boutique>加入精品库</button>' : ""}
       <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
     </div>
   `;
@@ -3857,21 +4900,28 @@ function createOrUpdateMultiTaskRecord() {
     card.className = "creation-task-card";
     card.dataset.creationTaskCard = "";
     card.dataset.multiTaskId = state.multiCreate.taskId;
-    card.dataset.type = "套图创作";
-    card.dataset.product = template?.name || "模板创作";
+    card.dataset.type = isReplica ? "套图复刻" : "套图创作";
+    card.dataset.product = isReplica ? "参考套图" : template?.name || "模板创作";
     els.creationTaskFlow.prepend(card);
     els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
   }
   card.dataset.status = status;
   card.dataset.title = title;
+  card.dataset.type = isReplica ? "套图复刻" : "套图创作";
+  card.dataset.multiMode = state.multiCreate.mode;
   card.innerHTML = html;
 }
 
 function openMultiTaskFromRecord(taskCard) {
   const isCurrentTask = taskCard?.dataset.multiTaskId && taskCard.dataset.multiTaskId === state.multiCreate.taskId;
   if (!isCurrentTask) {
-    setupMultiImageCreation("tpl002", "creation-records");
-    fillMultiProductImages("", true);
+    if (taskCard?.dataset.multiMode === "replica" || taskCard?.dataset.type === "套图复刻") {
+      setupMultiImageCreationWithTemplate(buildSuiteReplicaTemplate(), "creation-records", "replica");
+      fillSuiteReplicaProductImages();
+    } else {
+      setupMultiImageCreation("tpl002", "creation-records");
+      fillMultiProductImages("", true);
+    }
   }
   state.multiCreate.backPage = "creation-records";
   if (!state.multiCreate.generated) {
@@ -4000,6 +5050,142 @@ function resultImagesMarkup() {
   ].map((image) => `<img src="${image}" alt="">`).join("");
 }
 
+function addTaskToBoutique(card) {
+  if (!card) return null;
+  const existingId = card.dataset.boutiqueAssetId;
+  if (existingId) return getMaterial(existingId);
+
+  const taskTitle = card.dataset.title || "未命名创作结果";
+  const taskTags = [...card.querySelectorAll(".creation-task-tags span")].map((tag) => tag.textContent.trim());
+  const category = taskTags.find((tag) => tag.includes("/")) || taskTags[0] || "通用";
+  const image = card.querySelector(".creation-task-thumb img")?.getAttribute("src") || "assets/product-cover-03.png";
+  const material = {
+    id: `boutique-${Date.now()}-${materialLibrary.length + 1}`,
+    name: taskTitle,
+    type: "图片模块",
+    category,
+    relatedProduct: card.dataset.product || "未关联商品",
+    source: "创作记录",
+    status: "已入库",
+    usage: 0,
+    updatedAt: "刚刚",
+    image,
+    tone: "image",
+    spec: "精品图片 / 可作为参考素材",
+    scene: "自由创作、参考图复刻、套图模板创作",
+    description: "来自创作记录的已确认图片，可作为参考素材带入下一次创作。",
+    records: [taskTitle],
+    tags: ["精品图", "创作记录", category]
+  };
+  materialLibrary.unshift(material);
+  card.dataset.boutiqueAssetId = material.id;
+  return material;
+}
+
+function updateTaskBoutiqueState(card, state = "saved", count = "") {
+  if (!card) return;
+  card.dataset.boutiqueState = state;
+  const label = state === "partial" ? `已加入 ${count || "部分"}` : "已加入精品库";
+  let badge = card.querySelector("[data-boutique-status]");
+  if (!badge) {
+    badge = document.createElement("span");
+    badge.dataset.boutiqueStatus = "";
+    const titleRow = card.querySelector(".creation-task-title-row");
+    titleRow?.append(badge);
+  }
+  if (badge) {
+    badge.className = `creation-task-boutique-state ${state}`;
+    badge.textContent = label;
+  }
+  const action = card.querySelector("[data-add-to-boutique]");
+  if (action) {
+    action.textContent = "前往精品库";
+    action.removeAttribute("data-add-to-boutique");
+    action.setAttribute("data-open-boutique", "");
+  }
+}
+
+document.querySelectorAll('[data-creation-task-card][data-boutique-state="saved"], [data-creation-task-card][data-boutique-state="partial"]').forEach(addTaskToBoutique);
+
+function appendSingleImageTaskRecord({ title, mode }) {
+  if (!els.creationTaskFlow) return null;
+  const card = document.createElement("article");
+  card.className = "creation-task-card";
+  card.dataset.creationTaskCard = "";
+  card.dataset.status = "running";
+  card.dataset.type = "单图生成";
+  card.dataset.title = title;
+  card.dataset.product = state.creation.category;
+  card.dataset.boutiqueState = "none";
+  card.innerHTML = `
+    <div class="creation-task-thumb single">
+      <img src="assets/product-cover-03.png" alt="">
+      <span class="creation-task-type">${mode === "参考图复刻" ? "复刻" : "单图"}</span>
+    </div>
+    <div class="creation-task-main">
+      <div class="creation-task-title-row"><h2>${title}</h2><span class="creation-task-status running">生成中</span></div>
+      <div class="creation-task-meta"><span>4 张图</span><span>正在解析创作条件</span><span>刚刚</span></div>
+      <div class="creation-task-tags"><span>${state.creation.category}</span><span>${state.creation.ratio}</span><span>${mode}</span></div>
+      <div class="creation-task-progress"><span>任务正在后台生成，可在创作记录继续查看</span><div class="creation-task-progress-line"><i style="width: 42%;"></i></div></div>
+    </div>
+    <div class="creation-task-action"><button class="btn primary" type="button" data-open-creation-detail>查看详情</button></div>
+  `;
+  els.creationTaskFlow.prepend(card);
+  els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
+  window.setTimeout(() => {
+    if (!card.isConnected) return;
+    card.dataset.status = "done";
+    const status = card.querySelector(".creation-task-status");
+    if (status) {
+      status.className = "creation-task-status done";
+      status.textContent = "已完成";
+    }
+    const progress = card.querySelector(".creation-task-progress");
+    if (progress) progress.remove();
+    const meta = card.querySelector(".creation-task-meta");
+    if (meta) meta.innerHTML = `<span>4 张图</span><span>已完成 4/4</span><span>刚刚</span>`;
+    const actions = card.querySelector(".creation-task-action");
+    if (actions) actions.insertAdjacentHTML("afterbegin", '<button class="btn ghost" type="button" data-add-to-boutique>加入精品库</button>');
+  }, 2000);
+  return card;
+}
+
+function appendAssetCreationTask({ type, title, assetLabel, image = "assets/creation-cover-608.jpg" }) {
+  if (!els.creationTaskFlow) return null;
+  const card = document.createElement("article");
+  card.className = "creation-task-card";
+  card.dataset.creationTaskCard = "";
+  card.dataset.status = "running";
+  card.dataset.type = type;
+  card.dataset.title = title;
+  card.dataset.product = state.creation.category;
+  card.innerHTML = `
+    <div class="creation-task-thumb single"><img src="${image}" alt=""><span class="creation-task-type">${type}</span></div>
+    <div class="creation-task-main">
+      <div class="creation-task-title-row"><h2>${title}</h2><span class="creation-task-status running">生成中</span></div>
+      <div class="creation-task-meta"><span>正在处理</span><span>刚刚</span></div>
+      <div class="creation-task-tags"><span>${type}</span><span>${state.creation.category}</span></div>
+      <div class="creation-task-progress"><span>任务正在后台执行，可在创作记录继续查看</span><div class="creation-task-progress-line"><i style="width: 48%;"></i></div></div>
+    </div>
+    <div class="creation-task-action"><button class="btn primary" type="button" data-open-creation-detail>查看详情</button></div>
+  `;
+  els.creationTaskFlow.prepend(card);
+  els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
+  window.setTimeout(() => {
+    if (!card.isConnected) return;
+    card.dataset.status = "done";
+    const status = card.querySelector(".creation-task-status");
+    if (status) {
+      status.className = "creation-task-status done";
+      status.textContent = "已完成";
+    }
+    card.querySelector(".creation-task-progress")?.remove();
+    const titleRow = card.querySelector(".creation-task-title-row");
+    titleRow?.insertAdjacentHTML("beforeend", `<span class="creation-task-boutique-state asset" data-boutique-status>${assetLabel}</span>`);
+  }, 1200);
+  return card;
+}
+
 function updateCreationRecord(record, status) {
   const statusMap = {
     queued: "排队中",
@@ -4023,8 +5209,12 @@ function updateCreationRecord(record, status) {
 function createGenerationRecord() {
   const mode = getCreationMode();
   const prompt = els.creationPrompt.value.trim();
-  if (mode === "待识别") {
-    showToast("请先填写提示词、上传图片或选择模板");
+  if (mode === "待识别" || (mode === "自由创作" && !prompt && !state.creation.productUploaded)) {
+    showToast("请先填写创作描述或上传商品图");
+    return;
+  }
+  if (mode === "参考图复刻" && (!state.creation.productUploaded || !state.creation.referenceUploaded)) {
+    showToast("参考图复刻请先上传商品图和主参考图");
     return;
   }
 
@@ -4047,7 +5237,7 @@ function createGenerationRecord() {
       <div class="record-actions">
         <button type="button">查看大图</button>
         <button type="button">下载</button>
-        <button type="button">保存为素材</button>
+        <button type="button">加入精品库</button>
         <button type="button">保存为模板</button>
         <button type="button">上架到创作广场</button>
         <button type="button" data-open-creation-detail>继续编辑</button>
@@ -4056,6 +5246,7 @@ function createGenerationRecord() {
     </div>
   `;
   els.creationRecordList.prepend(record);
+  appendSingleImageTaskRecord({ title, mode });
   syncDetailParamsFromCreation(prompt);
   setWorkspacePage("creation-detail");
   appendDetailTask({ initial: true, prompt });
@@ -4476,6 +5667,12 @@ function createModelFromForm() {
     tags: [gender, snapshot.raceLabel, ...styleTags].filter(Boolean)
   };
   state.models.unshift(model);
+  appendAssetCreationTask({
+    type: "模特创建",
+    title: `${name}创建`,
+    assetLabel: "已保存至模特库",
+    image
+  });
   filterModels();
   closePrototypeModals();
   showToast("模特已创建");
@@ -4495,16 +5692,30 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
       setWorkspacePage("creation-plaza");
       return;
     }
-    if (button.dataset.singleMenu === "模板中心") {
+    if (button.dataset.singleMenu === "灵感广场") {
+      setWorkspacePage("inspiration-plaza");
+      return;
+    }
+    if (button.dataset.singleMenu === "模块库") {
+      openModuleLibrary();
+      return;
+    }
+    if (button.dataset.singleMenu === "套图方案库") {
       setWorkspacePage("template-center");
+      return;
+    }
+    if (button.dataset.singleMenu === "套图库") {
+      setupSuiteReplicaCreation();
+      clearMenuActive();
+      button.classList.add("active");
       return;
     }
     if (button.dataset.singleMenu === "模特库") {
       setWorkspacePage("model-library");
       return;
     }
-    if (button.dataset.singleMenu === "素材库") {
-      setWorkspacePage("material-library");
+    if (button.dataset.singleMenu === "精品库") {
+      openBoutiqueLibrary();
       return;
     }
     if (button.dataset.singleMenu === "品牌素材库") {
@@ -4520,7 +5731,7 @@ document.querySelectorAll("[data-single-menu]").forEach((button) => {
       filterCreationTasks();
       return;
     }
-    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、模板中心、模特库、素材库、品牌素材库、商品库和创作记录`);
+    showToast(`${button.dataset.singleMenu}为菜单占位，当前原型仅切换创作广场、灵感广场、模块库、套图方案库、套图库、模特库、精品库、品牌素材库、商品库和创作记录`);
   });
 });
 
@@ -4532,6 +5743,288 @@ els.creationCategories.forEach((button) => {
 });
 
 els.creationPrompt.addEventListener("input", updateCreationMode);
+
+els.creationInputModeTabs.forEach((button) => {
+  button.addEventListener("click", () => setCreationInputMode(button.dataset.creationMode));
+});
+
+document.querySelectorAll("[data-quick-create]").forEach((button) => {
+  button.addEventListener("click", () => {
+    const action = button.dataset.quickCreate;
+    if (action === "module") {
+      openPrototypeModal(els.moduleCreateModal);
+      return;
+    }
+    if (action === "template-create") {
+      setupMultiImageCreation("tpl002", "creation-plaza");
+      showToast("已进入基于模板创作：可逐模块配置提示词");
+      return;
+    }
+    if (action === "suite-replica") {
+      openSuiteReplicaEditor();
+      return;
+    }
+    if (action === "canvas") {
+      openBrandMaterialEditor("creation-plaza");
+      showToast("已进入画布编辑");
+      return;
+    }
+    if (action === "outpaint") {
+      openOutpaintEditor(state.outpaint.sourceImage, "creation-plaza");
+    }
+  });
+});
+
+document.querySelectorAll("[data-module-create-type]").forEach((button) => {
+  button.addEventListener("click", () => {
+    setModuleCreateType(button.dataset.moduleCreateType);
+    closePrototypeModals();
+    if (state.moduleCreateType === "image-generation") {
+      openModuleImageWorkspace({ fresh: true });
+      showToast("已进入图生图模块创作详情");
+      return;
+    }
+    if (state.moduleCreateType === "fixed-image") {
+      openStaticModuleWorkspace("fixed");
+      showToast("已进入固定图模块创作详情");
+      return;
+    }
+    openBrandMaterialEditor();
+    showToast("已进入品牌画板编辑器");
+  });
+});
+
+document.querySelector("[data-module-library-search]")?.addEventListener("input", filterModuleLibrary);
+document.querySelector("[data-module-library-category]")?.addEventListener("change", filterModuleLibrary);
+document.querySelector("[data-module-library-status]")?.addEventListener("change", filterModuleLibrary);
+
+document.addEventListener("click", (event) => {
+  const tab = event.target.closest("[data-module-library-tab]");
+  const create = event.target.closest("[data-module-library-create]");
+  const preview = event.target.closest("[data-module-library-preview]");
+  const createImage = event.target.closest("[data-module-library-create-image]");
+  const edit = event.target.closest("[data-module-library-edit]");
+  const remove = event.target.closest("[data-module-library-delete]");
+  const publish = event.target.closest("[data-module-library-publish]");
+  if (tab) {
+    setModuleLibraryType(tab.dataset.moduleLibraryTab);
+    return;
+  }
+  if (create) {
+    openPrototypeModal(els.moduleCreateModal);
+    return;
+  }
+  if (preview) {
+    openModuleLibraryPreview(preview.dataset.moduleLibraryPreview);
+    return;
+  }
+  if (createImage) {
+    openModuleLibraryAsset(createImage.dataset.moduleLibraryCreateImage, "create");
+    return;
+  }
+  if (edit) {
+    openModuleLibraryAsset(edit.dataset.moduleLibraryEdit);
+    return;
+  }
+  if (remove) {
+    deleteModuleLibraryAsset(remove.dataset.moduleLibraryDelete);
+    return;
+  }
+  if (publish) {
+    const asset = getModuleLibraryAsset(publish.dataset.moduleLibraryPublish);
+    if (asset) showToast(`已提交发布：${asset.name}`);
+  }
+});
+
+function loadModuleImageFiles(files, callback) {
+  const selected = Array.from(files || []).filter((file) => file.type.startsWith("image/")).slice(0, 6);
+  if (!selected.length) return;
+  let remaining = selected.length;
+  selected.forEach((file) => {
+    const reader = new FileReader();
+    reader.addEventListener("load", () => {
+      callback({ name: file.name, url: reader.result });
+      remaining -= 1;
+      if (!remaining) renderModuleImageWorkspace();
+    });
+    reader.readAsDataURL(file);
+  });
+}
+
+document.querySelector("[data-module-reverse-toggle]")?.addEventListener("click", () => {
+  const section = document.querySelector("[data-module-reverse-section]");
+  const content = section?.querySelector(".module-reverse-content");
+  const isOpen = !section.classList.contains("is-open");
+  section?.classList.toggle("is-open", isOpen);
+  content.hidden = !isOpen;
+  document.querySelector("[data-module-reverse-toggle]")?.setAttribute("aria-expanded", String(isOpen));
+});
+
+document.querySelector("[data-module-analysis-input]")?.addEventListener("change", (event) => {
+  const available = Math.max(0, 6 - moduleImageState.analysisImages.length);
+  loadModuleImageFiles(Array.from(event.target.files).slice(0, available), (image) => moduleImageState.analysisImages.push(image));
+  event.target.value = "";
+});
+
+document.addEventListener("change", (event) => {
+  const input = event.target.closest("[data-module-material-input]");
+  if (!input) return;
+  const type = input.dataset.moduleMaterialInput;
+  const available = Math.max(0, 6 - moduleImageState.materials[type].length);
+  loadModuleImageFiles(Array.from(input.files).slice(0, available), (image) => moduleImageState.materials[type].push(image));
+  input.value = "";
+});
+
+document.querySelector("[data-module-material-toggle]")?.addEventListener("click", () => {
+  const section = document.querySelector("[data-module-material-section]");
+  const isCollapsed = !section?.classList.contains("is-collapsed");
+  section?.classList.toggle("is-collapsed", isCollapsed);
+  document.querySelector("[data-module-material-toggle]")?.setAttribute("aria-expanded", String(!isCollapsed));
+});
+
+document.querySelector("[data-module-analysis-submit]")?.addEventListener("click", runModulePromptAnalysis);
+document.querySelector("[data-module-generate]")?.addEventListener("click", generateModuleImageTask);
+document.querySelector("[data-module-task-drawer]")?.addEventListener("click", () => setModuleTaskDrawer(true));
+document.querySelector("[data-module-task-drawer-close]")?.addEventListener("click", () => setModuleTaskDrawer(false));
+document.querySelector("[data-module-task-mask]")?.addEventListener("click", () => setModuleTaskDrawer(false));
+document.querySelector("[data-module-image-back]")?.addEventListener("click", leaveModuleImageWorkspace);
+document.querySelector("[data-module-add-module]")?.addEventListener("click", addModuleImageAsset);
+document.querySelector("[data-module-regenerate]")?.addEventListener("click", generateModuleImageTask);
+document.querySelector("[data-module-add-text]")?.addEventListener("click", () => {
+  const task = getModuleSelectedTask();
+  if (!task || task.status !== "done" || !task.candidates.length) {
+    showToast("请等待图片生成完成后再添加文字");
+    return;
+  }
+  bringModuleImagesToBrandEditor(task);
+  showToast(`已将 ${task.candidates.length} 张生成图片带入画板`);
+});
+
+document.querySelector("[data-module-static-back]")?.addEventListener("click", leaveStaticModuleWorkspace);
+document.querySelector("[data-static-image-input]")?.addEventListener("change", (event) => {
+  const file = event.target.files?.[0];
+  if (!file || !file.type.startsWith("image/")) return;
+  const reader = new FileReader();
+  reader.addEventListener("load", () => {
+    moduleStaticState.fixedImage = reader.result;
+    moduleStaticState.saved = null;
+    renderStaticModuleWorkspace();
+  });
+  reader.readAsDataURL(file);
+  event.target.value = "";
+});
+document.querySelector("[data-static-text-content]")?.addEventListener("input", (event) => {
+  moduleStaticState.text.content = event.target.value;
+  moduleStaticState.saved = null;
+  renderStaticModuleWorkspace();
+});
+document.querySelector("[data-static-module-name]")?.addEventListener("input", (event) => {
+  moduleStaticState.moduleName = event.target.value;
+  moduleStaticState.saved = null;
+});
+document.querySelector("[data-static-module-category]")?.addEventListener("change", (event) => {
+  moduleStaticState.category = event.target.value;
+  moduleStaticState.saved = null;
+});
+document.querySelector("[data-static-font]")?.addEventListener("change", (event) => { moduleStaticState.text.font = event.target.value; moduleStaticState.saved = null; renderStaticModuleWorkspace(); });
+document.querySelector("[data-static-weight]")?.addEventListener("change", (event) => { moduleStaticState.text.weight = event.target.value; moduleStaticState.saved = null; renderStaticModuleWorkspace(); });
+document.querySelector("[data-static-save-open]")?.addEventListener("click", () => {
+  const isText = moduleStaticState.mode === "text";
+  if ((!isText && !moduleStaticState.fixedImage) || (isText && !moduleStaticState.text.content.trim())) {
+    showToast(isText ? "请先填写示例文字" : "请先上传一张固定图片");
+    return;
+  }
+  saveStaticModuleAsset();
+});
+document.querySelector("[data-static-edit]")?.addEventListener("click", () => { moduleStaticState.saved = null; renderStaticModuleWorkspace(); showToast("已进入编辑状态"); });
+document.querySelector("[data-static-view-asset]")?.addEventListener("click", () => showToast("模块资产已保存，可在套图方案查看"));
+
+document.addEventListener("click", (event) => {
+  const materialRemove = event.target.closest("[data-module-material-remove]");
+  const materialPreview = event.target.closest("[data-module-material-preview]");
+  const analysisRemove = event.target.closest("[data-module-analysis-remove]");
+  const candidate = event.target.closest("[data-module-candidate]");
+  const taskSelect = event.target.closest("[data-module-task-select]");
+  const moduleTaskLink = event.target.closest("[data-open-module-image-task]");
+  if (materialRemove) {
+    const type = materialRemove.dataset.moduleMaterialRemove;
+    moduleImageState.materials[type].splice(Number(materialRemove.dataset.moduleMaterialIndex), 1);
+    renderModuleImageWorkspace();
+    return;
+  }
+  if (materialPreview) {
+    openModuleMaterialPreview(materialPreview.dataset.moduleMaterialPreview, materialPreview.dataset.moduleMaterialIndex);
+    return;
+  }
+  if (analysisRemove) {
+    moduleImageState.analysisImages.splice(Number(analysisRemove.dataset.moduleAnalysisRemove), 1);
+    renderModuleAnalysisImages();
+    return;
+  }
+  if (candidate) {
+    moduleImageState.selectedCandidateId = candidate.dataset.moduleCandidate;
+    renderModuleAssetWorkspace();
+    return;
+  }
+  if (taskSelect) {
+    moduleImageState.selectedTaskId = taskSelect.dataset.moduleTaskSelect;
+    moduleImageState.selectedCandidateId = "";
+    renderModuleAssetWorkspace();
+    renderModuleTaskList();
+    return;
+  }
+  if (moduleTaskLink) {
+    openModuleImageWorkspace({ taskId: moduleTaskLink.dataset.openModuleImageTask, backPage: "creation-records" });
+    return;
+  }
+  const staticSize = event.target.closest("[data-static-size-value]");
+  const staticColor = event.target.closest("[data-static-color-value]");
+  const staticAlign = event.target.closest("[data-static-align-value]");
+  if (staticSize) {
+    moduleStaticState.text.size = staticSize.dataset.staticSizeValue;
+    moduleStaticState.saved = null;
+    renderStaticModuleWorkspace();
+    return;
+  }
+  if (staticColor) {
+    moduleStaticState.text.color = staticColor.dataset.staticColorValue;
+    moduleStaticState.saved = null;
+    renderStaticModuleWorkspace();
+    return;
+  }
+  if (staticAlign) {
+    moduleStaticState.text.align = staticAlign.dataset.staticAlignValue;
+    moduleStaticState.saved = null;
+    renderStaticModuleWorkspace();
+  }
+});
+
+
+document.addEventListener("click", (event) => {
+  const addToBoutique = event.target.closest("[data-add-to-boutique]");
+  const openBoutique = event.target.closest("[data-open-boutique]");
+      if (addToBoutique) {
+        const card = addToBoutique.closest("[data-creation-task-card]");
+        addTaskToBoutique(card);
+        updateTaskBoutiqueState(card, "saved");
+        state.materialPrimary = "创作素材";
+        state.materialSecondary = "图片模块";
+        setMaterialLibraryTitle("精品库");
+        filterMaterials();
+        showToast("已加入精品库，可作为素材继续创作");
+        return;
+      }
+      if (openBoutique) {
+        setMaterialLibraryTitle("精品库");
+        setWorkspacePage("material-library");
+        clearMenuActive();
+    document.querySelector('[data-single-menu="精品库"]')?.classList.add("active");
+    state.materialPrimary = "创作素材";
+    state.materialSecondary = "图片模块";
+    filterMaterials();
+    showToast("已打开精品库");
+  }
+});
 
 document.querySelectorAll("[data-creation-upload]").forEach((button) => {
   button.addEventListener("click", () => {
@@ -4665,7 +6158,9 @@ document.addEventListener("click", (event) => {
   const outpaintResultAction = event.target.closest("[data-outpaint-result-action]");
 
   if (openOutpaintButton) {
-    openOutpaintEditor();
+    const taskCard = openOutpaintButton.closest("[data-creation-task-card]");
+    const sourceImage = taskCard?.querySelector(".outpaint-before img")?.getAttribute("src") || state.outpaint.sourceImage;
+    openOutpaintEditor(sourceImage, taskCard ? "creation-records" : "creation-plaza");
     return;
   }
 
@@ -4866,7 +6361,7 @@ document.addEventListener("click", (event) => {
     } else if (action === "扩图") {
       openOutpaintEditor(source || state.outpaint.sourceImage);
     } else {
-      showToast(action === "保存" ? "已保存到素材库" : "已提交上架到图片广场");
+      showToast(action === "保存" ? "已加入精品库，可作为素材继续创作" : "已提交上架到图片广场");
     }
     return;
   }
@@ -5051,10 +6546,12 @@ document.querySelectorAll("[data-resolution-options] button").forEach((button) =
 document.querySelector("[data-creation-generate]").addEventListener("click", createGenerationRecord);
 
 const resourceFilterGroups = Array.from(document.querySelectorAll("[data-resource-filter]"));
+const inspirationSearch = document.querySelector("[data-inspiration-search]");
 
 function filterResourceCards() {
   const activeFilters = resourceFilterGroups
     .map((group) => group.querySelector("button.is-active")?.dataset.filter || "全部");
+  const keyword = inspirationSearch?.value.trim().toLowerCase() || "";
   const activeType = activeFilters[1];
   const typeLabel = {
     "单图案例": "单图",
@@ -5065,7 +6562,16 @@ function filterResourceCards() {
 
   document.querySelectorAll("[data-resource-card]").forEach((card) => {
     const tags = card.dataset.tags || "";
-    const visible = activeFilters.every((filter) => filter === "全部" || tags.includes(filter));
+    const searchText = [
+      card.dataset.title,
+      card.dataset.type,
+      card.dataset.category,
+      card.dataset.source,
+      card.dataset.fit,
+      card.dataset.tags
+    ].filter(Boolean).join(" ").toLowerCase();
+    const visible = activeFilters.every((filter) => filter === "全部" || tags.includes(filter))
+      && (!keyword || searchText.includes(keyword));
     card.style.display = visible ? "" : "none";
     const categoryBadge = card.querySelector(".resource-badge.category");
     if (categoryBadge) {
@@ -5085,6 +6591,7 @@ resourceFilterGroups.forEach((group) => {
 });
 
 filterResourceCards();
+inspirationSearch?.addEventListener("input", filterResourceCards);
 
 document.querySelectorAll("[data-resource-use]").forEach((button) => {
   button.addEventListener("click", () => openResourcePurchase(button.closest("[data-resource-card]")));
@@ -5134,8 +6641,14 @@ document.querySelectorAll("[data-template-create-trigger], [data-template-create
     event.stopPropagation();
     resetTemplateBuilder();
     clearMenuActive();
-    document.querySelector('[data-single-menu="模板中心"]').classList.add("active");
+    document.querySelector('[data-single-menu="套图方案库"]').classList.add("active");
     setWorkspacePage("template-builder");
+  });
+});
+
+document.querySelectorAll("[data-template-module-create-trigger]").forEach((button) => {
+  button.addEventListener("click", () => {
+    openPrototypeModal(els.moduleCreateModal);
   });
 });
 
@@ -5317,6 +6830,8 @@ document.addEventListener("click", (event) => {
   const multiModuleCard = event.target.closest("[data-multi-module]");
   const multiUploadProductButton = event.target.closest("[data-multi-upload-product]");
   const multiUploadReferenceButton = event.target.closest("[data-multi-upload-reference]");
+  const suiteReplicaUploadProductButton = event.target.closest("[data-suite-replica-upload-product]");
+  const suiteReplicaPreserveButton = event.target.closest("[data-suite-replica-preserve]");
   const multiTemplatePreviewButton = event.target.closest("[data-multi-template-preview]");
   const multiStepButton = event.target.closest("[data-multi-step-button]");
   const multiBackStepButton = event.target.closest("[data-multi-back-step]");
@@ -5363,6 +6878,7 @@ document.addEventListener("click", (event) => {
   const brandUseButton = event.target.closest("[data-brand-use]");
   const brandImportButton = event.target.closest("[data-brand-material-import]");
   const brandAddButton = event.target.closest("[data-brand-add]");
+  const brandAddedImageButton = event.target.closest("[data-brand-added-image]");
   const brandTextButton = event.target.closest("[data-brand-text]");
   const brandShapeButton = event.target.closest("[data-brand-shape]");
   const brandElementButton = event.target.closest("[data-brand-element]");
@@ -5398,7 +6914,7 @@ document.addEventListener("click", (event) => {
   }
 
   if (backBrandLibraryButton) {
-    openBrandMaterialLibrary();
+    leaveBrandMaterialEditor();
     return;
   }
 
@@ -5474,6 +6990,13 @@ document.addEventListener("click", (event) => {
 
   if (brandAddButton) {
     addBrandObject({ type: "image", name: brandAddButton.dataset.brandAdd, width: 210, height: 150 }, "element");
+    return;
+  }
+
+  if (brandAddedImageButton) {
+    const image = state.brandEditor.addedImages.find((item) => item.id === brandAddedImageButton.dataset.brandAddedImage);
+    if (!image) return;
+    addBrandObject({ type: "image", name: image.name, imageUrl: image.url, width: 230, height: 300 }, "element");
     return;
   }
 
@@ -5620,7 +7143,7 @@ document.addEventListener("click", (event) => {
     }
     setWorkspacePage(backPage);
     clearMenuActive();
-    document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : backPage === "creation-records" ? "创作记录" : "模板中心"}"]`)?.classList.add("active");
+    document.querySelector(`[data-single-menu="${backPage === "creation-plaza" ? "创作广场" : backPage === "creation-records" ? "创作记录" : "套图方案库"}"]`)?.classList.add("active");
     return;
   }
 
@@ -5714,6 +7237,16 @@ document.addEventListener("click", (event) => {
     return;
   }
 
+  if (suiteReplicaUploadProductButton) {
+    fillSuiteReplicaProductImages();
+    return;
+  }
+
+  if (suiteReplicaPreserveButton) {
+    toggleSuiteReplicaPreserve(suiteReplicaPreserveButton.dataset.suiteReplicaPreserve);
+    return;
+  }
+
   if (multiModuleCard) {
     selectMultiModule(multiModuleCard.dataset.multiModule);
     return;
@@ -5721,8 +7254,13 @@ document.addEventListener("click", (event) => {
 
   if (openCreationDetailButton) {
     const taskCard = openCreationDetailButton.closest("[data-creation-task-card]");
-    if (taskCard?.dataset.type === "套图创作") {
+    if (["套图创作", "套图复刻"].includes(taskCard?.dataset.type)) {
       openMultiTaskFromRecord(taskCard);
+      return;
+    }
+    if (taskCard?.dataset.type === "扩图") {
+      const sourceImage = taskCard.querySelector(".outpaint-before img")?.getAttribute("src") || state.outpaint.sourceImage;
+      openOutpaintEditor(sourceImage, "creation-records");
       return;
     }
     openCreationDetail({
@@ -6014,8 +7552,13 @@ document.addEventListener("click", (event) => {
 });
 
 document.addEventListener("input", (event) => {
+  const suiteReplicaPrompt = event.target.closest("[data-suite-replica-prompt]");
   const multiPrompt = event.target.closest("[data-multi-prompt]");
   const multiCustomRatio = event.target.closest("[data-multi-custom-ratio]");
+  if (suiteReplicaPrompt) {
+    updateSuiteReplicaPrompt(suiteReplicaPrompt.value);
+    return;
+  }
   if (multiPrompt) {
     updateMultiPrompt(multiPrompt.dataset.multiPrompt, multiPrompt.value);
     return;
@@ -6191,8 +7734,74 @@ filterTemplates();
 filterMaterials();
 filterModels();
 renderBrandCanvas();
+bindSuiteCanvasInteractions();
 window.setTimeout(() => {
   els.loadingState.classList.remove("is-visible");
   renderProducts(state.filtered);
   setView("card");
 }, 350);
+
+document.addEventListener("click", (event) => {
+  const openProduct = event.target.closest("[data-suite-open-product]");
+  const openTemplate = event.target.closest("[data-suite-open-template]");
+  const productChoice = event.target.closest("[data-suite-product-choice]");
+  const templateChoice = event.target.closest("[data-suite-template-choice]");
+  const productTab = event.target.closest("[data-suite-product-tab]");
+  const localUpload = event.target.closest("[data-suite-local-upload]");
+  const zoom = event.target.closest("[data-suite-canvas-zoom]");
+  const resetCanvas = event.target.closest("[data-suite-canvas-reset]");
+  const back = event.target.closest("[data-suite-replica-back]");
+  const saveDraft = event.target.closest("[data-suite-save-draft]");
+  const generate = event.target.closest("[data-suite-generate]");
+  const resolution = event.target.closest("[data-suite-resolution]");
+  const modalClose = event.target.closest(".suite-picker-modal [data-modal-close]");
+
+  if (openProduct) { openSuitePicker("product"); return; }
+  if (openTemplate) { openSuitePicker("template"); return; }
+  if (productChoice) {
+    const product = products.find((item) => item.id === productChoice.dataset.suiteProductChoice);
+    if (product) selectSuiteProduct(product);
+    return;
+  }
+  if (templateChoice) { selectSuiteTemplate(templateChoice.dataset.suiteTemplateChoice); return; }
+  if (productTab) {
+    const modal = productTab.closest("[data-suite-product-modal]");
+    modal?.querySelectorAll("[data-suite-product-tab]").forEach((button) => button.classList.toggle("is-active", button === productTab));
+    modal?.querySelectorAll("[data-suite-product-panel]").forEach((panel) => panel.classList.toggle("is-active", panel.dataset.suiteProductPanel === productTab.dataset.suiteProductTab));
+    return;
+  }
+  if (localUpload) { localUpload.closest("[data-suite-product-modal]")?.querySelector("[data-suite-local-file]")?.click(); return; }
+  if (zoom) { setSuiteCanvasZoom(getSuiteEditor().scale + (zoom.dataset.suiteCanvasZoom === "in" ? 0.1 : -0.1)); return; }
+  if (resetCanvas) { const editor = getSuiteEditor(); editor.scale = 1; editor.x = 0; editor.y = 0; renderSuiteCanvas(); return; }
+  if (back) { setWorkspacePage(getSuiteEditor().backPage); clearMenuActive(); document.querySelector('[data-single-menu="创作广场"]')?.classList.add("active"); return; }
+  if (saveDraft) { showToast("套图复刻草稿已保存"); return; }
+  if (generate) {
+    const editor = getSuiteEditor();
+    if (!editor.product) { showToast("请先选择商品图"); return; }
+    if (!editor.template) { showToast("请先选择参考模板"); return; }
+    showToast("套图复刻任务已提交，可在创作记录中查看进度");
+    return;
+  }
+  if (resolution) { getSuiteEditor().resolution = resolution.dataset.suiteResolution; renderSuiteReplicaEditor(); return; }
+  if (modalClose) { closePrototypeModals(); }
+});
+
+document.addEventListener("change", (event) => {
+  const ratio = event.target.closest("[data-suite-ratio]");
+  const localFile = event.target.closest("[data-suite-local-file]");
+  if (ratio) {
+    getSuiteEditor().ratios[ratio.dataset.suiteRatio] = ratio.value;
+    renderSuiteCanvas();
+    return;
+  }
+  if (localFile?.files?.[0]) {
+    const file = localFile.files[0];
+    selectSuiteProduct({
+      id: `local-${Date.now()}`,
+      name: file.name.replace(/\.[^/.]+$/, "") || "本地上传商品",
+      category: "本地上传",
+      materialCount: 1,
+      image: URL.createObjectURL(file)
+    });
+  }
+});
