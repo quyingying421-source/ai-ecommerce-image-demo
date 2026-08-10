@@ -534,7 +534,7 @@
     }
 
     .outpaint-panel {
-      position: absolute;
+      position: fixed;
       z-index: 18;
       right: 24px;
       top: 86px;
@@ -545,12 +545,13 @@
       box-shadow: 0 14px 36px rgba(24,28,40,.12);
       padding: 14px 14px 12px;
       display: none;
+      flex-direction: column;
       gap: 10px;
-      overflow: auto;
+      overflow: hidden;
     }
 
     .outpaint-panel.show {
-      display: grid;
+      display: flex;
     }
 
     .outpaint-panel h2 {
@@ -565,15 +566,15 @@
       gap: 6px;
     }
 
+    .outpaint-panel > .form-block:nth-of-type(2) {
+      min-height: 0;
+      flex: 1 1 auto;
+    }
+
     .form-label {
       color: #7c7f89;
       font-size: 14px;
       line-height: 20px;
-    }
-
-    .preset-row {
-      display: grid;
-      gap: 16px;
     }
 
     .select-wrap,
@@ -612,103 +613,38 @@
       pointer-events: none;
     }
 
-    .two-col {
-      display: grid;
-      grid-template-columns: 1fr 20px 1fr;
-      gap: 10px;
-      align-items: center;
-    }
-
-    .input-wrap input {
-      width: 100%;
-      height: 36px;
-      border: 0;
-      outline: 0;
-      background: transparent;
-      padding: 0 12px;
-      font-size: 14px;
-      color: #222328;
-    }
-
-    .times {
-      color: #a2a4aa;
-      text-align: center;
-      font-size: 18px;
-    }
-
-    .size-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr 36px;
-      gap: 8px;
-      align-items: center;
-    }
-
-    .size-input {
-      height: 36px;
-      border-radius: 8px;
-      background: #f2f2f3;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      padding: 0 10px;
-      min-width: 0;
-    }
-
-    .size-input span {
-      flex: 0 0 auto;
-      color: #7c7f89;
-      font-size: 14px;
-      font-weight: 650;
-    }
-
-    .size-input input {
-      width: 100%;
-      min-width: 0;
-      height: 32px;
-      border: 0;
-      outline: 0;
-      background: transparent;
-      color: #222328;
-      font-size: 14px;
-    }
-
-    .ratio-lock {
-      width: 36px;
-      height: 36px;
-      border-radius: 8px;
-      display: grid;
-      place-items: center;
-      background: #f2f2f3 url("assets/ratio-unlinked.png") center / 18px 18px no-repeat;
-      border: 1px solid transparent;
-    }
-
-    .ratio-lock.active {
-      background: #eef5ff url("assets/ratio-linked.png") center / 18px 18px no-repeat;
-      border-color: rgba(75, 140, 255, .38);
-    }
-
     .ratio-list {
       display: grid;
-      gap: 6px;
+      gap: 4px;
       padding: 0;
+      min-height: 0;
+      align-content: start;
+      overflow-y: auto;
     }
 
     .ratio-option {
-      min-height: 24px;
+      min-height: 32px;
       display: grid;
-      grid-template-columns: 30px 1fr 22px;
+      grid-template-columns: 32px minmax(0, 1fr) 22px;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       color: #222328;
       font-size: 14px;
       line-height: 20px;
       text-align: left;
+      border-radius: 8px;
+      background: transparent;
+      padding: 0 2px 0 0;
     }
+
+    .ratio-option:hover { background: transparent; }
 
     .ratio-option .selected-mark {
       justify-self: end;
       color: var(--brand);
-      font-size: 14px;
+      font-size: 20px;
+      line-height: 20px;
+      font-weight: 600;
       opacity: 0;
     }
 
@@ -717,25 +653,25 @@
     }
 
     .ratio-icon {
-      width: 24px;
-      height: 24px;
-      border-radius: 6px;
-      background: #f0f0f1;
+      width: 32px;
+      height: 32px;
+      background: transparent;
+      border-radius: 0;
       display: grid;
       place-items: center;
     }
 
     .ratio-icon i {
       display: block;
-      width: 14px;
-      height: 14px;
-      border: 1.6px solid #767982;
-      border-radius: 3px;
+      width: 20px;
+      height: 20px;
+      border: 2px solid #767982;
+      border-radius: 4px;
     }
 
     .ratio-option[data-ratio="original"] .ratio-icon i {
-      width: 14px;
-      height: 14px;
+      width: 20px;
+      height: 20px;
       border-style: dashed;
     }
 
@@ -743,60 +679,33 @@
     .ratio-option[data-ratio="2:3"] .ratio-icon i,
     .ratio-option[data-ratio="9:16"] .ratio-icon i,
     .ratio-option[data-ratio="4:5"] .ratio-icon i {
-      width: 14px;
-      height: 18px;
+      width: 18px;
+      height: 24px;
     }
 
     .ratio-option[data-ratio="9:16"] .ratio-icon i {
-      width: 10px;
-      height: 19px;
+      width: 14px;
+      height: 24px;
     }
 
     .ratio-option[data-ratio="4:3"] .ratio-icon i,
     .ratio-option[data-ratio="3:2"] .ratio-icon i,
     .ratio-option[data-ratio="16:9"] .ratio-icon i,
     .ratio-option[data-ratio="5:4"] .ratio-icon i {
-      width: 19px;
-      height: 12px;
+      width: 24px;
+      height: 18px;
     }
 
     .ratio-option[data-ratio="16:9"] .ratio-icon i {
-      width: 20px;
-      height: 10px;
-    }
-
-    .ratio-preview {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      min-height: 42px;
-      color: #646773;
-      font-size: 15px;
-    }
-
-    .mini-frame {
-      width: 38px;
-      height: 38px;
-      border-radius: 8px;
-      background: #f2f2f3;
-      display: grid;
-      place-items: center;
-    }
-
-    .mini-frame i {
-      width: 20px;
-      height: 20px;
-      border: 2px solid #a0a3ab;
-      border-radius: 4px;
-      display: block;
+      width: 25px;
+      height: 14px;
     }
 
     .panel-actions {
-      position: sticky;
-      bottom: -12px;
       margin: 0 -14px -12px;
       padding: 10px 14px 12px;
       display: grid;
+      flex: 0 0 auto;
       grid-template-columns: 1fr 1fr;
       gap: 10px;
       background: linear-gradient(180deg, rgba(255,255,255,.88), #fff 28%);
@@ -1019,24 +928,16 @@
         <div class="form-block">
           <div class="form-label">比例</div>
           <div class="ratio-list" id="ratioList" aria-label="比例">
-            <button class="ratio-option" type="button" data-ratio="original"><span class="ratio-icon"><i></i></span><span>原始比例</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="1:1"><span class="ratio-icon"><i></i></span><span>1:1</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option active" type="button" data-ratio="3:4"><span class="ratio-icon"><i></i></span><span>3:4</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="2:3"><span class="ratio-icon"><i></i></span><span>2:3</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="9:16"><span class="ratio-icon"><i></i></span><span>9:16</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="4:3"><span class="ratio-icon"><i></i></span><span>4:3</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="3:2"><span class="ratio-icon"><i></i></span><span>3:2</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="16:9"><span class="ratio-icon"><i></i></span><span>16:9</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="4:5"><span class="ratio-icon"><i></i></span><span>4:5</span><span class="selected-mark">✓</span></button>
-            <button class="ratio-option" type="button" data-ratio="5:4"><span class="ratio-icon"><i></i></span><span>5:4</span><span class="selected-mark">✓</span></button>
-          </div>
-        </div>
-        <div class="form-block">
-          <div class="form-label">大小</div>
-          <div class="size-row">
-            <label class="size-input"><span>W</span><input id="customWidth" type="number" min="512" max="4096" value="2048" aria-label="宽度"></label>
-            <label class="size-input"><span>H</span><input id="customHeight" type="number" min="512" max="4096" value="2730" aria-label="高度"></label>
-            <button class="ratio-lock active" type="button" id="ratioLockBtn" aria-pressed="true" title="锁定比例" aria-label="锁定比例"></button>
+            <button class="ratio-option" type="button" data-ratio="original"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>原始比例</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="1:1"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>1:1</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option active" type="button" data-ratio="3:4"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>3:4</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="2:3"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>2:3</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="9:16"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>9:16</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="4:3"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>4:3</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="3:2"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>3:2</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="16:9"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>16:9</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="4:5"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>4:5</span><span class="selected-mark">✓</span></button>
+            <button class="ratio-option" type="button" data-ratio="5:4"><span class="ratio-icon" aria-hidden="true"><i></i></span><span>5:4</span><span class="selected-mark">✓</span></button>
           </div>
         </div>
         <div class="panel-actions">
@@ -1082,7 +983,6 @@
       width: 2048,
       height: 2730,
       generated: false,
-      locked: true,
       canvasScale: 1,
       canvasX: 0,
       canvasY: 0
@@ -1099,9 +999,6 @@
     const resultMenu = document.getElementById("resultMenu");
     const toast = document.getElementById("toast");
     const outpaintPanel = document.getElementById("outpaintPanel");
-    const customWidth = document.getElementById("customWidth");
-    const customHeight = document.getElementById("customHeight");
-    const ratioLockBtn = document.getElementById("ratioLockBtn");
     const localImageInput = document.getElementById("localImageInput");
     const canvasShell = document.getElementById("canvasShell");
     const zoomLevel = document.getElementById("zoomLevel");
@@ -1136,20 +1033,10 @@
       return { width: Math.floor(height * rw / rh), height };
     }
 
-    function ratioValue(ratio) {
-      if (ratio === "original" || ratio === "custom") return source.width / source.height;
-      const [rw, rh] = ratio.split(":").map(Number);
-      return rw / rh;
-    }
-
     function render() {
       state.width = clamp(state.width);
       state.height = clamp(state.height);
       selectionSize.textContent = `${state.width} × ${state.height}`;
-      customWidth.value = state.width;
-      customHeight.value = state.height;
-      ratioLockBtn.classList.toggle("active", state.locked);
-      ratioLockBtn.setAttribute("aria-pressed", String(state.locked));
       artboardWrap.style.setProperty("--target-ratio", `${state.width} / ${state.height}`);
       document.documentElement.style.setProperty("--target-ratio", `${state.width} / ${state.height}`);
 
@@ -1217,38 +1104,6 @@
       resetGenerated();
       render();
       return true;
-    }
-
-    function markCustomSize() {
-      state.ratio = "custom";
-      ratioList.querySelectorAll(".ratio-option").forEach(button => button.classList.remove("active"));
-    }
-
-    function updateCustomSize(changedField) {
-      const currentAspect = state.ratio === "custom"
-        ? state.width / state.height
-        : ratioValue(state.ratio);
-      if (changedField === "width") {
-        const nextWidth = clamp(customWidth.value);
-        state.width = nextWidth;
-        if (state.locked) {
-          state.height = clamp(nextWidth / currentAspect);
-        } else {
-          state.height = clamp(customHeight.value);
-          markCustomSize();
-        }
-      } else {
-        const nextHeight = clamp(customHeight.value);
-        state.height = nextHeight;
-        if (state.locked) {
-          state.width = clamp(nextHeight * currentAspect);
-        } else {
-          state.width = clamp(customWidth.value);
-          markCustomSize();
-        }
-      }
-      resetGenerated();
-      render();
     }
 
     function resetGenerated() {
@@ -1349,25 +1204,7 @@
       updateFromRatio(button.dataset.ratio);
     });
     scaleSelect.addEventListener("change", () => {
-      if (state.ratio === "custom") {
-        const nextScale = Number(scaleSelect.value);
-        const next = presetSize("original", nextScale);
-        if (exceedsSizeLimit(next)) {
-          scaleSelect.value = String(state.scale);
-          showToast("最终尺寸超出扩图限制");
-          return;
-        }
-        state.scale = nextScale;
-        resetGenerated();
-        return;
-      }
       updateFromRatio(state.ratio);
-    });
-    customWidth.addEventListener("input", () => updateCustomSize("width"));
-    customHeight.addEventListener("input", () => updateCustomSize("height"));
-    ratioLockBtn.addEventListener("click", () => {
-      state.locked = !state.locked;
-      render();
     });
     generateBtn.addEventListener("click", generate);
     document.getElementById("cancelBtn").addEventListener("click", () => {
@@ -1409,20 +1246,15 @@
         if (img.naturalWidth && img.naturalHeight) {
           source.width = img.naturalWidth;
           source.height = img.naturalHeight;
-          if (state.ratio === "custom") {
-            state.width = source.width;
-            state.height = source.height;
-          } else {
-            let next = presetSize(state.ratio, Number(scaleSelect.value));
-            if (exceedsSizeLimit(next)) {
-              scaleSelect.value = "1";
-              state.scale = 1;
-              next = presetSize(state.ratio, state.scale);
-              exceededOnUpload = true;
-            }
-            state.width = next.width;
-            state.height = next.height;
+          let next = presetSize(state.ratio, Number(scaleSelect.value));
+          if (exceedsSizeLimit(next)) {
+            scaleSelect.value = "1";
+            state.scale = 1;
+            next = presetSize(state.ratio, state.scale);
+            exceededOnUpload = true;
           }
+          state.width = next.width;
+          state.height = next.height;
         }
         resetGenerated();
         render();
