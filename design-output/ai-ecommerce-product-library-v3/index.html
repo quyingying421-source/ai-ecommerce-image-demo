@@ -22,7 +22,7 @@
       <nav class="nav" id="nav">
         <button class="nav-group expanded" type="button" data-nav-group="ecommerce"><span class="nav-icon"></span>AI电商智能体<span class="nav-arrow"></span></button>
         <button class="nav-leaf plain active" type="button" data-single-menu="创作中心"><span class="nav-icon"></span>创作中心</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="模块与模版"><span class="nav-icon"></span>模块与模版</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="模块与模板"><span class="nav-icon"></span>模块与模板</button>
         <button class="nav-leaf plain" type="button" data-single-menu="模特库"><span class="nav-icon"></span>模特库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="素材库"><span class="nav-icon"></span>品牌素材库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
@@ -142,7 +142,7 @@
                     </div>
                     <div class="creation-module-start-selected" data-suite-start-selected hidden></div>
                   </div>
-                  <div class="creation-module-start-footer"><span data-suite-start-tip>请选择一个商品开始复刻</span><button class="btn primary" type="button" data-suite-start-next disabled>下一步</button></div>
+                  <div class="creation-module-start-footer"><span data-suite-start-tip>请选择一个或多个商品图开始复刻</span><button class="btn primary" type="button" data-suite-start-next disabled>下一步</button></div>
                 </div>
                 <section class="suite-start-stage suite-start-reference-panel" data-suite-start-stage="reference" data-suite-start-reference-panel hidden>
                   <div class="suite-start-reference-product" data-suite-start-reference-product></div>
@@ -156,7 +156,7 @@
                     <div class="suite-start-reference-content is-active" data-suite-start-reference-panel-mode="template">
                       <p>从推荐模板中选择一个参考结构，也可以查看完整模板库。</p>
                       <div class="suite-start-template-grid" data-suite-start-reference-templates></div>
-                      <button class="suite-select-trigger" type="button" data-suite-start-show-all>查看更多模板 <b>›</b></button>
+                      <div class="suite-start-view-all-wrap"><button class="module-flow-text-button" type="button" data-suite-start-show-all>查看全部模板</button></div>
                     </div>
                     <div class="suite-start-reference-content" data-suite-start-reference-panel-mode="multi">
                       <p>上传单张或多张商详参考图，系统将自动拆解模块结构与页面样式。</p>
@@ -486,6 +486,13 @@
                   </button>
                   <div><strong data-module-source-name>冰丝内裤自然光主图</strong></div>
                 </div>
+                <div class="module-source-reference-option">
+                  <label>
+                    <input type="checkbox" data-module-source-reference-toggle checked>
+                    <span>调用本图片作为本次创作参考图</span>
+                  </label>
+                  <p>提示：若包含敏感信息，建议不选，以增加生成成功率。</p>
+                </div>
               </section>
 
               <section class="module-config-section module-reverse-section" data-module-reverse-section>
@@ -590,7 +597,7 @@
 
           <div class="module-task-mask" data-module-task-mask></div>
           <aside class="module-task-drawer" data-module-task-drawer-panel aria-hidden="true">
-            <div class="module-task-drawer-head"><div><h2>任务记录</h2><p>首次生成与每次重新生成都会保留</p></div><button type="button" data-module-task-drawer-close aria-label="关闭任务记录"></button></div>
+            <div class="module-task-drawer-head"><div><h2>任务记录</h2></div><button type="button" data-module-task-drawer-close aria-label="关闭任务记录"></button></div>
             <div class="module-task-list" data-module-task-list></div>
           </aside>
         </section>
@@ -1073,8 +1080,9 @@
           <div class="multi-task-layout">
             <aside class="multi-global-panel">
               <section class="multi-card">
-                <h3>已上传商品图</h3>
+                <h3>商品图</h3>
                 <div class="multi-source-product-list" data-multi-source-product-list></div>
+                <input type="file" accept="image/*" multiple hidden data-multi-source-product-file>
               </section>
               <section class="multi-card">
                 <h3>已选模版</h3>
@@ -1086,11 +1094,13 @@
                     <span data-multi-linked-label>已使用模板</span>
                     <strong data-multi-template-name>-</strong>
                   </div>
+                  <button class="multi-template-replace" type="button" data-multi-template-replace>替换模板</button>
                 </div>
                 <dl class="multi-summary-list">
                   <div><dt data-multi-count-label>启用模块</dt><dd data-multi-enabled-count>0 个</dd></div>
                 </dl>
               </section>
+              <section class="multi-result-module-nav" data-multi-result-module-nav></section>
             </aside>
 
             <main class="multi-work-panel">
@@ -1119,24 +1129,21 @@
               <section class="multi-step-panel multi-result-step" data-multi-result-step>
                 <div class="multi-section-head">
                   <div>
-                    <h3>结果确认</h3>
-                    <p>每个模块默认选择第一张候选图，可切换入选图</p>
+                    <h3 data-multi-result-title>选图确认</h3>
+                    <p data-multi-result-description>逐个确认模块入选图，确认后再进入套图编排</p>
                   </div>
                   <span data-multi-result-status>等待生成</span>
                 </div>
                 <div class="multi-result-list" data-multi-result-list></div>
+                <input type="file" accept="image/*" multiple hidden data-multi-compose-file>
               </section>
             </main>
 
             <aside class="multi-long-preview-panel">
-              <div class="multi-long-head">
-                <div>
-                  <h3>长图预览</h3>
-                  <p data-multi-preview-note>按模板顺序拼接入选图</p>
-                </div>
+              <div class="multi-long-canvas" data-multi-long-preview></div>
+              <div class="multi-long-actions">
                 <button type="button" data-multi-preview-download>下载</button>
               </div>
-              <div class="multi-long-canvas" data-multi-long-preview></div>
             </aside>
           </div>
 
@@ -1145,9 +1152,11 @@
             <div class="multi-footer-actions">
               <button class="btn ghost" type="button" data-multi-back-step>返回上一步</button>
               <button class="btn ghost" type="button" data-multi-go-records>返回创作记录</button>
-              <button class="btn ghost multi-regenerate-button" type="button" data-multi-regenerate-all><img src="assets/multi-regenerate-icon.png" alt="">重新生成全部</button>
               <button class="btn ghost" type="button" data-multi-download>批量下载</button>
               <button class="btn primary" type="button" data-multi-generate>去生成</button>
+              <button class="btn primary" type="button" data-multi-result-compose hidden>下一步：编辑套图</button>
+              <button class="btn ghost" type="button" data-multi-compose-back hidden>返回选图</button>
+              <button class="btn ghost" type="button" data-multi-continue-text hidden>继续文字创作</button>
               <button class="btn primary" type="button" data-multi-save-result>保存结果</button>
             </div>
           </footer>
@@ -1159,7 +1168,6 @@
           <header class="suite-replica-topbar">
             <div class="suite-replica-title-wrap">
               <button class="suite-replica-back" type="button" data-suite-replica-back><span></span>返回</button>
-              <i></i>
               <div>
                 <h1>多图复刻</h1>
               </div>
@@ -1170,7 +1178,7 @@
               <button type="button" data-suite-step="generate"><span>3</span><strong>多图复刻详情页</strong></button>
             </div>
             <div class="suite-replica-top-actions">
-              <button class="btn ghost" type="button" data-suite-record>创作记录</button>
+              <button class="module-flow-record" type="button" data-suite-record>创作记录</button>
             </div>
           </header>
 
@@ -1232,18 +1240,20 @@
               </section>
 
               <section class="suite-setting-section suite-step-panel suite-output-section" data-suite-step-panel="generate">
-                <div class="suite-setting-label"><span>1</span><h2>已上传商品图</h2></div>
+                <div class="suite-setting-label"><span>1</span><h2>商品图</h2></div>
                 <div class="suite-detail-product-preview" data-suite-detail-product-preview></div>
                 <div class="suite-setting-label"><span>2</span><h2>参考内容</h2><em>必填</em></div>
                 <p>展示上一步上传的多图、淘宝解析图或已选择的参考模板。</p>
                 <div class="suite-detail-reference-preview" data-suite-detail-reference-preview></div>
                 <div class="suite-setting-label suite-copy-label"><span>3</span><h2>编辑文案</h2></div>
                 <p>已提取参考图文案，支持修改或保留不变。</p>
-                <textarea class="suite-copy-editor" rows="6">RECOMMENDED 搭配推荐
-保留模板的构图、商品位置和信息层级，将画面主体替换为当前商品。</textarea>
+                <div class="suite-copy-editor-wrap">
+                  <textarea class="suite-copy-editor" rows="6" data-suite-copy-editor></textarea>
+                  <button class="suite-copy-restore" type="button" data-suite-copy-restore hidden>恢复原文案</button>
+                </div>
                 <div class="suite-copy-actions">
-                  <button type="button">去除文案</button>
-                  <button type="button">参考原图排版应用文案</button>
+                  <button type="button" data-suite-copy-clear>去除文案</button>
+                  <button class="is-active" type="button" data-suite-copy-apply>参考原图排版应用文案</button>
                 </div>
                 <div class="suite-setting-label suite-param-label"><span>4</span><h2>参数设置</h2></div>
                 <div class="suite-param-select-grid">
@@ -1251,7 +1261,11 @@
                   <label><span>图片比例</span><select data-suite-ratio-select><option value="1:1">1:1</option><option value="2:3">2:3</option><option value="3:2">3:2</option><option value="3:4">3:4</option><option value="4:3">4:3</option><option value="4:5">4:5</option><option value="5:4">5:4</option><option value="9:16">9:16</option><option value="16:9">16:9</option></select></label>
                 </div>
                 <div class="suite-generate-bar">
-                  <button class="is-primary" type="button" data-suite-generate>生成图片 <em>1</em><img src="assets/creation-rongdou-icon.png" alt="融豆"></button>
+                  <button class="module-generate-button suite-generate-button" type="button" data-suite-generate>
+                    <img class="creation-send-icon" src="assets/creation-send-icon.png" alt="">
+                    <span>生成图片</span>
+                    <i><b>1</b><img src="assets/creation-rongdou-icon.png" alt="融豆"></i>
+                  </button>
                 </div>
               </section>
             </aside>
@@ -1272,21 +1286,37 @@
                   <button type="button" title="宫格">▦</button>
                 </div>
               </div>
+              <aside class="suite-export-drawer" data-suite-export-drawer hidden>
+                <div class="suite-export-head">
+                  <div><strong>导出预览</strong><span data-suite-export-summary>已选 1 张</span></div>
+                  <button type="button" data-suite-export-close aria-label="关闭导出预览">×</button>
+                </div>
+                <div class="suite-export-preview" data-suite-export-preview></div>
+                <div class="suite-export-actions">
+                  <button class="is-primary" type="button" data-suite-export-download>导出</button>
+                  <button type="button" data-suite-export-library>添加到精品库</button>
+                </div>
+              </aside>
             </main>
           </div>
         </section>
       </section>
 
       <section class="workspace-page" data-page="suite-solution-library">
+        <nav class="module-template-tabs module-template-tabs-page" aria-label="模块与模板分类" role="tablist">
+          <button type="button" role="tab" aria-selected="false" data-module-template-page="module-library">模块</button>
+          <button type="button" role="tab" aria-selected="false" data-module-template-page="template-center">模块模板</button>
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-module-template-page="suite-solution-library">套图模板</button>
+        </nav>
         <section class="suite-solution-card">
           <div class="suite-solution-top-row">
             <div class="suite-solution-scope-tabs" data-solution-scope-tabs>
               <button class="is-active" type="button" data-solution-scope="全部">全部</button>
-              <button type="button" data-solution-scope="我的方案">我的方案</button>
-              <button type="button" data-solution-scope="已购方案">已购方案</button>
+              <button type="button" data-solution-scope="我的套图模板">我的模板</button>
+              <button type="button" data-solution-scope="已购套图模板">已购模板</button>
             </div>
             <div class="suite-solution-create-actions">
-              <button class="btn primary suite-solution-create-btn" type="button" data-solution-create><span class="template-create-plus">+</span>新建方案</button>
+              <button class="btn primary suite-solution-create-btn" type="button" data-solution-create><span class="template-create-plus">+</span>新增套图模板</button>
             </div>
           </div>
 
@@ -1301,7 +1331,7 @@
             </div>
             <div class="search-field suite-solution-search">
               <span class="search-icon"></span>
-              <input type="search" placeholder="搜索方案名称 / 品类 / 标签" data-solution-search />
+              <input type="search" placeholder="搜索套图模板 / 品类 / 标签" data-solution-search />
             </div>
           </div>
 
@@ -1309,9 +1339,9 @@
 
           <div class="empty-state suite-solution-empty" data-solution-empty-state>
             <div class="empty-visual"></div>
-            <h3>暂无套图方案</h3>
-            <p>新建方案并至少添加一张内容后，可在这里以长图卡片方式管理。</p>
-            <button class="btn primary" type="button" data-solution-create>新建方案</button>
+            <h3>暂无套图模板</h3>
+            <p>新增套图模板并至少添加一个模块后，可在这里统一管理。</p>
+            <button class="btn primary" type="button" data-solution-create>新增套图模板</button>
           </div>
 
           <div class="empty-state suite-solution-empty" data-solution-no-result-state>
@@ -1323,14 +1353,19 @@
       </section>
 
       <section class="workspace-page" data-page="template-center">
+        <nav class="module-template-tabs module-template-tabs-page" aria-label="模块与模板分类" role="tablist">
+          <button type="button" role="tab" aria-selected="false" data-module-template-page="module-library">模块</button>
+          <button class="is-active" type="button" role="tab" aria-selected="true" data-module-template-page="template-center">模块模板</button>
+          <button type="button" role="tab" aria-selected="false" data-module-template-page="suite-solution-library">套图模板</button>
+        </nav>
         <section class="template-center-card">
           <div class="template-top-row">
             <div class="template-library-heading">
-              <h1>套图模板</h1>
-              <p>管理可复用的套图结构，一键生成整套商品视觉内容。</p>
+              <h1>模块模板</h1>
+              <p>管理单模块的生成规则与素材配置，快速复用稳定的视觉效果。</p>
             </div>
             <div class="template-create-actions">
-              <button class="btn primary template-create-btn" type="button" data-template-create-trigger><span class="template-create-plus">+</span>创建模板</button>
+              <button class="btn primary template-create-btn" type="button" data-template-create-trigger><span class="template-create-plus">+</span>新增模块模板</button>
             </div>
           </div>
           <div class="template-filter-row">
@@ -1344,7 +1379,7 @@
             </div>
             <div class="search-field template-search">
               <span class="search-icon"></span>
-              <input type="search" placeholder="搜索套图模板" data-template-search />
+              <input type="search" placeholder="搜索模块模板" data-template-search />
             </div>
           </div>
 
@@ -1352,9 +1387,9 @@
 
           <div class="empty-state template-empty" data-template-empty-state>
             <div class="empty-visual"></div>
-            <h3>暂无模板</h3>
-            <p>新建模板并至少添加一张图片后，可在这里以长图卡片方式管理。</p>
-            <button class="btn primary" type="button" data-template-create-trigger-empty>新建模板</button>
+            <h3>暂无模块模板</h3>
+            <p>新增模块模板后，可在这里管理模块规则、示例图和默认参数。</p>
+            <button class="btn primary" type="button" data-template-create-trigger-empty>新增模块模板</button>
           </div>
 
           <div class="empty-state template-empty" data-template-no-result-state>
@@ -1368,7 +1403,7 @@
       <section class="workspace-page" data-page="template-builder">
         <section class="template-builder-page">
           <div class="template-builder-head">
-            <button class="back-link" type="button" data-template-builder-back>返回套图模板</button>
+            <button class="back-link" type="button" data-template-builder-back>返回模块模板</button>
           </div>
 
           <div class="template-builder-layout">
@@ -1467,8 +1502,13 @@
 
       <section class="workspace-page" data-page="module-library">
         <section class="module-library-page" aria-label="模块库">
+          <nav class="module-template-tabs" aria-label="模块与模板分类" role="tablist">
+            <button class="is-active" type="button" role="tab" aria-selected="true" data-module-template-page="module-library">模块</button>
+            <button type="button" role="tab" aria-selected="false" data-module-template-page="template-center">模块模板</button>
+            <button type="button" role="tab" aria-selected="false" data-module-template-page="suite-solution-library">套图模板</button>
+          </nav>
           <header class="module-library-head">
-            <h1>模块库</h1>
+            <h1>模块</h1>
           </header>
           <div class="module-library-tabs-row">
             <div class="resource-filter resource-filter-primary module-library-tabs" role="tablist" aria-label="模块类型">
@@ -1476,7 +1516,7 @@
               <button type="button" role="tab" aria-selected="false" data-module-library-tab="fixed">固定图模块</button>
               <button type="button" role="tab" aria-selected="false" data-module-library-tab="text">文字模块</button>
             </div>
-            <button class="btn primary module-library-create" type="button" data-module-library-create><span>＋</span>创建模块</button>
+            <button class="btn primary module-library-create" type="button" data-module-library-create><span>＋</span>新增模块</button>
           </div>
 
           <div class="module-library-toolbar">
@@ -2759,23 +2799,71 @@
   <div class="free-creation-task-mask" data-free-creation-task-mask></div>
   <aside class="free-creation-task-drawer" data-free-creation-task-drawer-panel aria-hidden="true" aria-label="自由创作任务记录">
     <div class="free-creation-task-drawer-head">
-      <div><h2>创作记录</h2><p>自由创作的生成任务会保留在这里</p></div>
+      <div><h2>任务记录</h2></div>
       <button type="button" data-free-creation-task-drawer-close aria-label="关闭创作记录"></button>
     </div>
     <div class="free-creation-task-list" data-free-creation-record-list>
-      <article class="creation-record is-done">
-        <div class="record-result-grid">
-          <img src="assets/product-cover-03.png" alt="">
-          <img src="assets/product-cover-04.png" alt="">
-          <img src="assets/product-cover-01.png" alt="">
-          <img src="assets/product-cover-02.png" alt="">
+      <article class="creation-record module-task-item is-active is-done">
+        <div class="module-task-summary" role="button" tabindex="0" aria-expanded="true" data-open-creation-detail>
+          <div class="module-task-item-head">
+            <h3>任务ID：19501</h3>
+            <span class="module-task-status done">已完成</span>
+          </div>
+          <dl class="module-task-meta-list">
+            <div><dt>描述文案</dt><dd class="module-task-prompt"><span>突出商品贴肤质感、弹性与舒适卖点，保留商品的真实细节。保持柔和室内自然光和放松的居家氛围，模特与商品清晰可见。</span><button type="button" data-free-task-copy aria-label="复制描述文案">复制</button></dd></div>
+            <div><dt>参考素材</dt><dd>2 张</dd></div>
+            <div><dt>提交时间</dt><dd>2026-07-20 16:24</dd></div>
+          </dl>
         </div>
-        <div class="record-copy">
-          <div class="record-meta"><span class="record-status done">已完成</span><span>自由创作</span><span>4 融豆</span></div>
-          <h3>浅色卧室文胸模特图</h3>
-          <p>浅色卧室场景，自然光，文胸模特图，突出蕾丝杯面和舒适承托。</p>
-          <small>关联：商品图 4 张 / 3:4 / 2K</small>
-          <div class="record-actions"><button type="button" data-open-creation-detail>查看详情</button></div>
+        <div class="module-task-detail">
+          <div class="module-task-reference-row">
+            <button type="button" data-free-task-reference-toggle aria-expanded="false">参考图（2）<i>展开</i></button>
+            <div hidden>
+              <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-03.png" data-module-task-image-alt="参考图 1" aria-label="放大预览参考图 1"><img src="assets/product-cover-03.png" alt="参考图 1"></button>
+              <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-04.png" data-module-task-image-alt="参考图 2" aria-label="放大预览参考图 2"><img src="assets/product-cover-04.png" alt="参考图 2"></button>
+            </div>
+          </div>
+          <div class="module-task-result-row">
+            <span>生成结果</span>
+            <div class="module-task-result-grid">
+              <figure class="module-task-result-card">
+                <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-01.png" data-module-task-image-alt="生成结果 1" aria-label="放大预览生成结果 1"><img src="assets/product-cover-01.png" alt="生成结果 1"></button>
+                <div class="module-result-actions" aria-label="生成结果 1 操作">
+                  <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-01.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
+                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                </div>
+              </figure>
+              <figure class="module-task-result-card">
+                <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-02.png" data-module-task-image-alt="生成结果 2" aria-label="放大预览生成结果 2"><img src="assets/product-cover-02.png" alt="生成结果 2"></button>
+                <div class="module-result-actions" aria-label="生成结果 2 操作">
+                  <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-02.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
+                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                </div>
+              </figure>
+              <figure class="module-task-result-card">
+                <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-03.png" data-module-task-image-alt="生成结果 3" aria-label="放大预览生成结果 3"><img src="assets/product-cover-03.png" alt="生成结果 3"></button>
+                <div class="module-result-actions" aria-label="生成结果 3 操作">
+                  <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-03.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
+                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                </div>
+              </figure>
+              <figure class="module-task-result-card">
+                <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-04.png" data-module-task-image-alt="生成结果 4" aria-label="放大预览生成结果 4"><img src="assets/product-cover-04.png" alt="生成结果 4"></button>
+                <div class="module-result-actions" aria-label="生成结果 4 操作">
+                  <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-04.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
+                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                </div>
+              </figure>
+            </div>
+          </div>
         </div>
       </article>
     </div>
@@ -2862,6 +2950,22 @@
       <div class="prototype-modal-actions right">
         <button class="btn ghost" type="button" data-modal-close>取消</button>
         <button class="btn primary" type="button" data-multi-confirm-generate>确认生成</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-multi-module-delete-modal aria-hidden="true">
+    <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="multi-module-delete-title">
+      <div class="prototype-modal-head">
+        <div>
+          <h2 id="multi-module-delete-title">确定删除当前模块？</h2>
+          <p data-multi-module-delete-summary>删除后将不再参与本次生成。</p>
+        </div>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn danger" type="button" data-multi-module-delete-confirm>确定删除</button>
       </div>
     </div>
   </div>
