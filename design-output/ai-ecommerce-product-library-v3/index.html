@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI电商智能体 - 商品库原型</title>
-  <link rel="stylesheet" href="styles.css?v=20260810-module-flow" />
+  <link rel="stylesheet" href="styles.css?v=20260818-suite-export-actions" />
 </head>
 <body>
   <header class="global-header">
@@ -495,30 +495,40 @@
                 </div>
               </section>
 
-              <section class="module-config-section module-reverse-section" data-module-reverse-section>
-                <button class="module-section-title module-reverse-toggle" type="button" data-module-reverse-toggle aria-expanded="false">
-                  <span><i class="module-magic-mark">✦</i><strong>AI 提示词反推</strong></span>
-                  <small>可选</small>
-                  <b></b>
-                </button>
-                <div class="module-reverse-content" hidden>
-                  <p class="module-section-note">上传图片后自动判断单图或多图解析，解析结果可回填到下方描述。</p>
+              <section class="module-config-section module-analysis-flow" data-module-reverse-section>
+                <div class="module-flow-section-title"><span>1</span><div><strong>选择解析方式</strong><small>让 AI 先理解参考图，再开始创作</small></div><em>可选</em></div>
+                <div class="module-analysis-mode-switch" role="radiogroup" aria-label="解析方式">
+                  <button class="is-active" type="button" role="radio" aria-checked="true" data-module-analysis-mode-choice="single">
+                    <i>1</i><span><strong>单图解析</strong><small>适合一张主图或氛围图</small></span>
+                  </button>
+                  <button type="button" role="radio" aria-checked="false" data-module-analysis-mode-choice="multi">
+                    <i>▦</i><span><strong>多图解析</strong><small>适合详情页或一组参考图</small></span>
+                  </button>
+                </div>
+                <div class="module-analysis-stage">
+                  <div class="module-analysis-stage-heading"><strong data-module-analysis-upload-title>上传 1 张参考图</strong><small data-module-analysis-upload-note>AI 将提取构图、场景、光影与视觉风格</small></div>
                   <label class="module-analysis-dropzone">
-                    <input type="file" accept="image/*" multiple data-module-analysis-input>
+                    <input type="file" accept="image/*" data-module-analysis-input>
                     <span class="module-upload-symbol">＋</span>
-                    <span>上传解析图片</span>
-                    <small data-module-analysis-count>最多 6 张</small>
+                    <span data-module-analysis-upload-copy>上传参考图</span>
+                    <small data-module-analysis-count>支持 JPG、PNG、WEBP</small>
                   </label>
                   <div class="module-analysis-thumbs" data-module-analysis-thumbs></div>
-                  <button class="module-analysis-submit" type="button" data-module-analysis-submit disabled>生成提示词分析 <em>1</em></button>
-                  <div class="module-analysis-result" data-module-analysis-result hidden>
-                    <span data-module-analysis-mode>单图解析</span>
-                    <p>已提取商品质感、场景光线与画面氛围，并回填至描述区域。</p>
+                  <button class="module-analysis-submit" type="button" data-module-analysis-submit disabled>开始单图解析 <em>1</em></button>
+                </div>
+                <p class="module-analysis-skip-hint">不需要解析？可直接从第 2 步上传创作素材，并填写产品、场景描述。</p>
+                <div class="module-analysis-result" data-module-analysis-result hidden>
+                  <span data-module-analysis-mode>单图解析完成</span>
+                  <p data-module-analysis-result-copy>解析结果不会自动覆盖已有描述，请选择要添加的位置。</p>
+                  <div class="module-analysis-result-actions">
+                    <button type="button" data-module-analysis-add="product">添加到产品描述</button>
+                    <button type="button" data-module-analysis-add="scene">添加到场景描述</button>
                   </div>
                 </div>
               </section>
 
               <section class="module-config-section module-material-section" data-module-material-section>
+                <div class="module-flow-section-title compact module-create-step-title"><span>2</span><div><strong>补充创作素材</strong><small>至少上传一项，商品图、模特图或场景图均可</small></div></div>
                 <div class="module-section-title module-material-title" data-module-material-static-title hidden><span data-module-material-title-static>所需素材</span></div>
                 <button class="module-section-title module-material-toggle" type="button" data-module-material-toggle aria-expanded="true">
                   <span data-module-material-title>创作素材</span><small data-module-material-requirement>至少上传一项</small><b></b>
@@ -539,6 +549,7 @@
               </section>
 
               <section class="module-config-section module-text-section module-product-description-section">
+                <div class="module-flow-section-title compact module-create-step-title"><span>3</span><div><strong>确认创作要求</strong><small>可直接使用解析结果，也可手动补充</small></div></div>
                 <div class="module-section-title static"><span>产品描述</span></div>
                 <label class="module-text-field">
                   <textarea rows="5" data-module-product-prompt placeholder="描述商品主体、卖点、材质或希望保留的细节"></textarea>
@@ -555,6 +566,7 @@
               </section>
 
               <section class="module-config-section module-setting-section">
+                <div class="module-flow-section-title compact module-create-step-title"><span>4</span><div><strong>设置生成参数</strong><small>确认比例、清晰度与图片数量</small></div></div>
                 <div class="module-section-title static"><span>生成设置</span></div>
                 <div class="module-setting-grid">
                   <label><span>图片比例</span><select data-module-ratio><option>1:1</option><option>2:3</option><option>3:2</option><option selected>3:4</option><option>4:3</option><option>4:5</option><option>5:4</option><option>9:16</option><option>16:9</option><option>21:9</option></select></label>
@@ -1129,8 +1141,8 @@
               <section class="multi-step-panel multi-result-step" data-multi-result-step>
                 <div class="multi-section-head">
                   <div>
-                    <h3 data-multi-result-title>选图确认</h3>
-                    <p data-multi-result-description>逐个确认模块入选图，确认后再进入套图编排</p>
+                    <h3 data-multi-result-title>生成结果</h3>
+                    <p data-multi-result-description>选择各模块的入选图；已选图片可统一调整顺序、补充本地图片并拼接为套图</p>
                   </div>
                   <span data-multi-result-status>等待生成</span>
                 </div>
@@ -1139,25 +1151,26 @@
               </section>
             </main>
 
-            <aside class="multi-long-preview-panel">
+            <aside class="multi-long-preview-panel" data-multi-preview-drawer aria-hidden="true">
+              <div class="multi-long-preview-head"><h3>套图预览</h3><button type="button" data-multi-preview-close aria-label="关闭套图预览">×</button></div>
               <div class="multi-long-canvas" data-multi-long-preview></div>
-              <div class="multi-long-actions">
-                <button type="button" data-multi-preview-download>下载</button>
-              </div>
             </aside>
           </div>
 
           <footer class="multi-task-footer">
             <div class="multi-footer-status" data-multi-footer-status>配置完成后可进入结果确认</div>
             <div class="multi-footer-actions">
-              <button class="btn ghost" type="button" data-multi-back-step>返回上一步</button>
-              <button class="btn ghost" type="button" data-multi-go-records>返回创作记录</button>
-              <button class="btn ghost" type="button" data-multi-download>批量下载</button>
-              <button class="btn primary" type="button" data-multi-generate>去生成</button>
-              <button class="btn primary" type="button" data-multi-result-compose hidden>下一步：编辑套图</button>
-              <button class="btn ghost" type="button" data-multi-compose-back hidden>返回选图</button>
-              <button class="btn ghost" type="button" data-multi-continue-text hidden>继续文字创作</button>
-              <button class="btn primary" type="button" data-multi-save-result>保存结果</button>
+              <div class="multi-footer-navigation" data-multi-footer-navigation>
+                <button class="btn ghost" type="button" data-multi-flow-previous>上一步</button>
+                <button class="btn primary" type="button" data-multi-flow-next>下一步</button>
+              </div>
+              <div class="multi-result-footer-actions" data-multi-result-footer-actions hidden>
+                <button class="btn ghost" type="button" data-multi-suite-generate>套图生成 <em>80</em><span>融豆</span></button>
+                <button class="btn ghost" type="button" data-multi-preview-open>套图预览</button>
+                <button class="btn ghost" type="button" data-multi-download>批量下载</button>
+                <button class="btn ghost" type="button" data-multi-continue-text>继续添加文字</button>
+                <button class="btn primary" type="button" data-multi-save-result>保存结果</button>
+              </div>
             </div>
           </footer>
         </section>
@@ -1177,9 +1190,7 @@
               <button type="button" data-suite-step="template"><span>2</span><strong>选择参考模板</strong></button>
               <button type="button" data-suite-step="generate"><span>3</span><strong>多图复刻详情页</strong></button>
             </div>
-            <div class="suite-replica-top-actions">
-              <button class="module-flow-record" type="button" data-suite-record>创作记录</button>
-            </div>
+            <div class="suite-replica-top-actions"></div>
           </header>
 
           <div class="suite-replica-body">
@@ -1284,6 +1295,7 @@
                   <span data-suite-bottom-zoom-label>100%</span>
                   <button type="button" data-suite-canvas-zoom="in" title="放大">＋</button>
                   <button type="button" title="宫格">▦</button>
+                  <button class="suite-export-reopen" type="button" data-suite-export-reopen hidden>导出预览 <em data-suite-export-reopen-count>0</em></button>
                 </div>
               </div>
               <aside class="suite-export-drawer" data-suite-export-drawer hidden>
@@ -1302,25 +1314,27 @@
         </section>
       </section>
 
+      <div class="prototype-modal detail-return-confirm-modal suite-return-confirm-modal" data-suite-return-modal aria-hidden="true">
+        <div class="prototype-modal-panel detail-return-confirm-panel suite-return-confirm-panel" role="dialog" aria-modal="true" aria-labelledby="suite-return-confirm-title">
+          <div class="detail-return-confirm-copy">
+            <h2 id="suite-return-confirm-title">图片仍在生成中</h2>
+            <p>当前还有图片正在生成，离开工作台不会中断任务。你可以稍后在“创作记录”中查看生成进度和创作详情。</p>
+          </div>
+          <div class="prototype-modal-actions right detail-return-confirm-actions">
+            <button class="btn ghost" type="button" data-modal-close>取消</button>
+            <button class="btn primary" type="button" data-suite-return-confirm>去创作记录查看</button>
+          </div>
+        </div>
+      </div>
+
       <section class="workspace-page" data-page="suite-solution-library">
-        <nav class="module-template-tabs module-template-tabs-page" aria-label="模块与模板分类" role="tablist">
+          <nav class="module-template-tabs module-template-tabs-page" aria-label="模块与模板分类" role="tablist">
           <button type="button" role="tab" aria-selected="false" data-module-template-page="module-library">模块</button>
           <button type="button" role="tab" aria-selected="false" data-module-template-page="template-center">模块模板</button>
           <button class="is-active" type="button" role="tab" aria-selected="true" data-module-template-page="suite-solution-library">套图模板</button>
         </nav>
         <section class="suite-solution-card">
           <div class="suite-solution-top-row">
-            <div class="suite-solution-scope-tabs" data-solution-scope-tabs>
-              <button class="is-active" type="button" data-solution-scope="全部">全部</button>
-              <button type="button" data-solution-scope="我的套图模板">我的模板</button>
-              <button type="button" data-solution-scope="已购套图模板">已购模板</button>
-            </div>
-            <div class="suite-solution-create-actions">
-              <button class="btn primary suite-solution-create-btn" type="button" data-solution-create><span class="template-create-plus">+</span>新增套图模板</button>
-            </div>
-          </div>
-
-          <div class="suite-solution-filter-row">
             <div class="suite-solution-category-tabs" data-solution-category-tabs>
               <button class="is-active" type="button" data-solution-category="全部品类">全部品类</button>
               <button type="button" data-solution-category="文胸">文胸</button>
@@ -1329,6 +1343,12 @@
               <button type="button" data-solution-category="鞋子">鞋子</button>
               <button type="button" data-solution-category="箱包">箱包</button>
             </div>
+            <div class="suite-solution-create-actions">
+              <button class="btn primary suite-solution-create-btn" type="button" data-solution-create><span class="template-create-plus">+</span>新增套图模板</button>
+            </div>
+          </div>
+
+          <div class="suite-solution-filter-row">
             <div class="search-field suite-solution-search">
               <span class="search-icon"></span>
               <input type="search" placeholder="搜索套图模板 / 品类 / 标签" data-solution-search />
@@ -1360,9 +1380,10 @@
         </nav>
         <section class="template-center-card">
           <div class="template-top-row">
-            <div class="template-library-heading">
-              <h1>模块模板</h1>
-              <p>管理单模块的生成规则与素材配置，快速复用稳定的视觉效果。</p>
+            <div class="template-scope-tabs" data-template-scope-tabs aria-label="模块模板范围">
+              <button class="is-active" type="button" data-template-scope="全部">全部</button>
+              <button type="button" data-template-scope="我的模板">我的模块模板</button>
+              <button type="button" data-template-scope="已购模板">已购模块模板</button>
             </div>
             <div class="template-create-actions">
               <button class="btn primary template-create-btn" type="button" data-template-create-trigger><span class="template-create-plus">+</span>新增模块模板</button>
@@ -1403,7 +1424,7 @@
       <section class="workspace-page" data-page="template-builder">
         <section class="template-builder-page">
           <div class="template-builder-head">
-            <button class="back-link" type="button" data-template-builder-back>返回模块模板</button>
+            <h1 data-template-builder-title>新增模块模板</h1>
           </div>
 
           <div class="template-builder-layout">
@@ -1507,9 +1528,6 @@
             <button type="button" role="tab" aria-selected="false" data-module-template-page="template-center">模块模板</button>
             <button type="button" role="tab" aria-selected="false" data-module-template-page="suite-solution-library">套图模板</button>
           </nav>
-          <header class="module-library-head">
-            <h1>模块</h1>
-          </header>
           <div class="module-library-tabs-row">
             <div class="resource-filter resource-filter-primary module-library-tabs" role="tablist" aria-label="模块类型">
               <button class="is-active" type="button" role="tab" aria-selected="true" data-module-library-tab="image">图生图模块</button>
@@ -2957,38 +2975,146 @@
   <div class="prototype-modal" data-multi-module-delete-modal aria-hidden="true">
     <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="multi-module-delete-title">
       <div class="prototype-modal-head">
+        <h2 id="multi-module-delete-title">提示</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="multi-module-delete-copy"><span aria-hidden="true">!</span><p data-multi-module-delete-message>确认删除当前模块吗？</p></div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn primary" type="button" data-multi-module-delete-confirm>删除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-module-library-delete-modal aria-hidden="true">
+    <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="module-library-delete-title">
+      <div class="prototype-modal-head">
+        <h2 id="module-library-delete-title">删除模块</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="multi-module-delete-copy"><span aria-hidden="true">!</span><p data-module-library-delete-message>确认删除当前模块吗？删除后不可恢复。</p></div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn danger" type="button" data-module-library-delete-confirm>删除</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-module-library-publish-modal aria-hidden="true">
+    <div class="prototype-modal-panel module-library-publish-panel" role="dialog" aria-modal="true" aria-labelledby="module-library-publish-title">
+      <div class="prototype-modal-head">
         <div>
-          <h2 id="multi-module-delete-title">确定删除当前模块？</h2>
-          <p data-multi-module-delete-summary>删除后将不再参与本次生成。</p>
+          <h2 id="module-library-publish-title">发布到 AI 图片广场</h2>
+          <p>为模块设置其他用户单次购买时需要消耗的融豆数。</p>
         </div>
         <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
       </div>
+      <div class="module-library-publish-body">
+        <div class="module-library-publish-target"><img src="assets/creation-cover-616.jpg" alt="" data-module-library-publish-preview><span><strong data-module-library-publish-name>模块名称</strong><small>发布后将按设置价格展示给其他用户</small></span></div>
+        <label class="module-library-price-field">
+          <span>单次购买价格 <em>必填</em></span>
+          <div><input type="number" min="0" max="9999" step="1" inputmode="numeric" value="0" data-module-library-publish-price aria-describedby="module-library-publish-price-help"><b>融豆</b></div>
+          <small id="module-library-publish-price-help">填写 0 即免费；价格为其他用户购买该模块时的单次消耗。</small>
+          <i data-module-library-publish-error hidden>请输入 0–9999 的整数。</i>
+        </label>
+        <section class="module-library-publish-rules" aria-label="发布规则说明">
+          <strong>发布规则说明</strong>
+          <ul>
+            <li>确认发布后，模块将立即在 AI 图片广场展示并按设置价格提供购买。</li>
+            <li>请确保你拥有模块中图片、文案及素材的合法发布授权。</li>
+            <li>购买成功后，购买用户即可在创作图片时使用该模块。</li>
+          </ul>
+        </section>
+      </div>
       <div class="prototype-modal-actions right">
         <button class="btn ghost" type="button" data-modal-close>取消</button>
-        <button class="btn danger" type="button" data-multi-module-delete-confirm>确定删除</button>
+        <button class="btn primary" type="button" data-module-library-publish-confirm>确认发布</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-module-library-edit-modal aria-hidden="true">
+    <div class="prototype-modal-panel module-library-edit-panel" role="dialog" aria-modal="true" aria-labelledby="module-library-edit-title">
+      <div class="prototype-modal-head module-library-edit-head">
+        <div>
+          <h2 id="module-library-edit-title">编辑模块</h2>
+        </div>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="module-library-edit-scroll">
+        <section class="module-library-edit-section">
+          <h3>基础信息</h3>
+          <div class="module-library-edit-basic-grid">
+            <label><span>模块名称 <em>*</em></span><input type="text" maxlength="40" data-module-library-edit-name></label>
+            <label><span>选择类目 <em>*</em></span><select data-module-library-edit-category><option value="内衣">内衣</option><option value="内裤">内裤</option><option value="童装">童装</option><option value="通用">通用</option></select></label>
+            <label class="module-library-edit-description"><span>模块功能描述</span><textarea maxlength="200" rows="3" placeholder="简要说明模块适合的商品、场景和使用方式。" data-module-library-edit-description></textarea><small>该说明将用于模块列表检索与复用。</small></label>
+          </div>
+        </section>
+        <section class="module-library-edit-section" data-module-library-edit-material-section hidden>
+          <div class="module-library-edit-section-title"><h3>已上传素材</h3><span>未上传的素材类型不会展示</span></div>
+          <div class="module-library-edit-materials" data-module-library-edit-materials></div>
+        </section>
+        <section class="module-library-edit-section">
+          <div class="module-library-edit-section-title"><h3>提示词设置</h3><span>用于后续创作图片时复用</span></div>
+          <div class="module-library-edit-prompt-layout">
+            <div class="module-library-edit-prompts">
+              <label><span>产品描述</span><textarea rows="7" data-module-library-edit-product-prompt placeholder="描述需要保留的产品材质、版型与细节。"></textarea></label>
+              <label><span>场景描述</span><textarea rows="7" data-module-library-edit-scene-prompt placeholder="描述构图、光影、背景和整体氛围。"></textarea></label>
+            </div>
+            <aside class="module-library-edit-preview">
+              <span>生成效果预览</span>
+              <div class="module-library-edit-preview-card">
+                <button type="button" data-module-library-edit-result-preview aria-label="放大查看生成效果"><img src="assets/creation-cover-616.jpg" alt="生成效果预览" data-module-library-edit-result-image></button>
+              </div>
+            </aside>
+          </div>
+        </section>
+      </div>
+      <div class="module-library-edit-footer">
+        <small>素材仅供查看，不会在此弹窗中修改。</small>
+        <div><button class="btn ghost" type="button" data-modal-close>取消</button><button class="btn primary" type="button" data-module-library-edit-save>确认保存</button></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal" data-brand-editor-leave-modal aria-hidden="true">
+    <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="brand-editor-leave-title">
+      <div class="prototype-modal-head">
+        <h2 id="brand-editor-leave-title">编辑内容尚未保存</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="multi-module-delete-copy"><span aria-hidden="true">!</span><p>返回前是否保存本次编辑内容？</p></div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-brand-editor-discard>不保存</button>
+        <button class="btn primary" type="button" data-brand-editor-save-return>保存并返回</button>
       </div>
     </div>
   </div>
 
   <div class="prototype-modal" data-template-content-modal aria-hidden="true">
-    <div class="prototype-modal-panel template-content-panel">
+    <div class="prototype-modal-panel template-module-picker-panel">
       <div class="prototype-modal-head">
-        <div>
-          <h2>添加内容</h2>
-          <p data-content-modal-subtitle>多选后加入多图配置</p>
-        </div>
+        <h2>选择模块</h2>
         <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
       </div>
-      <div class="content-source-tabs" data-content-source-tabs>
-        <button class="is-active" type="button" data-content-source="local">本地上传</button>
-        <button type="button" data-content-source="material">素材库</button>
-        <button type="button" data-content-source="history">历史创作</button>
-        <button type="button" data-content-source="text">文字素材</button>
+      <div class="module-picker-tabs" role="tablist" aria-label="模块类型">
+        <button class="is-active" type="button" role="tab" aria-selected="true" data-module-picker-type="image">图片生图模块</button>
+        <button type="button" role="tab" aria-selected="false" data-module-picker-type="fixed">固定图片模块</button>
+        <button type="button" role="tab" aria-selected="false" data-module-picker-type="text">文字样式模块</button>
       </div>
-      <div class="content-source-grid" data-content-source-grid></div>
-      <div class="prototype-modal-actions right">
+      <div class="module-picker-toolbar">
+        <label class="module-picker-search"><span class="search-icon" aria-hidden="true"></span><input type="search" placeholder="搜索模块名称、描述" data-module-picker-search></label>
+        <select data-module-picker-category aria-label="选择类目"><option value="全部">全部类目</option><option value="内衣">内衣</option><option value="内裤">内裤</option><option value="童装">童装</option><option value="通用">通用</option></select>
+        <select data-module-picker-source aria-label="选择来源"><option value="全部">全部来源</option><option value="自己创作">自己创作</option><option value="已购模块">已购模块</option></select>
+        <button class="btn primary" type="button" data-module-picker-query>查询</button>
+      </div>
+      <div class="module-picker-body"><div class="module-picker-grid" data-content-source-grid></div></div>
+      <div class="module-picker-footer">
+        <div class="module-picker-pagination" aria-label="模块分页"><button type="button" disabled>‹</button><button class="is-active" type="button">1</button><button type="button">2</button><button type="button">3</button><span>…</span><button type="button">12</button><button type="button">›</button></div>
+        <div class="prototype-modal-actions right">
         <button class="btn ghost" type="button" data-modal-close>取消</button>
         <button class="btn primary" type="button" data-content-confirm>确认选择</button>
+        </div>
       </div>
     </div>
   </div>
@@ -3338,6 +3464,6 @@
 
   <div class="toast" data-toast>已选择创作入口</div>
 
-  <script src="script.js?v=20260810-module-flow"></script>
+  <script src="script.js?v=20260818-suite-return-confirm"></script>
 </body>
 </html>
