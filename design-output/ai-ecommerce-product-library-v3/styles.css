@@ -22159,7 +22159,7 @@ body.is-suite-replica-editor {
 
 /* 新建模块模板：大弹窗编辑器 */
 .template-builder-modal { z-index: 160; padding: 24px; background: rgba(23, 32, 51, .34); backdrop-filter: blur(3px); }
-.template-builder-modal-panel { position: relative; width: min(1640px, calc(100vw - 48px)); height: min(900px, calc(100vh - 48px)); max-height: calc(100vh - 48px); padding: 0; overflow: hidden; border: 1px solid #e2e7f0; border-radius: 16px; background: #fff; }
+.template-builder-modal-panel { position: relative; width: min(1200px, calc(100vw - 48px)); height: min(900px, calc(100vh - 48px)); max-height: calc(100vh - 48px); padding: 0; overflow: hidden; border: 1px solid #e2e7f0; border-radius: 16px; background: #fff; }
 .template-builder-modal-close { position: absolute; z-index: 8; top: 16px; right: 16px; background: #fff; box-shadow: 0 6px 16px rgba(35, 45, 73, .08); }
 .template-builder-modal .template-builder-page { height: 100%; min-height: 0; padding: 24px 24px 94px; overflow: auto; background: #fff; }
 .template-builder-modal .template-builder-head { min-height: 40px; margin-bottom: 18px; padding-right: 48px; }
