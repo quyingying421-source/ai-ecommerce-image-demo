@@ -4,7 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>AI电商智能体 - 商品库原型</title>
-  <link rel="stylesheet" href="styles.css?v=20260818-suite-export-preview-actions" />
+  <link rel="stylesheet" href="styles.css?v=20260819-module-thumb-close-align" />
 </head>
 <body>
   <header class="global-header">
@@ -12,7 +12,7 @@
     <div class="header-actions">
       <button class="notice" type="button" aria-label="通知"></button>
       <div class="header-pill">管理中心<span class="header-chevron"></span></div>
-      <div class="credit-pill"><span class="credit-dot"></span>融豆 1280</div>
+      <div class="credit-pill"><span class="credit-dot"></span>融豆 <span data-rongdou-balance>1280</span></div>
       <img class="avatar" src="assets/user-avatar.png" alt="">
     </div>
   </header>
@@ -27,8 +27,8 @@
         <button class="nav-leaf plain" type="button" data-single-menu="素材库"><span class="nav-icon"></span>品牌素材库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="商品库"><span class="nav-icon"></span>商品库</button>
         <button class="nav-leaf plain" type="button" data-single-menu="精品库"><span class="nav-icon"></span>精品库</button>
-        <button class="nav-leaf plain" type="button" data-single-menu="创作记录"><span class="nav-icon"></span>创作记录</button>
         <button class="nav-leaf plain" type="button" data-single-menu="AI工具"><span class="nav-icon"></span>AI工具</button>
+        <button class="nav-leaf plain" type="button" data-single-menu="创作记录"><span class="nav-icon"></span>创作记录</button>
         <button class="nav-leaf plain" type="button" data-single-menu="AI广场"><span class="nav-icon"></span>AI广场</button>
         </nav>
       </aside>
@@ -232,7 +232,7 @@
                   </div>
                   <div class="single-replica-reference-selected" data-single-replica-reference-selected hidden></div>
                 </div>
-                <label class="single-replica-prompt"><span>需求描述 <em>非必填</em><small>温馨提示：复刻的时候，除了修改背景、光影效果等，不需要额外写提示词</small></span><textarea rows="4" maxlength="500" data-single-replica-prompt placeholder="例如：保留人物姿势与构图，背景改为奶油白；保持商品主体、颜色和材质细节不变。"></textarea></label>
+                <label class="single-replica-prompt"><span>需求描述 <em>非必填</em><small>温馨提示：复刻的时候，除了修改背景、光影效果等，不需要额外写提示词</small></span><textarea rows="4" maxlength="500" data-single-replica-prompt placeholder="例如：保留人物姿势与构图，背景改为奶油白；保持商品主体、颜色和材质细节不变。"></textarea><div class="single-replica-prompt-actions"><button class="btn ghost creation-polish single-replica-polish" type="button" data-single-replica-polish><img class="creation-polish-icon" src="assets/creation-ai-polish-icon.png" alt=""><span>AI润色</span></button></div></label>
                 <div class="single-replica-setting-grid">
                   <section><h4>图片比例 <span>（保持与参考图的比例一致）</span></h4><select data-single-replica-ratio-options aria-label="图片比例"><option value="1:1">1:1</option><option value="2:3">2:3</option><option value="3:2">3:2</option><option value="3:4" selected>3:4</option><option value="4:3">4:3</option><option value="4:5">4:5</option><option value="5:4">5:4</option><option value="9:16">9:16</option><option value="16:9">16:9</option><option value="21:9">21:9</option></select></section>
                   <section><h4>分辨率</h4><select data-single-replica-resolution-options aria-label="分辨率"><option value="1K">1K</option><option value="2K" selected>2K（推荐）</option><option value="4K">4K</option></select></section>
@@ -267,6 +267,10 @@
                 </button>
               </div>
               <div class="composer-actions">
+                <button class="btn ghost creation-polish" type="button" data-creation-polish>
+                  <img class="creation-polish-icon" src="assets/creation-ai-polish-icon.png" alt="">
+                  <span>AI润色</span>
+                </button>
                 <button class="btn primary creation-generate" type="button" data-creation-generate>
                   <img class="creation-send-icon" src="assets/creation-send-icon.png" alt="">
                   <span>生成图片</span>
@@ -284,10 +288,14 @@
               <div class="resource-filter resource-filter-primary" data-resource-filter="type" aria-label="资源类型筛选">
                 <button class="is-active" type="button" data-filter="all">全部</button>
                 <button type="button" data-filter="module">模块</button>
-                <button type="button" data-filter="suite">套图方案</button>
+                <button type="button" data-filter="suite">模块模板</button>
                 <button type="button" data-filter="model">模特</button>
                 <button type="button" data-filter="text">文字素材</button>
               </div>
+              <label class="inspiration-search">
+                <span class="search-icon"></span>
+                <input type="search" placeholder="搜索图片名称 / 商品类目 / 标签" data-inspiration-search>
+              </label>
             </div>
             <div class="inspiration-secondary-filter-row">
               <div class="resource-filter resource-filter-secondary" data-resource-filter="price" aria-label="价格筛选">
@@ -295,10 +303,6 @@
                 <button type="button" data-filter="paid">付费</button>
                 <button type="button" data-filter="free">免费</button>
               </div>
-              <label class="inspiration-search">
-                <span class="search-icon"></span>
-                <input type="search" placeholder="搜索图片名称 / 商品类目 / 标签" data-inspiration-search>
-              </label>
             </div>
           </div>
           <div class="resource-grid" data-resource-grid>
@@ -502,25 +506,25 @@
               </section>
 
               <section class="module-config-section module-analysis-flow" data-module-reverse-section>
-                <div class="module-flow-section-title"><span>1</span><div><strong>选择解析方式</strong><small>让 AI 先理解参考图，再开始创作</small></div><em>可选</em></div>
+                <div class="module-flow-section-title"><span>1</span><div><strong>AI图片解析</strong><small>从参考图中提取可复用提示词，辅助后续图片创作</small></div><em>可选</em></div>
                 <div class="module-analysis-mode-switch" role="radiogroup" aria-label="解析方式">
                   <button class="is-active" type="button" role="radio" aria-checked="true" data-module-analysis-mode-choice="single">
-                    <i>1</i><span><strong>单图解析</strong></span>
+                    <i class="module-analysis-mode-icon" aria-hidden="true"><img class="is-active-icon" src="assets/module-analysis-single-active.png" alt=""><img class="is-idle-icon" src="assets/module-analysis-single-idle.png" alt=""></i><span><strong>单图解析</strong></span>
                   </button>
                   <button type="button" role="radio" aria-checked="false" data-module-analysis-mode-choice="multi">
-                    <i>▦</i><span><strong>多图解析</strong></span>
+                    <i class="module-analysis-mode-icon" aria-hidden="true"><img class="is-active-icon" src="assets/module-analysis-multi-active.png" alt=""><img class="is-idle-icon" src="assets/module-analysis-multi-idle.png" alt=""></i><span><strong>多图解析</strong></span>
                   </button>
                 </div>
                 <div class="module-analysis-stage">
                   <div class="module-analysis-stage-heading"><strong data-module-analysis-upload-title>上传 1 张参考图</strong><small data-module-analysis-upload-note>AI 将提取构图、场景、光影与视觉风格</small></div>
                   <label class="module-analysis-dropzone">
                     <input type="file" accept="image/*" data-module-analysis-input>
-                    <span class="module-upload-symbol">＋</span>
+                    <img class="module-analysis-upload-icon" src="assets/module-analysis-upload-icon.png" alt="">
                     <span data-module-analysis-upload-copy>上传参考图</span>
                     <small data-module-analysis-count>支持 JPG、PNG、WEBP</small>
+                    <div class="module-analysis-thumbs" data-module-analysis-thumbs></div>
                   </label>
-                  <div class="module-analysis-thumbs" data-module-analysis-thumbs></div>
-                  <button class="module-analysis-submit" type="button" data-module-analysis-submit disabled>开始单图解析 <em>1</em></button>
+                  <button class="module-analysis-submit" type="button" data-module-analysis-submit disabled>开始单图解析 <em class="module-analysis-cost"><span>1</span><img src="assets/creation-rongdou-icon.png" alt="融豆"></em></button>
                 </div>
                 <p class="module-analysis-skip-hint">不需要解析？可直接从第 2 步上传创作素材，并填写产品、场景描述。</p>
                 <div class="module-analysis-result" data-module-analysis-result hidden>
@@ -539,7 +543,7 @@
 
               <main class="module-step-one-materials">
               <section class="module-config-section module-material-section" data-module-material-section>
-                <div class="module-flow-section-title compact module-create-step-title"><div><strong>补充参考素材</strong><small>至少上传一项，商品图、模特图、背景图或参考图均可</small></div></div>
+                <div class="module-flow-section-title compact module-create-step-title"><div><strong>补充参考素材</strong><small>围绕商品图、模特图、包装图、背景图与参照图素材，组合生成自由商品图。</small><small>每类图片最多上传 6 张，总体图片最多上传 10 张。</small></div></div>
                 <div class="module-section-title module-material-title" data-module-material-static-title hidden><span data-module-material-title-static>所需素材</span></div>
                 <div class="module-material-content" data-module-material-content>
                   <div class="module-material-grid" data-module-material-grid></div>
@@ -585,7 +589,7 @@
                   <label><span>图片比例</span><select data-module-ratio><option>1:1</option><option>2:3</option><option>3:2</option><option selected>3:4</option><option>4:3</option><option>4:5</option><option>5:4</option><option>9:16</option><option>16:9</option><option>21:9</option></select></label>
                   <label><span>分辨率</span><select data-module-resolution><option selected>2K</option><option>4K</option></select></label>
                   <label><span>生图模型</span><select data-module-model><option selected>专业版</option><option>基础版</option></select></label>
-                  <label><span>图片数量</span><select data-module-count><option selected>1张</option><option>2张</option><option>3张</option><option>4张</option></select></label>
+                  <label class="module-count-setting"><span>图片数量</span><select data-module-count><option selected>1张</option><option>2张</option><option>3张</option><option>4张</option></select></label>
                 </div>
               </section>
 
@@ -712,6 +716,27 @@
             <div class="module-flow-template-drawer-head">
               <div><h2>全部模块</h2></div>
             </div>
+            <div class="module-flow-template-filter" data-module-flow-template-filter>
+              <label class="module-flow-template-search">
+                <input type="search" placeholder="模块名称 / 描述" data-module-flow-template-search>
+              </label>
+              <label class="module-flow-template-select">
+                <select data-module-flow-template-category aria-label="类目">
+                  <option value="">类目</option>
+                </select>
+              </label>
+              <label class="module-flow-template-select">
+                <select data-module-flow-template-source aria-label="模块来源">
+                  <option value="">全部</option>
+                  <option value="已购模块">已购模块</option>
+                  <option value="自己创作">自创模块</option>
+                </select>
+              </label>
+              <button class="module-flow-template-query" type="button" data-module-flow-template-query>
+                <span aria-hidden="true"></span>
+                查询
+              </button>
+            </div>
             <div class="module-flow-template-drawer-grid" data-module-flow-template-drawer-grid></div>
           </aside>
         </section>
@@ -754,6 +779,28 @@
         <div class="module-image-preview-panel" role="dialog" aria-modal="true" aria-labelledby="module-image-preview-title">
           <div class="module-image-preview-head"><h2 id="module-image-preview-title" data-module-image-preview-title>素材图预览</h2><button type="button" data-modal-close aria-label="关闭预览">×</button></div>
           <div class="module-image-preview-stage"><img src="" alt="素材图预览" data-module-image-preview-image></div>
+        </div>
+      </div>
+
+      <div class="prototype-modal module-personal-info-modal" data-module-personal-info-modal aria-hidden="true">
+        <div class="prototype-modal-panel module-personal-info-panel" role="dialog" aria-modal="true" aria-labelledby="module-personal-info-title">
+          <div class="prototype-modal-head module-personal-info-head">
+            <div><h2 id="module-personal-info-title">编辑模块信息</h2></div>
+            <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+          </div>
+          <div class="module-personal-info-body">
+            <section class="module-personal-info-section">
+              <div class="module-personal-info-grid">
+                <label class="module-personal-info-field"><span>模块名称 <em>*</em></span><input type="text" data-module-personal-name placeholder="请输入模块名称"><small>为该创作模块命名，便于在个人资产库中检索</small></label>
+                <label class="module-personal-info-field"><span>选择类目 <em>*</em></span><select data-module-personal-category><option value="服装">服装</option><option value="内裤">内裤</option><option value="皮带">皮带</option><option value="保暖内衣">保暖内衣</option><option value="鞋子">鞋子</option><option value="箱包">箱包</option><option value="帽子">帽子</option><option value="内衣">内衣</option></select><small>用于模块列表筛选与后续复用</small></label>
+              </div>
+              <label class="module-personal-info-field module-personal-info-description"><span>模块功能描述</span><textarea rows="4" maxlength="200" data-module-personal-description placeholder="请输入模块功能描述"></textarea><b><i data-module-personal-description-count>0</i>/200</b><small>其他用户使用时将看到此描述</small></label>
+            </section>
+          </div>
+          <div class="prototype-modal-actions module-personal-info-actions">
+            <button class="btn ghost" type="button" data-modal-close>取消</button>
+            <button class="btn primary" type="button" data-module-personal-confirm>确认加入</button>
+          </div>
         </div>
       </div>
 
@@ -819,7 +866,7 @@
 
           <div class="creation-detail-layout">
             <aside class="creation-params-panel">
-              <section class="detail-param-card no-divider">
+              <section class="detail-param-card no-divider detail-material-section">
                 <div class="detail-material-stack">
                   <article class="detail-material-card" data-detail-material-card="product">
                     <div class="detail-material-card-head">
@@ -848,7 +895,7 @@
                 </div>
               </section>
 
-              <section class="detail-param-card no-divider">
+              <section class="detail-param-card no-divider detail-demand-section">
                 <label class="detail-field full">
                   <span>需求描述</span>
                   <textarea data-detail-prompt placeholder="描述你想生成的商品图，例如：浅色卧室场景，自然光，文胸模特图"></textarea>
@@ -2234,6 +2281,12 @@
         </div>
       </section>
 
+      <section class="workspace-page" data-page="model-create-page">
+        <section class="model-create-page" data-model-create-page>
+          <div class="model-create-page-host" data-model-create-page-host></div>
+        </section>
+      </section>
+
       <section class="workspace-page" data-page="creation-records">
         <section class="creation-records-page">
           <div class="creation-records-head">
@@ -2272,13 +2325,24 @@
           </div>
 
           <div class="creation-record-tools">
-            <div class="creation-record-type-tabs" data-creation-task-type-filter>
-              <button class="is-active" type="button" data-creation-task-type="all">全部</button>
-              <button type="button" data-creation-task-type="单图生成">单图生成</button>
-              <button type="button" data-creation-task-type="套图创作">套图创作</button>
-              <button type="button" data-creation-task-type="套图复刻">套图复刻</button>
-              <button type="button" data-creation-task-type="扩图">扩图</button>
-              <button type="button" data-creation-task-type="模块创建">模块创建</button>
+            <div class="creation-record-filter-panel">
+              <div class="creation-record-type-tabs" data-creation-task-type-filter>
+                <button class="is-active" type="button" data-creation-task-type="all">全部</button>
+                <button type="button" data-creation-task-type="模块生图">模块生图</button>
+                <button type="button" data-creation-task-type="模板生图">模板生图</button>
+                <button type="button" data-creation-task-type="单图复刻">单图复刻</button>
+                <button type="button" data-creation-task-type="多图复刻">多图复刻</button>
+                <button type="button" data-creation-task-type="自由创作">自由创作</button>
+                <button type="button" data-creation-task-type="新建图生图模块">新建图生图模块</button>
+                <button type="button" data-creation-task-type="新建模特">新建模特</button>
+                <button type="button" data-creation-task-type="AI工具">AI工具</button>
+              </div>
+              <div class="creation-record-ai-tool-tabs" data-creation-ai-tool-filter hidden>
+                <button class="is-active" type="button" data-creation-ai-tool-type="all">全部</button>
+                <button type="button" data-creation-ai-tool-type="智能扩图">智能扩图</button>
+                <button type="button" data-creation-ai-tool-type="批量转白底图">批量转白底图</button>
+                <button type="button" data-creation-ai-tool-type="模特换内衣">模特换内衣</button>
+              </div>
             </div>
             <div class="creation-record-search">
               <span class="search-icon"></span>
@@ -2287,14 +2351,14 @@
           </div>
 
           <div class="creation-task-flow" data-creation-task-flow>
-            <article class="creation-task-card" data-creation-task-card data-status="running" data-type="单图生成" data-title="蕾丝聚拢文胸主图生成" data-product="蕾丝聚拢文胸 883">
+            <article class="creation-task-card" data-creation-task-card data-status="running" data-type="模块生图" data-title="蕾丝聚拢文胸模块主图生成" data-product="蕾丝聚拢文胸 883">
               <div class="creation-task-thumb single">
                 <img src="assets/product-cover-03.png" alt="">
-                <span class="creation-task-type">单图</span>
+                <span class="creation-task-type">模块</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>蕾丝聚拢文胸主图生成</h2>
+                  <h2>蕾丝聚拢文胸模块主图生成</h2>
                   <span class="creation-task-status running">生成中</span>
                 </div>
                 <div class="creation-task-meta">
@@ -2305,7 +2369,7 @@
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">蕾丝聚拢文胸 883</span>
                   <span data-tag-source="product_category">内衣 / 文胸</span>
-                  <span data-tag-source="output_ratio">3:4</span>
+                  <span data-tag-source="output_ratio">模块生图</span>
                 </div>
                 <div class="creation-task-progress">
                   <span>商品主体识别完成，正在生成第 3 张</span>
@@ -2319,16 +2383,16 @@
               </div>
             </article>
 
-            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="套图创作" data-title="基础无痕内衣详情套图创作" data-product="基础无痕内衣套装" data-boutique-state="saved">
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="模板生图" data-title="基础无痕内衣详情模板生图" data-product="基础无痕内衣套装" data-boutique-state="saved">
               <div class="creation-task-thumb suite">
                 <img src="assets/product-cover-03.png" alt="">
                 <img src="assets/creation-cover-602.jpg" alt="">
                 <img src="assets/creation-cover-610.jpg" alt="">
-                <span class="creation-task-type">套图</span>
+                <span class="creation-task-type">模板</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>基础无痕内衣详情套图创作</h2>
+                  <h2>基础无痕内衣详情模板生图</h2>
                   <span class="creation-task-status done">已完成</span>
                   <span class="creation-task-boutique-state saved" data-boutique-status>已加入精品库</span>
                 </div>
@@ -2340,7 +2404,7 @@
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">基础无痕内衣套装</span>
                   <span data-tag-source="product_category">内衣 / 套装</span>
-                  <span data-tag-source="output_ratio">3:4</span>
+                  <span data-tag-source="output_ratio">模板生图</span>
                 </div>
               </div>
               <div class="creation-task-action">
@@ -2349,15 +2413,15 @@
               </div>
             </article>
 
-            <article class="creation-task-card" data-creation-task-card data-status="failed" data-type="扩图" data-title="男士冰丝平角裤横版扩图" data-product="男士冰丝平角裤">
+            <article class="creation-task-card" data-creation-task-card data-status="failed" data-type="AI工具" data-ai-tool-type="智能扩图" data-title="男士冰丝平角裤横版智能扩图" data-product="男士冰丝平角裤">
               <div class="creation-task-thumb outpaint">
                 <div class="outpaint-before"><img src="assets/product-cover-01.png" alt=""></div>
                 <div class="outpaint-after"><img src="assets/product-cover-01.png" alt=""></div>
-                <span class="creation-task-type">扩图</span>
+                <span class="creation-task-type">智能扩图</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>男士冰丝平角裤横版扩图</h2>
+                  <h2>男士冰丝平角裤横版智能扩图</h2>
                   <span class="creation-task-status failed">失败</span>
                 </div>
                 <div class="creation-task-meta">
@@ -2368,7 +2432,7 @@
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">男士冰丝平角裤</span>
                   <span data-tag-source="product_category">内衣 / 男士内裤</span>
-                  <span data-tag-source="output_ratio">4:5</span>
+                  <span data-tag-source="output_ratio">智能扩图</span>
                 </div>
                 <div class="creation-task-reason">失败原因：原图边缘裁切过紧，主体外轮廓识别不完整。</div>
               </div>
@@ -2377,16 +2441,16 @@
               </div>
             </article>
 
-            <article class="creation-task-card" data-creation-task-card data-status="running" data-type="套图创作" data-title="儿童亲子短袖活动套图补生成" data-product="儿童亲子短袖套装">
+            <article class="creation-task-card" data-creation-task-card data-status="running" data-type="多图复刻" data-title="儿童亲子短袖活动套图复刻" data-product="儿童亲子短袖套装">
               <div class="creation-task-thumb suite">
                 <img src="assets/product-cover-04.png" alt="">
                 <img src="assets/creation-cover-616.jpg" alt="">
                 <img src="assets/creation-cover-606.jpg" alt="">
-                <span class="creation-task-type">套图</span>
+                <span class="creation-task-type">复刻</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>儿童亲子短袖活动套图补生成</h2>
+                  <h2>儿童亲子短袖活动套图复刻</h2>
                   <span class="creation-task-status warning">部分完成</span>
                 </div>
                 <div class="creation-task-meta">
@@ -2397,7 +2461,7 @@
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">儿童亲子短袖套装</span>
                   <span data-tag-source="product_category">童装 / 套装</span>
-                  <span data-tag-source="output_ratio">3:4</span>
+                  <span data-tag-source="output_ratio">多图复刻</span>
                 </div>
                 <div class="creation-task-progress">
                   <span>剩余 2 张等待补生成</span>
@@ -2411,27 +2475,26 @@
               </div>
             </article>
 
-            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="扩图" data-title="四条装男士内裤组合主图扩图" data-product="四条装男士内裤组合" data-boutique-state="partial">
-              <div class="creation-task-thumb outpaint">
-                <div class="outpaint-before"><img src="assets/product-cover-02.png" alt=""></div>
-                <div class="outpaint-after"><img src="assets/product-cover-02.png" alt=""></div>
-                <span class="creation-task-type">扩图</span>
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="AI工具" data-ai-tool-type="批量转白底图" data-title="四条装男士内裤拍摄图转白底" data-product="四条装男士内裤组合" data-boutique-state="partial">
+              <div class="creation-task-thumb single">
+                <img src="assets/product-cover-02.png" alt="">
+                <span class="creation-task-type">白底图</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>四条装男士内裤组合主图扩图</h2>
+                  <h2>四条装男士内裤拍摄图转白底</h2>
                   <span class="creation-task-status done">已完成</span>
                   <span class="creation-task-boutique-state partial" data-boutique-status>已加入 1 张</span>
                 </div>
                 <div class="creation-task-meta">
-                  <span>2 张图</span>
-                  <span>已完成 2/2</span>
+                  <span>12 张图</span>
+                  <span>已完成 12/12</span>
                   <span>2026-07-14 15:52</span>
                 </div>
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">四条装男士内裤组合</span>
-                  <span data-tag-source="product_category">内衣 / 套装</span>
-                  <span data-tag-source="output_ratio">16:9</span>
+                  <span data-tag-source="product_category">拍摄图 / 白底图</span>
+                  <span data-tag-source="output_ratio">批量转白底图</span>
                 </div>
               </div>
               <div class="creation-task-action">
@@ -2440,14 +2503,14 @@
               </div>
             </article>
 
-            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="单图生成" data-title="儿童T恤夏季详情主图生成" data-product="儿童T恤-详情-1" data-boutique-state="none">
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="自由创作" data-title="儿童T恤夏季主图自由创作" data-product="儿童T恤-详情-1" data-boutique-state="none">
               <div class="creation-task-thumb single">
                 <img src="assets/product-cover-04.png" alt="">
-                <span class="creation-task-type">单图</span>
+                <span class="creation-task-type">自由</span>
               </div>
               <div class="creation-task-main">
                 <div class="creation-task-title-row">
-                  <h2>儿童T恤夏季详情主图生成</h2>
+                  <h2>儿童T恤夏季主图自由创作</h2>
                   <span class="creation-task-status done">已完成</span>
                 </div>
                 <div class="creation-task-meta">
@@ -2458,11 +2521,121 @@
                 <div class="creation-task-tags">
                   <span data-tag-source="product_name">儿童T恤-详情-1</span>
                   <span data-tag-source="product_category">童装 / T恤</span>
-                  <span data-tag-source="output_ratio">1:1</span>
+                  <span data-tag-source="output_ratio">自由创作</span>
                 </div>
               </div>
               <div class="creation-task-action">
                 <button class="btn ghost" type="button" data-add-to-boutique>加入精品库</button>
+                <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
+              </div>
+            </article>
+
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="单图复刻" data-title="法式文胸详情单图复刻" data-product="法式蕾丝文胸">
+              <div class="creation-task-thumb single">
+                <img src="assets/product-cover-03.png" alt="">
+                <span class="creation-task-type">复刻</span>
+              </div>
+              <div class="creation-task-main">
+                <div class="creation-task-title-row">
+                  <h2>法式文胸详情单图复刻</h2>
+                  <span class="creation-task-status done">已完成</span>
+                </div>
+                <div class="creation-task-meta">
+                  <span>4 张图</span>
+                  <span>已完成 4/4</span>
+                  <span>2026-07-13 10:24</span>
+                </div>
+                <div class="creation-task-tags">
+                  <span data-tag-source="product_name">法式蕾丝文胸</span>
+                  <span data-tag-source="product_category">内衣 / 文胸</span>
+                  <span data-tag-source="output_ratio">单图复刻</span>
+                </div>
+              </div>
+              <div class="creation-task-action">
+                <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
+              </div>
+            </article>
+
+            <article class="creation-task-card" data-creation-task-card data-status="running" data-type="新建图生图模块" data-title="高腰塑形裤卖点图生图模块" data-product="高腰塑形裤">
+              <div class="creation-task-thumb single">
+                <img src="assets/product-cover-01.png" alt="">
+                <span class="creation-task-type">新模块</span>
+              </div>
+              <div class="creation-task-main">
+                <div class="creation-task-title-row">
+                  <h2>高腰塑形裤卖点图生图模块</h2>
+                  <span class="creation-task-status running">生成中</span>
+                </div>
+                <div class="creation-task-meta">
+                  <span>参考素材 6 张</span>
+                  <span>卖点结构解析中</span>
+                  <span>2026-07-12 18:06</span>
+                </div>
+                <div class="creation-task-tags">
+                  <span data-tag-source="product_name">高腰塑形裤</span>
+                  <span data-tag-source="product_category">图生图模块</span>
+                  <span data-tag-source="output_ratio">新建图生图模块</span>
+                </div>
+                <div class="creation-task-progress">
+                  <span>模块结构已拆解，正在生成候选模块图</span>
+                  <div class="creation-task-progress-line">
+                    <i style="width: 46%;"></i>
+                  </div>
+                </div>
+              </div>
+              <div class="creation-task-action">
+                <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
+              </div>
+            </article>
+
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="新建模特" data-title="无痕内衣新建模特定妆" data-product="无痕内衣套装">
+              <div class="creation-task-thumb single">
+                <img src="assets/creation-cover-606.jpg" alt="">
+                <span class="creation-task-type">模特</span>
+              </div>
+              <div class="creation-task-main">
+                <div class="creation-task-title-row">
+                  <h2>无痕内衣新建模特定妆</h2>
+                  <span class="creation-task-status done">已完成</span>
+                </div>
+                <div class="creation-task-meta">
+                  <span>3 组形象</span>
+                  <span>已完成 3/3</span>
+                  <span>2026-07-12 14:18</span>
+                </div>
+                <div class="creation-task-tags">
+                  <span data-tag-source="product_name">无痕内衣套装</span>
+                  <span data-tag-source="product_category">模特资产</span>
+                  <span data-tag-source="output_ratio">新建模特</span>
+                </div>
+              </div>
+              <div class="creation-task-action">
+                <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
+              </div>
+            </article>
+
+            <article class="creation-task-card" data-creation-task-card data-status="done" data-type="AI工具" data-ai-tool-type="模特换内衣" data-title="法式内衣模特换内衣上身图" data-product="法式蕾丝内衣">
+              <div class="creation-task-thumb single">
+                <img src="assets/creation-cover-616.jpg" alt="">
+                <span class="creation-task-type">换内衣</span>
+              </div>
+              <div class="creation-task-main">
+                <div class="creation-task-title-row">
+                  <h2>法式内衣模特换内衣上身图</h2>
+                  <span class="creation-task-status done">已完成</span>
+                </div>
+                <div class="creation-task-meta">
+                  <span>8 张图</span>
+                  <span>已完成 8/8</span>
+                  <span>2026-07-12 11:36</span>
+                </div>
+                <div class="creation-task-tags">
+                  <span data-tag-source="product_name">法式蕾丝内衣</span>
+                  <span data-tag-source="product_category">模特上身</span>
+                  <span data-tag-source="output_ratio">模特换内衣</span>
+                </div>
+              </div>
+              <div class="creation-task-action">
                 <button class="btn primary" type="button" data-open-creation-detail>查看详情</button>
               </div>
             </article>
@@ -2744,11 +2917,11 @@
       <button class="creation-modal-close" type="button" data-modal-close aria-label="关闭">×</button>
       <div class="prototype-modal-panel small creation-param-modal">
         <div class="prototype-modal-head creation-select-head">
-          <div><h2>参数设置</h2><p>设置图片输出比例和分辨率。</p></div>
+          <div><h2>参数设置</h2></div>
         </div>
         <div class="creation-param-body">
           <div class="param-section">
-            <h3>图片比例</h3>
+            <h3>图片比例 <span>保持与参考图的比例一致</span></h3>
             <div class="param-options" data-ratio-options>
               <button type="button" data-value="1:1">1:1</button>
               <button type="button" data-value="2:3">2:3</button>
@@ -2765,7 +2938,6 @@
           <div class="param-section">
             <h3>分辨率</h3>
             <div class="param-options resolution" data-resolution-options>
-              <button type="button" data-value="1K">1K</button>
               <button class="is-active" type="button" data-value="2K">2K</button>
               <button type="button" data-value="4K">4K</button>
             </div>
@@ -2775,6 +2947,7 @@
             <div class="param-options generation-model" data-generation-model-options>
               <button class="is-active" type="button" data-generation-model-option="专业版">专业版</button>
               <button type="button" data-generation-model-option="基础版">基础版</button>
+              <button type="button" data-generation-model-option="通用版">通用版</button>
             </div>
           </div>
           <div class="param-section">
@@ -2791,6 +2964,21 @@
           <button class="btn ghost" type="button" data-modal-close>取消</button>
           <button class="btn primary" type="button" data-modal-close>确认</button>
         </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="prototype-modal creation-polish-modal" data-creation-polish-modal aria-hidden="true">
+    <div class="prototype-modal-panel creation-polish-panel" role="dialog" aria-modal="true" aria-labelledby="creation-polish-title">
+      <button class="creation-polish-close" type="button" data-modal-close aria-label="关闭">×</button>
+      <h2 id="creation-polish-title">提示词优化</h2>
+      <p data-creation-polish-output>画面保持电商主图质感，商品主体清晰，突出材质、版型和核心卖点；使用自然柔和光线，背景干净，整体风格高级真实，适合投放和商品详情页展示。</p>
+      <div class="creation-polish-actions">
+        <button class="creation-polish-regenerate" type="button" data-creation-polish-regenerate>
+          <span aria-hidden="true">↻</span>
+          重新生成
+        </button>
+        <button class="creation-polish-use" type="button" data-creation-polish-use>确定使用</button>
       </div>
     </div>
   </div>
@@ -2867,36 +3055,36 @@
                 <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-01.png" data-module-task-image-alt="生成结果 1" aria-label="放大预览生成结果 1"><img src="assets/product-cover-01.png" alt="生成结果 1"></button>
                 <div class="module-result-actions" aria-label="生成结果 1 操作">
                   <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-01.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
-                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
-                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
-                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                  <button type="button" data-free-task-image-action="boutique" data-free-task-image="assets/product-cover-01.png" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" data-free-task-image="assets/product-cover-01.png" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" data-free-task-image="assets/product-cover-01.png" title="下载" aria-label="下载">下载</button>
                 </div>
               </figure>
               <figure class="module-task-result-card">
                 <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-02.png" data-module-task-image-alt="生成结果 2" aria-label="放大预览生成结果 2"><img src="assets/product-cover-02.png" alt="生成结果 2"></button>
                 <div class="module-result-actions" aria-label="生成结果 2 操作">
                   <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-02.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
-                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
-                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
-                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                  <button type="button" data-free-task-image-action="boutique" data-free-task-image="assets/product-cover-02.png" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" data-free-task-image="assets/product-cover-02.png" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" data-free-task-image="assets/product-cover-02.png" title="下载" aria-label="下载">下载</button>
                 </div>
               </figure>
               <figure class="module-task-result-card">
                 <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-03.png" data-module-task-image-alt="生成结果 3" aria-label="放大预览生成结果 3"><img src="assets/product-cover-03.png" alt="生成结果 3"></button>
                 <div class="module-result-actions" aria-label="生成结果 3 操作">
                   <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-03.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
-                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
-                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
-                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                  <button type="button" data-free-task-image-action="boutique" data-free-task-image="assets/product-cover-03.png" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" data-free-task-image="assets/product-cover-03.png" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" data-free-task-image="assets/product-cover-03.png" title="下载" aria-label="下载">下载</button>
                 </div>
               </figure>
               <figure class="module-task-result-card">
                 <button class="module-task-image-preview" type="button" data-module-task-image-preview="assets/product-cover-04.png" data-module-task-image-alt="生成结果 4" aria-label="放大预览生成结果 4"><img src="assets/product-cover-04.png" alt="生成结果 4"></button>
                 <div class="module-result-actions" aria-label="生成结果 4 操作">
                   <button type="button" data-free-task-image-action="outpaint" data-free-task-image="assets/product-cover-04.png" title="智能扩图" aria-label="智能扩图">智能扩图</button>
-                  <button type="button" data-free-task-image-action="boutique" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
-                  <button type="button" data-free-task-image-action="text" title="文案编辑" aria-label="文案编辑">文案编辑</button>
-                  <button class="is-primary" type="button" data-free-task-image-action="download" title="下载" aria-label="下载">下载</button>
+                  <button type="button" data-free-task-image-action="boutique" data-free-task-image="assets/product-cover-04.png" title="添加到精品库" aria-label="添加到精品库">添加到精品库</button>
+                  <button type="button" data-free-task-image-action="text" data-free-task-image="assets/product-cover-04.png" title="文案编辑" aria-label="文案编辑">文案编辑</button>
+                  <button class="is-primary" type="button" data-free-task-image-action="download" data-free-task-image="assets/product-cover-04.png" title="下载" aria-label="下载">下载</button>
                 </div>
               </figure>
             </div>
@@ -3008,7 +3196,7 @@
   <div class="prototype-modal" data-module-library-delete-modal aria-hidden="true">
     <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="module-library-delete-title">
       <div class="prototype-modal-head">
-        <h2 id="module-library-delete-title">删除模块</h2>
+        <h2 id="module-library-delete-title" data-module-library-delete-title>删除模块</h2>
         <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
       </div>
       <div class="multi-module-delete-copy"><span aria-hidden="true">!</span><p data-module-library-delete-message>确认删除当前模块吗？删除后不可恢复。</p></div>
@@ -3019,11 +3207,25 @@
     </div>
   </div>
 
+  <div class="prototype-modal" data-product-delete-modal aria-hidden="true">
+    <div class="prototype-modal-panel multi-module-delete-panel" role="dialog" aria-modal="true" aria-labelledby="product-delete-title">
+      <div class="prototype-modal-head">
+        <h2 id="product-delete-title">删除商品</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="multi-module-delete-copy"><span aria-hidden="true">!</span><p data-product-delete-message>确认删除当前商品吗？删除后不可恢复。</p></div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn danger" type="button" data-product-delete-confirm>删除</button>
+      </div>
+    </div>
+  </div>
+
   <div class="prototype-modal" data-module-library-publish-modal aria-hidden="true">
     <div class="prototype-modal-panel module-library-publish-panel" role="dialog" aria-modal="true" aria-labelledby="module-library-publish-title">
       <div class="prototype-modal-head">
         <div>
-          <h2 id="module-library-publish-title">发布到 AI 图片广场</h2>
+          <h2 id="module-library-publish-title" data-module-library-publish-title>发布到 AI 图片广场</h2>
           <p>为模块设置其他用户单次购买时需要消耗的融豆数。</p>
         </div>
         <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
@@ -3062,18 +3264,18 @@
       </div>
       <div class="module-library-edit-scroll">
         <section class="module-library-edit-section">
-          <h3>基础信息</h3>
+          <h3 data-module-library-edit-config-title>基础信息</h3>
           <div class="module-library-edit-basic-grid">
             <label><span>模块名称 <em>*</em></span><input type="text" maxlength="40" data-module-library-edit-name></label>
-            <label><span>选择类目 <em>*</em></span><select data-module-library-edit-category><option value="内衣">内衣</option><option value="内裤">内裤</option><option value="童装">童装</option><option value="通用">通用</option></select></label>
-            <label class="module-library-edit-description"><span>模块功能描述</span><textarea maxlength="200" rows="3" placeholder="简要说明模块适合的商品、场景和使用方式。" data-module-library-edit-description></textarea><small>该说明将用于模块列表检索与复用。</small></label>
+            <label><span>选择类目 <em>*</em></span><select data-module-library-edit-category><option value="内衣">内衣</option><option value="文胸">文胸</option><option value="内裤">内裤</option><option value="童装">童装</option><option value="通用">通用</option></select></label>
+            <label class="module-library-edit-description" data-module-library-edit-description-field><span>模块功能描述</span><textarea maxlength="200" rows="3" placeholder="简要说明模块适合的商品、场景和使用方式。" data-module-library-edit-description></textarea><small>该说明将用于模块列表检索与复用。</small></label>
           </div>
         </section>
         <section class="module-library-edit-section" data-module-library-edit-material-section hidden>
-          <div class="module-library-edit-section-title"><h3>已上传素材</h3><span>未上传的素材类型不会展示</span></div>
+          <div class="module-library-edit-section-title"><h3 data-module-library-edit-material-title>已上传素材</h3><span data-module-library-edit-material-note>未上传的素材类型不会展示</span></div>
           <div class="module-library-edit-materials" data-module-library-edit-materials></div>
         </section>
-        <section class="module-library-edit-section">
+        <section class="module-library-edit-section" data-module-library-edit-prompt-section>
           <div class="module-library-edit-section-title"><h3>提示词设置</h3><span>用于后续创作图片时复用</span></div>
           <div class="module-library-edit-prompt-layout">
             <div class="module-library-edit-prompts">
@@ -3090,7 +3292,7 @@
         </section>
       </div>
       <div class="module-library-edit-footer">
-        <small>素材仅供查看，不会在此弹窗中修改。</small>
+        <small data-module-library-edit-footer-note>素材仅供查看，不会在此弹窗中修改。</small>
         <div><button class="btn ghost" type="button" data-modal-close>取消</button><button class="btn primary" type="button" data-module-library-edit-save>确认保存</button></div>
       </div>
     </div>
@@ -3225,9 +3427,15 @@
         <div>
           <h2>模特生成</h2>
         </div>
-        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+        <div class="model-create-page-head-actions">
+          <button class="model-create-page-back" type="button" data-model-create-page-back>返回</button>
+          <button class="model-create-task-trigger" type="button" data-model-create-task-drawer aria-expanded="false"><span>创作记录</span><b data-model-create-task-count>0</b></button>
+        </div>
       </div>
       <div class="model-create-body">
+        <div class="model-create-workbench">
+          <section class="model-create-config-panel">
+            <div class="model-create-config-scroll">
         <div class="model-text-top">
           <section class="model-text-reference">
             <div class="model-text-reference-title"><strong>参考图分析</strong><small>可上传参考图提取人物特征，系统会自动建议下方配置项。</small></div>
@@ -3237,9 +3445,12 @@
                 <p>上传人物图片</p>
               </div>
               <div class="model-ref-preview">
-                <img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="">
-                <span>已分析</span>
+                <span data-model-reference-status>待解析</span>
                 <button type="button" data-model-reference-remove>删除</button>
+                <div class="model-ref-image-wrap">
+                  <img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="参考图，点击放大预览" role="button" tabindex="0" data-model-reference-preview>
+                </div>
+                <button class="model-ref-parse" type="button" data-model-reference-parse>解析图片 <span class="model-ref-parse-cost">1<img src="assets/creation-rongdou-icon.png" alt="融豆"></span></button>
               </div>
             </div>
           </section>
@@ -3283,65 +3494,91 @@
           </div>
         </div>
 
+        <section class="model-generation-settings" aria-label="生成参数">
+          <label><span>分辨率</span><select data-model-resolution><option value="1K">1K</option><option value="2K" selected>2K（推荐）</option><option value="4K">4K</option></select></label>
+          <label><span>生图模型</span><select data-model-generation-model><option value="专业版" selected>专业版</option><option value="基础版">基础版</option><option value="通用版">通用版</option></select></label>
+          <label><span>图片比例</span><select data-model-image-ratio><option value="1:1">1:1</option><option value="3:4" selected>3:4</option><option value="4:5">4:5</option><option value="9:16">9:16</option></select></label>
+        </section>
+
         <div class="model-text-summary"><span>已选摘要</span><div data-model-summary>请先选择年龄分段、性别、人种、肤色</div></div>
 
+            </div>
+
+            <div class="prototype-modal-actions right model-create-actions">
+              <button class="btn primary model-generate-button" type="button" data-model-generate disabled><span data-model-generate-label>生成模特图</span><em class="model-generate-cost"><span>10</span><img src="assets/creation-rongdou-icon.png" alt="融豆"></em></button>
+            </div>
+          </section>
+
+          <aside class="model-create-result-panel">
         <div class="model-text-result">
           <div class="model-text-result-side">
-            <h4>确认模特信息</h4>
-            <p>生成完成，请确认模特信息后保存。</p>
+            <h4>生成结果</h4>
+            <time class="model-result-submitted-at" data-model-result-submitted-at>提交时间：--</time>
           </div>
           <div class="model-text-result-preview">
+            <div class="model-text-result-empty"><span>✦</span><strong>等待生成模特图</strong><small>完成左侧信息配置后，点击“生成模特图”开始创作</small></div>
             <div class="model-text-result-loading"><span class="model-spinner"></span><strong>正在生成模特图...</strong><small>系统会先生成单张模特图</small></div>
-            <div class="model-text-result-ready"><img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="" data-model-preview-image data-model-generated-preview><span>模特图</span></div>
-          </div>
-          <div class="model-confirm-fields">
-            <label class="model-confirm-field model-confirm-field-wide">
-              <span>模特名称</span>
-              <input type="text" data-model-confirm-name placeholder="请输入模特名称">
-            </label>
-            <label class="model-confirm-field">
-              <span>性别</span>
-              <input type="text" data-model-confirm-gender>
-            </label>
-            <label class="model-confirm-field">
-              <span>年龄段</span>
-              <input type="text" data-model-confirm-age>
-            </label>
-            <label class="model-confirm-field">
-              <span>风格标签</span>
-              <input type="text" data-model-confirm-style placeholder="多个标签用顿号分隔">
-            </label>
-            <label class="model-confirm-field">
-              <span>适用品类</span>
-              <input type="text" data-model-confirm-category placeholder="多个品类用顿号分隔">
-            </label>
-            <label class="model-confirm-field model-confirm-field-wide">
-              <span>备注 / 描述</span>
-              <textarea rows="2" data-model-confirm-note placeholder="补充模特资产描述"></textarea>
-            </label>
-          </div>
-          <div class="model-ai-attributes">
-            <strong>AI 识别属性</strong>
-            <div data-model-ai-attributes></div>
+            <div class="model-text-result-failed"><span>!</span><strong>生成失败</strong><small>任务已提交但生成失败，可调整素材后重新生成</small></div>
+            <div class="model-text-result-ready"><img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="" data-model-preview-image data-model-generated-preview></div>
           </div>
           <div class="model-text-result-actions">
             <button class="btn ghost model-text-regenerate-btn" type="button" data-model-regenerate>重新生成</button>
-            <button class="btn primary" type="button" data-model-confirm>确认创建</button>
+            <button class="btn primary" type="button" data-model-add-library>添加到模特库</button>
           </div>
         </div>
-      </div>
-      <div class="prototype-modal-actions right model-create-actions">
-        <button class="btn ghost" type="button" data-modal-close>取消</button>
-        <button class="btn primary" type="button" data-model-generate disabled>生成模特图</button>
+          </aside>
+        </div>
       </div>
     </div>
   </div>
+
+  <div class="prototype-modal" data-model-confirm-modal aria-hidden="true">
+    <div class="prototype-modal-panel model-confirm-panel" role="dialog" aria-modal="true" aria-labelledby="model-confirm-title">
+      <div class="prototype-modal-head">
+        <h2 id="model-confirm-title">确认模特信息</h2>
+        <button class="prototype-close" type="button" data-modal-close aria-label="关闭"></button>
+      </div>
+      <div class="model-confirm-modal-body">
+        <div class="model-confirm-modal-preview">
+          <img src="../../../AI视频/ai-ecommerce-video-demo/assets/model-detail-source.png" alt="生成的模特图，点击放大预览" data-model-confirm-preview data-preview-drawer-image>
+          <span>模特图</span>
+        </div>
+        <div class="model-confirm-modal-content">
+          <div class="model-confirm-fields">
+            <label class="model-confirm-field model-confirm-field-wide"><span>模特名称</span><input type="text" data-model-library-confirm-name placeholder="请输入模特名称"></label>
+            <label class="model-confirm-field"><span>性别</span><input type="text" data-model-library-confirm-gender></label>
+            <label class="model-confirm-field"><span>年龄段</span><input type="text" data-model-library-confirm-age></label>
+            <label class="model-confirm-field model-confirm-field-wide"><span>备注 / 描述</span><textarea rows="3" data-model-library-confirm-note placeholder="补充模特资产描述"></textarea></label>
+          </div>
+          <div class="model-ai-attributes">
+            <strong>已选摘要</strong>
+            <div data-model-library-ai-attributes></div>
+          </div>
+        </div>
+      </div>
+      <div class="prototype-modal-actions right">
+        <button class="btn ghost" type="button" data-modal-close>取消</button>
+        <button class="btn primary" type="button" data-model-library-confirm-submit>确认添加到模特库</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="model-create-task-mask" data-model-create-task-mask></div>
+  <aside class="model-create-task-drawer" data-model-create-task-drawer-panel aria-hidden="true" aria-label="模特生成创作记录">
+    <div class="model-create-task-drawer-head">
+      <div><h2>创作记录</h2><p>展示最近生成的模特任务、参考图和输出结果。</p></div>
+      <button type="button" data-model-create-task-drawer-close aria-label="关闭创作记录"></button>
+    </div>
+    <div class="model-create-task-list" data-model-create-task-list>
+      <div class="model-create-task-empty"><span>暂无创作记录</span><small>生成模特图后，任务会显示在这里。</small></div>
+    </div>
+  </aside>
 
   <div class="prototype-modal" data-model-reference-picker-modal aria-hidden="true">
     <div class="prototype-modal-panel model-reference-picker-panel" role="dialog" aria-modal="true" aria-labelledby="model-reference-picker-title">
       <div class="model-reference-picker-head">
         <div>
-          <h2 id="model-reference-picker-title">添加人物图片</h2>
+          <h2 id="model-reference-picker-title">添加参考图片</h2>
           <p>选择一张人物图片，用于提取模特的基础特征和风格。</p>
         </div>
         <button class="prototype-close model-reference-picker-close" type="button" data-model-reference-picker-close aria-label="关闭"></button>
@@ -3521,6 +3758,6 @@
 
   <div class="toast" data-toast>已选择创作入口</div>
 
-  <script src="script.js?v=20260818-suite-export-preview-actions"></script>
+  <script src="script.js?v=20260819-module-thumb-close-align"></script>
 </body>
 </html>
