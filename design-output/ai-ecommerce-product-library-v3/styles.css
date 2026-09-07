@@ -807,6 +807,47 @@ button {
   object-fit: contain;
 }
 
+.product-library-query-button {
+  justify-self: start;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-width: 92px;
+  height: 36px;
+  padding: 0 12px;
+  border: 1px solid #5662ff;
+  border-radius: 8px;
+  color: #505cff;
+  background: #fff;
+  font-size: 15px;
+  font-weight: 400;
+}
+
+.product-library-query-button:hover {
+  background: #f5f6ff;
+}
+
+.product-library-query-icon {
+  position: relative;
+  width: 15px;
+  height: 15px;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+}
+
+.product-library-query-icon::after {
+  position: absolute;
+  right: -5px;
+  bottom: -3px;
+  width: 6px;
+  height: 2px;
+  border-radius: 2px;
+  background: currentColor;
+  transform: rotate(45deg);
+  content: "";
+}
+
 .search-field:focus-within,
 .toolbar select:focus {
   border-color: var(--primary);
@@ -24660,7 +24701,7 @@ body.is-suite-replica-editor {
 .module-asset-head > div > p { flex: 0 0 100%; }
 .module-asset-head > div > p:empty { display: none; }
 .module-asset-submit-time { color: #98a2b3; font-size: 13px; line-height: 20px; white-space: nowrap; }
-.module-asset-edit-button { min-height: 30px; height: 30px; margin-left: auto; padding: 0 12px; border-radius: 6px; color: #5968f5 !important; font-size: 12px; font-weight: 400; }
+.module-asset-edit-button { min-height: 30px; height: 30px; margin-left: auto; padding: 0 12px; border-radius: 6px; color: #252632 !important; font-size: 12px; font-weight: 400; }
 .module-asset-edit-button img { width: 15px; height: 15px; margin-right: 5px; object-fit: contain; }
 .module-asset-state { padding: 5px 9px; border-radius: 5px; color: #7f8797; background: #edf0f5; font-size: 13px; }
 .module-asset-state:empty { display: none; }
@@ -25345,6 +25386,15 @@ body.is-suite-replica-editor {
 .suite-template-publish-actions { margin-top: 48px; display: flex; justify-content: flex-end; gap: 24px; }.suite-template-publish-actions .btn { min-width: 246px; height: 100px; padding: 0 32px; border-radius: 20px; font-size: 31px; font-weight: 500; }
 .suite-template-publish-actions .btn.primary { box-shadow: none; }
 @media (max-width: 900px) { .suite-template-publish-modal { padding: 20px; }.suite-template-publish-panel { width: min(680px, calc(100vw - 40px)); padding: 30px; border-radius: 18px; }.suite-template-publish-head h2 { font-size: 26px; }.suite-template-publish-head p { font-size: 17px; }.suite-template-publish-close { width: 52px; height: 52px; border-radius: 13px; font-size: 34px; }.suite-template-publish-body { margin-top: 28px; }.suite-template-publish-target { min-height: 104px; padding: 16px; border-radius: 13px; gap: 16px; }.suite-template-publish-target img { width: 72px; height: 72px; border-radius: 9px; }.suite-template-publish-target strong { font-size: 20px; }.suite-template-publish-target span { font-size: 17px; }.suite-template-price-field { margin-top: 28px; gap: 11px; }.suite-template-price-field > span { font-size: 20px; }.suite-template-price-field em { font-size: 16px; }.suite-template-price-field > div { height: 62px; padding: 0 18px; border-radius: 11px; }.suite-template-price-field input { font-size: 24px; }.suite-template-price-field b { font-size: 20px; }.suite-template-price-field small { font-size: 16px; }.suite-template-publish-rules { margin-top: 28px; padding: 20px; border-radius: 13px; }.suite-template-publish-rules strong { font-size: 20px; }.suite-template-publish-rules ul { margin-top: 12px; }.suite-template-publish-rules li { font-size: 16px; }.suite-template-publish-actions { margin-top: 30px; gap: 12px; }.suite-template-publish-actions .btn { min-width: 130px; height: 56px; border-radius: 11px; font-size: 20px; } }
+
+/* 套图模板发布弹窗与单图模板采用同一紧凑规格。 */
+.suite-template-publish-modal { z-index: 180; padding: 24px; background: rgba(23, 32, 51, .34); backdrop-filter: blur(4px); }
+.suite-template-publish-panel { width: min(480px, calc(100vw - 40px)); max-height: min(720px, calc(100vh - 48px)); padding: 20px 24px; border-radius: 12px; }
+.suite-template-publish-head { align-items: flex-start; gap: 16px; }.suite-template-publish-head h2 { margin: 0; font-size: 18px; line-height: 24px; }.suite-template-publish-head p { margin: 5px 0 0; font-size: 13px; line-height: 20px; }.suite-template-publish-close { width: 34px; height: 34px; border-radius: 8px; background: #f5f7fc; font-size: 0; }
+.suite-template-publish-body { margin-top: 0; padding: 18px 0 2px; }.suite-template-publish-target { min-height: 0; padding: 10px; border-radius: 8px; gap: 10px; }.suite-template-publish-target img { width: 46px; height: 46px; border-radius: 6px; }.suite-template-publish-target div { gap: 3px; }.suite-template-publish-target strong { font-size: 14px; line-height: 20px; }.suite-template-publish-target span { font-size: 12px; line-height: 18px; }
+.suite-template-price-field { margin-top: 18px; gap: 8px; }.suite-template-price-field > span { font-size: 14px; line-height: 20px; }.suite-template-price-field em { margin-left: 5px; font-size: 12px; }.suite-template-price-field > div { height: 42px; padding: 0 12px; border-radius: 8px; gap: 8px; }.suite-template-price-field input { font-size: 15px; }.suite-template-price-field b { font-size: 13px; }.suite-template-price-field small { font-size: 12px; line-height: 18px; }
+.suite-template-publish-rules { margin-top: 16px; padding: 12px 14px; border-radius: 8px; }.suite-template-publish-rules strong { font-size: 13px; line-height: 20px; }.suite-template-publish-rules ul { margin: 6px 0 0; padding-left: 18px; }.suite-template-publish-rules li { padding-left: 0; font-size: 12px; line-height: 20px; }
+.suite-template-publish-actions { margin: 18px 0 0; gap: 10px; }.suite-template-publish-actions .btn { width: 98px; min-width: 98px; height: 40px; padding: 0; border-radius: 8px; font-size: 15px; font-weight: 400; }
 .module-library-edit-head p { display: none; }
 .module-library-edit-basic-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
 .module-library-edit-basic-grid label > span,

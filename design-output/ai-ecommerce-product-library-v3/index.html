@@ -2259,6 +2259,10 @@
                 <option>内衣</option>
                 <option>套装</option>
               </select>
+              <button class="btn product-library-query-button" type="button" data-product-library-query>
+                <span class="product-library-query-icon" aria-hidden="true"></span>
+                查询
+              </button>
             </section>
 
             <div class="loading-state" data-loading-state>
@@ -3451,27 +3455,27 @@
 
   <div class="prototype-modal suite-template-publish-modal" data-suite-template-publish-modal aria-hidden="true">
     <div class="prototype-modal-panel suite-template-publish-panel" role="dialog" aria-modal="true" aria-labelledby="suite-template-publish-title">
-      <div class="suite-template-publish-head">
+      <div class="prototype-modal-head suite-template-publish-head">
         <div>
           <h2 id="suite-template-publish-title">发布到 AI 图片广场</h2>
           <p>为模板设置其他用户单次购买时需要消耗的融豆数。</p>
         </div>
-        <button class="suite-template-publish-close" type="button" data-modal-close aria-label="关闭">×</button>
+        <button class="prototype-close suite-template-publish-close" type="button" data-modal-close aria-label="关闭"></button>
       </div>
-      <div class="suite-template-publish-body">
-        <section class="suite-template-publish-target">
+      <div class="module-library-publish-body suite-template-publish-body">
+        <section class="module-library-publish-target suite-template-publish-target">
           <img src="assets/creation-cover-616.jpg" alt="" data-suite-template-publish-preview>
           <div>
             <strong data-suite-template-publish-name>模板名称</strong>
             <span>发布后将按设置价格展示给其他用户</span>
           </div>
         </section>
-        <label class="suite-template-price-field">
+        <label class="module-library-price-field suite-template-price-field">
           <span>单次购买价格 <em>必填</em></span>
           <div><input type="number" min="0" max="9999" step="1" inputmode="numeric" value="0" data-suite-template-publish-price><b>融豆</b></div>
           <small>填写 0 即免费；价格为其他用户购买该模板时的单次消耗。</small>
         </label>
-        <section class="suite-template-publish-rules" aria-label="发布规则说明">
+        <section class="module-library-publish-rules suite-template-publish-rules" aria-label="发布规则说明">
           <strong>发布规则说明</strong>
           <ul>
             <li>确认发布后，模板将立即在 AI 图片广场展示并按设置价格提供购买。</li>
@@ -3480,7 +3484,7 @@
           </ul>
         </section>
       </div>
-      <div class="suite-template-publish-actions">
+      <div class="prototype-modal-actions right suite-template-publish-actions">
         <button class="btn ghost" type="button" data-modal-close>取消</button>
         <button class="btn primary" type="button" data-suite-template-publish-submit>确认发布</button>
       </div>

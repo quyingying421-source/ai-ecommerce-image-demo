@@ -14615,6 +14615,7 @@ document.querySelectorAll("[data-new-material]").forEach((button) => {
 
 els.searchInput.addEventListener("input", filterProducts);
 els.filters.forEach((select) => select.addEventListener("change", filterProducts));
+document.querySelector("[data-product-library-query]")?.addEventListener("click", filterProducts);
 els.resetButtons.forEach((button) => button.addEventListener("click", resetFilters));
 els.viewButtons.forEach((button) => {
   button.addEventListener("click", () => setView(button.dataset.view));
