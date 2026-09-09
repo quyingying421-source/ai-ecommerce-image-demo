@@ -5636,6 +5636,32 @@ function filterCreationTasks() {
   els.creationTaskEmpty?.classList.toggle("is-active", visibleCount === 0);
 }
 
+function ensureFailureDemoRecords() {
+  if (!els.creationTaskFlow || els.creationTaskFlow.querySelector("[data-failure-demo-record]")) return;
+  const demos = [
+    ["复刻生图", "部分失败", "儿童亲子短袖套装复刻生图（部分失败示例）", "儿童亲子短袖套装", "商品主体识别不完整，2 张图片未生成。", "assets/product-cover-04.png"],
+    ["复刻生图", "全部失败", "法式蕾丝文胸复刻生图（全部失败示例）", "法式蕾丝文胸", "参考图与商品主体匹配失败。", "assets/product-cover-03.png"],
+    ["自由创作", "部分失败", "儿童 T 恤夏季主图自由创作（部分失败示例）", "儿童T恤-详情-1", "其中 1 张图片因内容解析失败未生成。", "assets/product-cover-04.png"],
+    ["自由创作", "全部失败", "冰丝内裤自由创作（全部失败示例）", "男士冰丝平角裤", "生成服务超时，未返回可用图片。", "assets/product-cover-01.png"],
+    ["新建图生图模块", "部分失败", "高腰塑形裤卖点图生图模板（部分失败示例）", "高腰塑形裤", "候选图 2 生成失败，已保留成功候选图。", "assets/product-cover-02.png"],
+    ["新建图生图模块", "全部失败", "蕾丝文胸图生图模板（全部失败示例）", "蕾丝聚拢文胸 883", "生成服务异常，暂无可用候选图。", "assets/product-cover-03.png"],
+    ["新建模特", "部分失败", "无痕内衣新建模特（部分失败示例）", "无痕内衣套装", "定妆图中有 1 张未通过质量校验。", "assets/model-detail-source.png"],
+    ["新建模特", "全部失败", "童装女模特新建（全部失败示例）", "儿童亲子短袖套装", "模特特征生成失败，请调整参考图后重试。", "assets/model-detail-source.png"]
+  ];
+  const markup = demos.map(([type, outcome, title, product, reason, image]) => {
+    const partial = outcome === "部分失败";
+    const cost = partial ? 8 : 10;
+    return `<article class="creation-task-card" data-creation-task-card data-failure-demo-record data-status="failed" data-result-status="${partial ? "partial" : "failed"}" data-type="${type}" data-title="${title}" data-product="${product}">
+      <div class="creation-task-thumb single"><img src="${image}" alt=""><span class="creation-task-type">${type === "新建模特" ? "模特" : type === "新建图生图模块" ? "模板" : type === "自由创作" ? "自由" : "复刻"}</span></div>
+      <div class="creation-task-main"><div class="creation-task-title-row"><h2>${title}</h2><span class="creation-task-status ${partial ? "warning" : "failed"}">${outcome}</span></div>
+      <div class="creation-task-meta"><span>${partial ? "已完成 2/4" : "已完成 0/4"}</span><span>${partial ? "失败 2 项" : "失败 4 项"}</span><span>失败示例</span></div>
+      <div class="creation-task-tags"><span>失败状态示例</span><span>${type}</span><span>创作人：林夏</span></div><div class="creation-task-reason">失败原因：${reason}</div></div>
+      <div class="creation-task-action"><button class="creation-task-retry-button" type="button" data-record-retry data-retry-cost="${cost}">重试 <b>${cost}</b><img src="assets/creation-rongdou-icon.png" alt="融豆"></button><button class="btn primary" type="button" data-open-creation-detail>查看详情</button></div></article>`;
+  }).join("");
+  els.creationTaskFlow.insertAdjacentHTML("beforeend", markup);
+  els.creationTaskCards = Array.from(document.querySelectorAll("[data-creation-task-card]"));
+}
+
 function getCreationMode() {
   const hasPrompt = els.creationPrompt.value.trim().length > 0;
   if (state.creation.templateKind === "suite" || state.creation.template || ["template", "module", "reference", "multi-replica"].includes(state.creation.inputMode)) return "复刻生图";
@@ -6038,28 +6064,66 @@ function submitDetailRegeneration() {
   createGenerationRecord();
 }
 
-function updateDetailTaskCard(card, status) {
+function retryDetailFailedTask(button) {
+  const card = button.closest(".detail-task-card");
+  if (!card) return;
+  const cost = button.dataset.retryCost || "0";
+  updateDetailTaskCard(card, "running");
+  showToast(`正在重新生成失败图片，将扣除 ${cost} 融豆`);
+  window.setTimeout(() => {
+    updateDetailTaskCard(card, "done");
+    showToast("失败图片已重新生成完成");
+  }, 900);
+}
+
+function detailFailureMarkup(status, reason = "生成服务暂时不可用，请稍后重新生成。", retryCost = 8) {
+  const isPartial = status === "partial";
+  return `
+    <section class="detail-failure-panel ${isPartial ? "is-partial" : ""}">
+      <div class="detail-failure-icon">!</div>
+      <div><strong>${isPartial ? "部分图片生成失败" : "本次生成失败"}</strong><p>${reason}</p><small>${isPartial ? "已成功的图片可继续下载、编辑或扩图；仅失败项需要重新生成。" : "请根据失败原因调整素材或参数后重新生成。"}</small></div>
+      <button class="detail-failure-retry" type="button" data-detail-retry-failed data-retry-cost="${retryCost}">
+      <span>${isPartial ? "重新生成失败项" : "重新生成"}</span><i class="detail-task-regenerate-cost"><b>${retryCost}</b><img src="assets/creation-rongdou-icon.png" alt="融豆"></i>
+      </button>
+    </section>`;
+}
+
+function updateDetailTaskCard(card, status, options = {}) {
   const statusNode = card.querySelector("[data-detail-card-status]");
   const resultNode = card.querySelector("[data-detail-card-result]");
   const map = {
     queued: "排队中",
     running: "生成中",
     done: "已完成",
-    failed: "失败"
+    partial: "部分完成",
+    failed: "全部失败"
   };
   statusNode.className = `record-status ${status}`;
   statusNode.textContent = map[status];
   card.className = `detail-task-card ${status}`;
+  card.querySelector(".detail-failure-panel")?.remove();
+  card.querySelector(".detail-failure-retry")?.remove();
+  if (["partial", "failed"].includes(status)) {
+    card.querySelector(".detail-task-card-regenerate:not(.detail-failure-retry)")?.remove();
+  }
   if (status === "done") {
     resultNode.className = "detail-result-grid";
     resultNode.innerHTML = detailImagesMarkup();
+  } else if (status === "partial") {
+    resultNode.className = "detail-result-grid";
+    resultNode.innerHTML = detailImagesMarkup();
+    resultNode.insertAdjacentHTML("afterend", detailFailureMarkup(status, options.reason, options.retryCost));
+  } else if (status === "failed") {
+    resultNode.className = "detail-result-grid detail-result-failed";
+    resultNode.innerHTML = "";
+    resultNode.insertAdjacentHTML("afterend", detailFailureMarkup(status, options.reason, options.retryCost));
   } else {
     resultNode.className = "detail-result-grid pending";
     resultNode.innerHTML = "";
   }
 }
 
-function appendDetailTask({ prompt = "", status = "" } = {}) {
+function appendDetailTask({ prompt = "", status = "", reason = "", retryCost = 8 } = {}) {
   if (!els.detailTaskList) return null;
   state.creation.detailSeq += 1;
   const mode = getCreationMode() === "待识别" ? "自由生图" : getCreationMode();
@@ -6091,7 +6155,7 @@ function appendDetailTask({ prompt = "", status = "" } = {}) {
   `;
   els.detailTaskList.replaceChildren(card);
   if (status) {
-    updateDetailTaskCard(card, status);
+    updateDetailTaskCard(card, status, { reason, retryCost });
   } else {
     window.setTimeout(() => updateDetailTaskCard(card, "running"), 500);
     window.setTimeout(() => {
@@ -7592,6 +7656,9 @@ const suiteReplicaTemplateOptions = [
 
 function openSuiteReplicaEditor(backPage = "creation-plaza", options = {}) {
   const editor = state.suiteReplicaEditor;
+  const canvasViewport = document.querySelector("[data-suite-canvas-viewport]");
+  canvasViewport?.querySelector(".native-record-outcome")?.remove();
+  canvasViewport?.classList.remove("has-native-record-outcome");
   editor.backPage = backPage;
   editor.step = options.step || (options.product ? "generate" : "product");
   editor.product = options.product || null;
@@ -8386,8 +8453,9 @@ function renderSuiteCanvas() {
   const renderCanvasCard = (page, index, variant = "template", childIndex = 0) => {
     const selected = editor.selectedReferencePageId === page.id;
     const loading = page.status === "loading";
+    const failed = page.status === "failed";
     const fixed = isSuiteTemplateFixedPage(page);
-    const actionable = !fixed && (variant === "result" || page.regenerated || page.textEdited);
+    const actionable = !fixed && !failed && (variant === "result" || page.regenerated || page.textEdited);
     const deletableTemplateReference = editor.templateEntry && variant === "template";
     const exportSelected = (editor.exportSelectionIds || []).includes(page.id);
     const exportable = isSuiteExportablePage(page);
@@ -8398,10 +8466,10 @@ function renderSuiteCanvas() {
       : fixed
         ? `固定图 · ${page.title}`
         : variant === "result"
-          ? `生成图 ${page.generatedOutputIndex || childIndex + 1}`
+          ? failed ? "生成失败" : `生成图 ${page.generatedOutputIndex || childIndex + 1}`
           : `原图 ${index + 1}`;
     return `
-    <article class="suite-canvas-card ${variant === "result" || page.textEdited ? "is-result" : ""} ${page.regenerated ? "is-regenerated" : ""} ${page.textEdited ? "is-text-edited" : ""} ${loading ? "is-loading" : ""} ${selected ? "is-selected" : ""} ${exportSelected ? "is-export-selected" : ""}" data-suite-canvas-item="${page.id}" ${variant === "template" && !page.regenerated ? `draggable="${editor.canvasTool !== "hand"}" data-suite-page-id="${page.id}"` : ""}>
+    <article class="suite-canvas-card ${variant === "result" || page.textEdited ? "is-result" : ""} ${page.regenerated ? "is-regenerated" : ""} ${page.textEdited ? "is-text-edited" : ""} ${loading ? "is-loading" : ""} ${failed ? "is-failed" : ""} ${selected ? "is-selected" : ""} ${exportSelected ? "is-export-selected" : ""}" data-suite-canvas-item="${page.id}" ${variant === "template" && !page.regenerated ? `draggable="${editor.canvasTool !== "hand"}" data-suite-page-id="${page.id}"` : ""}>
       ${actionable && !loading ? `<div class="suite-canvas-card-toolbar" aria-label="图片快捷操作">
         <button type="button" data-suite-card-compare data-suite-toolbar-tooltip="图片对比" aria-label="对比商品图与生成结果"><img src="assets/suite-card-action-compare.png" alt=""></button>
         <button type="button" data-suite-card-regenerate data-suite-toolbar-tooltip="重新编辑" aria-label="重新编辑"><img src="assets/suite-card-action-regenerate.png" alt=""></button>
@@ -8409,7 +8477,7 @@ function renderSuiteCanvas() {
         <button type="button" data-suite-card-download data-suite-toolbar-tooltip="下载" aria-label="下载"><img src="assets/suite-card-action-download.png" alt=""></button>
       </div>` : ""}
       <div class="suite-canvas-card-image">
-        <img src="${page.image}" alt="${page.title}" ${actionable && !loading ? `data-suite-card-preview="${page.id}" role="button" tabindex="0"` : ""}>
+        ${failed ? `<div class="suite-canvas-failure"><i>!</i><strong>生成失败</strong><small>${page.failureReason || "当前图片未成功生成，请重试。"}</small><button type="button" data-suite-card-retry="${page.id}" data-retry-cost="${page.retryCost || 2}">重新生成 <b>${page.retryCost || 2}</b><img src="assets/creation-rongdou-icon.png" alt="融豆"></button></div>` : `<img src="${page.image}" alt="${page.title}" ${actionable && !loading ? `data-suite-card-preview="${page.id}" role="button" tabindex="0"` : ""}>`}
         <span class="suite-page-tag" style="background:${page.regenerated ? "#5cc88a" : tagColors[index % tagColors.length]}">${tagText}</span>
         ${deletableTemplateReference ? `<button class="suite-template-reference-delete" type="button" data-suite-template-reference-delete="${page.id}" aria-label="删除参考图 ${page.title}">×</button>` : ""}
         ${exportable ? `<button class="suite-export-check" type="button" data-suite-card-export-toggle aria-pressed="${exportSelected}" aria-label="${exportSelected ? "取消选择导出" : "选择导出"}"><span>✓</span></button>` : ""}
@@ -8470,6 +8538,13 @@ function renderSuiteCanvas() {
       event.stopPropagation();
       event.stopImmediatePropagation();
       handleSuiteCanvasToolbarAction(button, event);
+    });
+  });
+  stage.querySelectorAll("[data-suite-card-retry]").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      retrySuiteFailedPage(button.dataset.suiteCardRetry);
     });
   });
   stage.querySelectorAll("[data-suite-card-compare]").forEach((button) => {
@@ -9546,6 +9621,8 @@ function bindSuiteCanvasInteractions() {
     if (event.target.closest(".suite-canvas-card-toolbar")) return;
     if (event.target.closest("[data-suite-card-export-toggle]")) return;
     if (event.target.closest("[data-suite-card-preview]")) return;
+    if (event.target.closest(".native-record-outcome")) return;
+    if (event.target.closest(".suite-canvas-failure")) return;
     const pageCard = event.target.closest("[data-suite-canvas-item]");
     if (pageCard) selectSuiteReferencePage(pageCard.dataset.suiteCanvasItem);
     if (event.target.closest(".suite-canvas-card") && editor.canvasTool !== "hand") return;
@@ -10407,8 +10484,9 @@ function getRecordProduct(taskCard) {
 }
 
 function getRecordTaskStatus(taskCard) {
+  if (taskCard?.dataset.resultStatus === "partial") return "partial";
   const status = taskCard?.dataset.status || "done";
-  return ["running", "done", "failed"].includes(status) ? status : "done";
+  return ["running", "done", "partial", "failed"].includes(status) ? status : "done";
 }
 
 function getRecordTaskTitle(taskCard, fallback = "创作任务") {
@@ -10499,31 +10577,111 @@ function applySuiteRecordStatus(taskCard) {
   ].filter(Boolean);
   editor.step = "generate";
   editor.regeneratePanelOpen = false;
-  if (recordStatus === "done") {
+  if (["done", "partial"].includes(recordStatus)) {
     editor.generatedPages = editor.template.pages.map((page, index) => ({
       ...page,
       id: `record-generated-${page.id}`,
+      parentId: page.id,
       title: page.title,
+      generatedOutputIndex: 1,
+      status: recordStatus === "partial" && index >= Math.max(1, editor.template.pages.length - 2) ? "failed" : "done",
+      failureReason: "商品主体识别不完整，请核对本图素材后重新生成。",
+      retryCost: 2,
       image: fallbackImages[index % fallbackImages.length] || page.image
     }));
     editor.exportSelectionIds = editor.generatedPages.map((page) => page.id);
     editor.exportDrawerOpen = Boolean(editor.exportSelectionIds.length);
     editor.generated = true;
   } else {
-    editor.generatedPages = [];
+    editor.generatedPages = editor.template.pages.map((page) => ({
+      ...page,
+      id: `record-generated-${page.id}`,
+      parentId: page.id,
+      title: page.title,
+      generatedOutputIndex: 1,
+      status: "failed",
+      failureReason: "参考图与商品主体匹配失败，请调整当前图片素材后重新生成。",
+      retryCost: 2,
+      image: page.image
+    }));
     editor.exportSelectionIds = [];
     editor.exportDrawerOpen = false;
-    editor.generated = false;
+    editor.generated = true;
     editor.regeneratePrompt = recordStatus === "failed" ? "生成失败：参考图主体识别不完整，请调整商品图或参考套图后重新生成。" : "";
   }
   renderSuiteReplicaEditor();
+}
+
+function retrySuiteFailedPage(pageId) {
+  const editor = getSuiteEditor();
+  const page = (editor.generatedPages || []).find((item) => item.id === pageId);
+  if (!page || page.status !== "failed") return;
+  const cost = page.retryCost || 2;
+  page.status = "loading";
+  renderSuiteCanvas();
+  showToast(`正在重新生成当前图片，将扣除 ${cost} 融豆`);
+  window.setTimeout(() => {
+    page.status = "done";
+    page.image = editor.product?.image || page.image || "assets/creation-cover-606.jpg";
+    renderSuiteCanvas();
+    showToast("当前图片已重新生成完成");
+  }, 900);
+}
+
+function retryAllSuiteFailedPages() {
+  const editor = getSuiteEditor();
+  const failedPages = (editor.generatedPages || []).filter((page) => page.status === "failed");
+  if (!failedPages.length) return;
+  const cost = failedPages.reduce((total, page) => total + (page.retryCost || 2), 0);
+  failedPages.forEach((page) => { page.status = "loading"; });
+  const canvasViewport = document.querySelector("[data-suite-canvas-viewport]");
+  canvasViewport?.querySelector(".native-record-outcome")?.remove();
+  canvasViewport?.classList.remove("has-native-record-outcome");
+  renderSuiteCanvas();
+  showToast(`正在重新生成 ${failedPages.length} 张失败图片，将扣除 ${cost} 融豆`);
+  window.setTimeout(() => {
+    failedPages.forEach((page, index) => {
+      page.status = "done";
+      page.image = index % 2 ? "assets/creation-cover-606.jpg" : (editor.product?.image || page.image);
+    });
+    renderSuiteCanvas();
+    showToast("失败图片已重新生成完成");
+  }, 900);
 }
 
 function appendRecordDetailTask(taskCard, fallbackTitle) {
   const status = getRecordTaskStatus(taskCard);
   const productName = taskCard?.dataset.product || "关联商品";
   const prompt = `查看「${getRecordTaskTitle(taskCard, fallbackTitle)}」，关联商品：${productName}。`;
-  appendDetailTask({ prompt, status });
+  const reason = taskCard?.querySelector(".creation-task-reason")?.textContent.replace(/^失败原因：/, "").trim()
+    || (status === "partial" ? "其中 2 张图片因主体识别不完整而未生成。" : "原图边缘裁切过紧，主体外轮廓识别不完整。");
+  appendDetailTask({ prompt, status, reason, retryCost: status === "partial" ? 8 : 10 });
+}
+
+function renderNativeRecordOutcome(taskCard, host) {
+  const status = getRecordTaskStatus(taskCard);
+  host?.querySelector(".native-record-outcome")?.remove();
+  host?.classList.remove("has-native-record-outcome");
+  if (!host || !["partial", "failed"].includes(status)) return;
+  const isPartial = status === "partial";
+  const suiteFailureCount = host.matches("[data-suite-canvas-viewport]")
+    ? (getSuiteEditor().generatedPages || []).filter((page) => page.status === "failed").length
+    : 0;
+  const retryCost = suiteFailureCount ? suiteFailureCount * 2 : (isPartial ? 8 : 10);
+  const reason = taskCard?.querySelector(".creation-task-reason")?.textContent.replace(/^失败原因：/, "").trim()
+    || (isPartial ? "部分目标图片未成功生成，请重新生成失败项。" : "任务未成功生成，请调整素材或参数后重新提交。");
+  host.classList.add("has-native-record-outcome");
+  host.insertAdjacentHTML("afterbegin", `<section class="native-record-outcome ${isPartial ? "is-partial" : "is-failed"}">
+    <div><strong>${isPartial ? "部分完成" : "全部失败"}</strong><p>${reason}</p></div>
+    <button type="button" data-native-record-retry data-retry-cost="${retryCost}">${isPartial ? "重新生成失败项" : "重新生成"}<span>·</span><b>${retryCost}</b><img src="assets/creation-rongdou-icon.png" alt="融豆"></button>
+  </section>`);
+  if (host.matches("[data-suite-canvas-viewport]")) {
+    host.querySelector("[data-native-record-retry]")?.addEventListener("click", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+      retryAllSuiteFailedPages();
+    });
+  }
 }
 
 function openModuleImageRecordDetail(taskCard) {
@@ -10582,6 +10740,7 @@ function openMultiReplicaRecordDetail(taskCard) {
     autoReference: true
   });
   applySuiteRecordStatus(taskCard);
+  renderNativeRecordOutcome(taskCard, document.querySelector("[data-suite-canvas-viewport]"));
   setCreationRecordMenuActive();
 }
 
@@ -10614,6 +10773,7 @@ function openModuleCreateRecordConfirm(taskCard) {
   openModuleImageWorkspace({ backPage: "creation-records", intent: "create" });
   createRecordModuleTask(taskCard, product, { intent: "create" });
   renderModuleImageWorkspace();
+  renderNativeRecordOutcome(taskCard, document.querySelector(".module-asset-workspace"));
   setCreationRecordMenuActive();
 }
 
@@ -10638,6 +10798,7 @@ function openModelCreateRecordDetail(taskCard) {
   setModelCreateState(recordStatus === "running" ? "generating" : recordStatus === "done" ? "complete" : "failed");
   updateModelResultSubmittedAt();
   updateModelCreateSummary();
+  renderNativeRecordOutcome(taskCard, panel.querySelector(".model-create-result-panel"));
   setCreationRecordMenuActive();
 }
 
@@ -13924,8 +14085,54 @@ document.querySelector("[data-detail-regenerate]")?.addEventListener("click", su
 document.querySelector("[data-detail-start-regenerate]")?.addEventListener("click", beginDetailRegenerationEdit);
 
 document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-suite-canvas-viewport] [data-native-record-retry]");
+  if (!button) return;
+  event.preventDefault();
+  event.stopImmediatePropagation();
+  retryAllSuiteFailedPages();
+}, true);
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-detail-retry-failed]");
+  if (!button) return;
+  event.preventDefault();
+  retryDetailFailedTask(button);
+});
+
+document.addEventListener("click", (event) => {
   if (!event.target.closest("[data-detail-regenerate-all]")) return;
   submitDetailRegeneration();
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-native-record-retry]");
+  if (!button) return;
+  const cost = button.dataset.retryCost || "0";
+  if (button.closest("[data-suite-canvas-viewport]")) {
+    retryAllSuiteFailedPages();
+    return;
+  }
+  const outcome = button.closest(".native-record-outcome");
+  const outcomeHost = outcome?.parentElement;
+  outcome?.remove();
+  outcomeHost?.classList.remove("has-native-record-outcome");
+  if (outcomeHost?.matches(".model-create-result-panel")) {
+    setModelCreateState("generating");
+    window.setTimeout(() => {
+      setModelCreateState("complete");
+      showToast("模特图已重新生成完成");
+    }, 900);
+  }
+  showToast(`正在重新生成，将扣除 ${cost} 融豆`);
+});
+
+document.addEventListener("click", (event) => {
+  const button = event.target.closest("[data-record-retry]");
+  if (!button) return;
+  const cost = button.dataset.retryCost || "0";
+  button.disabled = true;
+  button.textContent = "图片生成中";
+  showToast(`正在重新生成，将扣除 ${cost} 融豆`);
 });
 
 document.querySelectorAll("[data-modal-close]").forEach((button) => {
@@ -14612,6 +14819,8 @@ document.querySelectorAll("[data-new-material]").forEach((button) => {
     showToast("已进入素材编辑状态（原型模拟）");
   });
 });
+
+ensureFailureDemoRecords();
 
 els.searchInput.addEventListener("input", filterProducts);
 els.filters.forEach((select) => select.addEventListener("change", filterProducts));
